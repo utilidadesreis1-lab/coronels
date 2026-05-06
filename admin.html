@@ -20,8 +20,24 @@
   <header class="site-header scrolled admin-header">
     <div class="container header-inner">
       <a href="index.html" class="brand" aria-label="Coronel's Barbearia">
-        <span class="brand-mark">C</span>
-        <span class="brand-text">Coronel's Barbearia</span>
+        <span class="brand-mark">
+          <img
+            class="brand-icon"
+            src="assets/logo-icon.png"
+            alt=""
+            onerror="this.style.display='none'; this.parentElement.classList.add('has-fallback');"
+          >
+          <span class="brand-initial">C</span>
+        </span>
+        <span class="brand-lockup">
+          <img
+            class="brand-logo"
+            src="assets/logo-horizontal.png"
+            alt="Coronel's Barbearia"
+            onerror="this.style.display='none'; this.parentElement.classList.add('has-fallback');"
+          >
+          <span class="brand-text">Coronel's Barbearia</span>
+        </span>
       </a>
 
       <a class="button button-ghost admin-back-link" href="index.html">Voltar ao site</a>
@@ -102,17 +118,25 @@
 
                 <label class="field">
                   <span>Telefone</span>
-                  <input type="tel" name="telefone" placeholder="(11) 99999-9999" required>
+                  <input type="tel" name="telefone" placeholder="(63) 99124-0071" required>
                 </label>
 
                 <label class="field">
                   <span>Serviço</span>
                   <select name="servico" required>
                     <option value="" selected disabled>Selecione um serviço</option>
-                    <option value="Corte masculino">Corte masculino</option>
+                    <option value="Corte">Corte</option>
                     <option value="Barba">Barba</option>
-                    <option value="Corte + barba">Corte + barba</option>
                     <option value="Sobrancelha">Sobrancelha</option>
+                    <option value="Selagem">Selagem</option>
+                    <option value="Botox">Botox</option>
+                    <option value="Progressiva">Progressiva</option>
+                    <option value="Relaxamento">Relaxamento</option>
+                    <option value="Perfil do cabelo">Perfil do cabelo</option>
+                    <option value="Luzes">Luzes</option>
+                    <option value="Platinado">Platinado</option>
+                    <option value="Corte com visagismo">Corte com visagismo</option>
+                    <option value="Barba com visagismo">Barba com visagismo</option>
                   </select>
                 </label>
 
