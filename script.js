@@ -1,4 +1,4 @@
-const whatsappNumber = "5511999999999";
+const whatsappNumber = "5563991240071";
 const whatsappMessage =
   "Olá! Gostaria de agendar um horário na Coronel's Barbearia.";
 
@@ -158,22 +158,14 @@ const loadBarbers = () => {
   }
 };
 
-const updateBarbers = (barbers) => {
-  localStorage.setItem(barbersStorageKey, JSON.stringify(barbers));
-};
-
-const ensureBarbers = () => {
+const getAvailableBarbers = () => {
   const savedBarbers = loadBarbers();
 
   if (savedBarbers.length) {
-    updateBarbers(savedBarbers);
     return savedBarbers;
   }
 
-  const fallbackBarbers = defaultBarbers.map((barber) => ({ ...barber }));
-  updateBarbers(fallbackBarbers);
-
-  return fallbackBarbers;
+  return defaultBarbers.map((barber) => ({ ...barber }));
 };
 
 const populateBarberSelect = (select, barbers, placeholder) => {
@@ -241,7 +233,7 @@ const saveAppointment = (appointment) => {
 
 populateBarberSelect(
   publicBarberSelect,
-  ensureBarbers(),
+  getAvailableBarbers(),
   "Selecione um barbeiro"
 );
 
@@ -317,10 +309,4 @@ if (bookingForm && formFeedback) {
 
     window.open(buildWhatsAppUrl(appointmentMessage), "_blank", "noopener");
   });
-}
-
-if (whatsappNumber === "5511999999999") {
-  console.warn(
-    "Atualize o número do WhatsApp em script.js para o contato oficial da Coronel's Barbearia."
-  );
 }

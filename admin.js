@@ -30,7 +30,7 @@ const adminCredentials = {
   password: "123456",
 };
 const adminWhatsappMessage =
-  "Ola, aqui e da Coronel's Barbearia. Estamos entrando em contato sobre seu agendamento.";
+  "Olá, aqui é da Coronel's Barbearia. Estamos entrando em contato sobre seu agendamento.";
 const defaultBarbers = [
   { nome: "Profissional 1", especialidade: "Atendimento geral" },
   { nome: "Profissional 2", especialidade: "Atendimento geral" },
@@ -106,18 +106,14 @@ const updateBarbers = (barbers) => {
   localStorage.setItem(barbersStorageKey, JSON.stringify(barbers));
 };
 
-const ensureBarbers = () => {
+const getAvailableBarbers = () => {
   const savedBarbers = loadBarbers();
 
   if (savedBarbers.length) {
-    updateBarbers(savedBarbers);
     return savedBarbers;
   }
 
-  const fallbackBarbers = defaultBarbers.map((barber) => ({ ...barber }));
-  updateBarbers(fallbackBarbers);
-
-  return fallbackBarbers;
+  return defaultBarbers.map((barber) => ({ ...barber }));
 };
 
 const getTodayDateValue = () => {
@@ -270,10 +266,11 @@ const populateBarberSelect = (select, barbers, placeholder) => {
 };
 
 const renderBarbers = () => {
-  const barbers = ensureBarbers();
+  const availableBarbers = getAvailableBarbers();
+  const savedBarbers = loadBarbers();
   populateBarberSelect(
     adminManualBarberSelect,
-    barbers,
+    availableBarbers,
     "Selecione um barbeiro"
   );
 
@@ -281,7 +278,13 @@ const renderBarbers = () => {
     return;
   }
 
-  adminBarbersList.innerHTML = barbers
+  if (!savedBarbers.length) {
+    adminBarbersList.innerHTML =
+      '<p class="admin-empty-copy">Nenhum barbeiro cadastrado ainda. Os profissionais padrão aparecem apenas como fallback no agendamento.</p>';
+    return;
+  }
+
+  adminBarbersList.innerHTML = savedBarbers
     .map(
       (barber, index) => `
         <article class="admin-barber-card">
@@ -327,7 +330,7 @@ const closeManualForm = () => {
   clearFormErrors(adminManualForm);
   populateBarberSelect(
     adminManualBarberSelect,
-    ensureBarbers(),
+    getAvailableBarbers(),
     "Selecione um barbeiro"
   );
   setFeedbackMessage(adminManualFeedback, "");
@@ -341,7 +344,7 @@ const openManualForm = () => {
   adminManualForm.hidden = false;
   populateBarberSelect(
     adminManualBarberSelect,
-    ensureBarbers(),
+    getAvailableBarbers(),
     "Selecione um barbeiro"
   );
 
@@ -624,7 +627,7 @@ if (adminBarberForm && adminBarberFeedback) {
     if (barberAlreadyExists) {
       setFeedbackMessage(
         adminBarberFeedback,
-        "Ja existe um barbeiro cadastrado com esse nome."
+        "Já existe um barbeiro cadastrado com esse nome."
       );
       return;
     }
