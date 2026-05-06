@@ -1,3 +1,10 @@
+import {
+  addDoc,
+  getAppointmentsCollection,
+  hasFirebaseConfig,
+  serverTimestamp,
+} from "./firebase-config.js";
+
 const whatsappNumber = "5563991240071";
 const whatsappMessage =
   "Olá! Gostaria de agendar um horário na Coronel's Barbearia.";
@@ -12,7 +19,6 @@ const bookingForm = document.querySelector("[data-booking-form]");
 const formFeedback = document.querySelector("[data-form-feedback]");
 const publicBarberSelect = document.querySelector("[data-public-barber-select]");
 
-const appointmentsStorageKey = "coronelsBarbeariaAppointments";
 const barbersStorageKey = "coronelsBarbeariaBarbers";
 const defaultBarbers = [
   { nome: "Profissional 1", especialidade: "Atendimento geral" },
@@ -206,29 +212,26 @@ const getAppointmentPayload = (formData) => ({
   data: String(formData.get("data") || "").trim(),
   horario: String(formData.get("horario") || "").trim(),
   status: "pendente",
-  dataCriacao: new Date().toISOString(),
+  origem: "site",
 });
 
-const loadAppointments = () => {
-  try {
-    const savedAppointments = JSON.parse(
-      localStorage.getItem(appointmentsStorageKey) || "[]"
-    );
-
-    return Array.isArray(savedAppointments) ? savedAppointments : [];
-  } catch (error) {
-    return [];
+const getFirebaseErrorMessage = () => {
+  if (!hasFirebaseConfig) {
+    return "O agendamento online ainda não está configurado. Preencha o firebase-config.js e tente novamente.";
   }
+
+  return "Não foi possível salvar seu agendamento agora. Tente novamente em instantes.";
 };
 
-const saveAppointment = (appointment) => {
-  const savedAppointments = loadAppointments();
+const saveAppointment = async (appointment) => {
+  if (!hasFirebaseConfig) {
+    throw new Error("firebase-not-configured");
+  }
 
-  savedAppointments.push(appointment);
-  localStorage.setItem(
-    appointmentsStorageKey,
-    JSON.stringify(savedAppointments)
-  );
+  await addDoc(getAppointmentsCollection(), {
+    ...appointment,
+    criadoEm: serverTimestamp(),
+  });
 };
 
 populateBarberSelect(
@@ -259,7 +262,7 @@ if (bookingForm && formFeedback) {
     });
   });
 
-  bookingForm.addEventListener("submit", (event) => {
+  bookingForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     let hasError = false;
@@ -288,25 +291,52 @@ if (bookingForm && formFeedback) {
       return;
     }
 
+    const submitButton = bookingForm.querySelector('button[type="submit"]');
     const formData = new FormData(bookingForm);
     const appointment = getAppointmentPayload(formData);
 
-    saveAppointment(appointment);
+    if (submitButton) {
+      submitButton.disabled = true;
+    }
 
-    const appointmentMessage = [
-      "Olá! Gostaria de agendar um horário na Coronel's Barbearia.",
-      "",
-      `Nome: ${appointment.nome}`,
-      `Telefone: ${appointment.telefone}`,
-      `Serviço: ${appointment.servico}`,
-      `Barbeiro: ${appointment.barbeiro}`,
-      `Data: ${formatDate(appointment.data)}`,
-      `Horário: ${appointment.horario}`,
-    ].join("\n");
+    formFeedback.textContent = "Salvando seu agendamento...";
+    formFeedback.classList.remove("is-success");
 
-    formFeedback.textContent = "Abrindo WhatsApp com sua mensagem pronta...";
-    formFeedback.classList.add("is-success");
+    try {
+      await saveAppointment(appointment);
 
-    window.open(buildWhatsAppUrl(appointmentMessage), "_blank", "noopener");
+      const appointmentMessage = [
+        "Olá! Gostaria de agendar um horário na Coronel's Barbearia.",
+        "",
+        `Nome: ${appointment.nome}`,
+        `Telefone: ${appointment.telefone}`,
+        `Serviço: ${appointment.servico}`,
+        `Barbeiro: ${appointment.barbeiro}`,
+        `Data: ${formatDate(appointment.data)}`,
+        `Horário: ${appointment.horario}`,
+      ].join("\n");
+
+      formFeedback.textContent = "Abrindo WhatsApp com sua mensagem pronta...";
+      formFeedback.classList.add("is-success");
+
+      window.open(buildWhatsAppUrl(appointmentMessage), "_blank", "noopener");
+      bookingForm.reset();
+      populateBarberSelect(
+        publicBarberSelect,
+        getAvailableBarbers(),
+        "Escolha o profissional"
+      );
+    } catch (error) {
+      formFeedback.textContent = getFirebaseErrorMessage();
+      formFeedback.classList.remove("is-success");
+    } finally {
+      if (bookingDateField) {
+        bookingDateField.min = getTodayDateValue();
+      }
+
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
+    }
   });
 }

@@ -1,3 +1,16 @@
+import {
+  addDoc,
+  deleteDoc,
+  doc,
+  getAppointmentsCollection,
+  hasFirebaseConfig,
+  onSnapshot,
+  orderBy,
+  query,
+  serverTimestamp,
+  updateDoc,
+} from "./firebase-config.js";
+
 const adminLoginForm = document.querySelector("[data-admin-login-form]");
 const adminFeedback = document.querySelector("[data-admin-feedback]");
 const adminContent = document.querySelector("[data-admin-content]");
@@ -22,7 +35,6 @@ const adminList = document.querySelector("[data-admin-list]");
 const adminEmpty = document.querySelector("[data-admin-empty]");
 const adminLogoutButton = document.querySelector("[data-admin-logout]");
 
-const appointmentsStorageKey = "coronelsBarbeariaAppointments";
 const barbersStorageKey = "coronelsBarbeariaBarbers";
 const adminAuthStorageKey = "coronelsBarbeariaAdminLoggedIn";
 const adminCredentials = {
@@ -36,31 +48,10 @@ const defaultBarbers = [
   { nome: "Profissional 2", especialidade: "Atendimento geral" },
   { nome: "Profissional 3", especialidade: "Atendimento geral" },
 ];
+const defaultAdminEmptyMessage = "Nenhum agendamento salvo até o momento.";
 
-const loadAppointments = () => {
-  try {
-    const savedAppointments = JSON.parse(
-      localStorage.getItem(appointmentsStorageKey) || "[]"
-    );
-
-    return Array.isArray(savedAppointments) ? savedAppointments : [];
-  } catch (error) {
-    return [];
-  }
-};
-
-const updateAppointments = (appointments) => {
-  localStorage.setItem(
-    appointmentsStorageKey,
-    JSON.stringify(appointments)
-  );
-};
-
-const saveAppointment = (appointment) => {
-  const appointments = loadAppointments();
-  appointments.push(appointment);
-  updateAppointments(appointments);
-};
+let appointmentsState = [];
+let unsubscribeAppointments = null;
 
 const normalizeBarber = (barber) => {
   if (typeof barber === "string") {
@@ -212,7 +203,7 @@ const buildAdminWhatsappUrl = (phone) => {
   )}`;
 };
 
-const getAppointmentPayload = (formData) => ({
+const getAppointmentPayload = (formData, origem) => ({
   nome: String(formData.get("nome") || "").trim(),
   telefone: String(formData.get("telefone") || "").trim(),
   servico: String(formData.get("servico") || "").trim(),
@@ -220,7 +211,7 @@ const getAppointmentPayload = (formData) => ({
   data: String(formData.get("data") || "").trim(),
   horario: String(formData.get("horario") || "").trim(),
   status: "pendente",
-  dataCriacao: new Date().toISOString(),
+  origem,
 });
 
 const getBarberPayload = (formData) => ({
@@ -386,21 +377,26 @@ const getFilteredAppointments = (appointments) => {
   });
 };
 
+const updateAdminEmptyState = (message = defaultAdminEmptyMessage) => {
+  if (!adminEmpty) {
+    return;
+  }
+
+  adminEmpty.textContent = message;
+};
+
 const renderAppointments = () => {
   if (!adminList || !adminEmpty) {
     return;
   }
 
-  const appointments = loadAppointments();
-  renderAdminSummary(appointments);
-  const filteredAppointments = getFilteredAppointments(appointments);
+  renderAdminSummary(appointmentsState);
+  const filteredAppointments = getFilteredAppointments(appointmentsState);
 
   adminEmpty.hidden = filteredAppointments.length > 0;
   adminList.innerHTML = filteredAppointments
-    .map((appointment) => {
-      const appointmentIndex = appointments.indexOf(appointment);
-
-      return `
+    .map(
+      (appointment) => `
         <article class="admin-card">
           <div class="admin-card-head">
             <h3>${escapeHtml(appointment.nome || "Cliente")}</h3>
@@ -443,7 +439,7 @@ const renderAppointments = () => {
               class="admin-action action-whatsapp"
               type="button"
               data-admin-action="whatsapp"
-              data-admin-index="${appointmentIndex}"
+              data-admin-id="${escapeHtml(appointment.id)}"
             >
               Chamar no WhatsApp
             </button>
@@ -451,7 +447,7 @@ const renderAppointments = () => {
               class="admin-action action-complete"
               type="button"
               data-admin-action="complete"
-              data-admin-index="${appointmentIndex}"
+              data-admin-id="${escapeHtml(appointment.id)}"
             >
               Concluir
             </button>
@@ -459,7 +455,7 @@ const renderAppointments = () => {
               class="admin-action action-cancel"
               type="button"
               data-admin-action="cancel"
-              data-admin-index="${appointmentIndex}"
+              data-admin-id="${escapeHtml(appointment.id)}"
             >
               Cancelar
             </button>
@@ -467,15 +463,108 @@ const renderAppointments = () => {
               class="admin-action action-delete"
               type="button"
               data-admin-action="delete"
-              data-admin-index="${appointmentIndex}"
+              data-admin-id="${escapeHtml(appointment.id)}"
             >
               Excluir
             </button>
           </div>
         </article>
-      `;
-    })
+      `
+    )
     .join("");
+};
+
+const getFirebaseErrorMessage = (fallbackMessage) => {
+  if (!hasFirebaseConfig) {
+    return "O Firebase ainda não está configurado. Cole o firebaseConfig em firebase-config.js para liberar os agendamentos online.";
+  }
+
+  return fallbackMessage;
+};
+
+const stopAppointmentsSubscription = () => {
+  if (typeof unsubscribeAppointments === "function") {
+    unsubscribeAppointments();
+    unsubscribeAppointments = null;
+  }
+};
+
+const subscribeAppointments = () => {
+  stopAppointmentsSubscription();
+
+  if (!hasFirebaseConfig) {
+    appointmentsState = [];
+    updateAdminEmptyState(getFirebaseErrorMessage(defaultAdminEmptyMessage));
+    renderAppointments();
+    setFeedbackMessage(
+      adminFeedback,
+      getFirebaseErrorMessage(defaultAdminEmptyMessage)
+    );
+    return;
+  }
+
+  updateAdminEmptyState(defaultAdminEmptyMessage);
+
+  const appointmentsQuery = query(
+    getAppointmentsCollection(),
+    orderBy("criadoEm", "desc")
+  );
+
+  unsubscribeAppointments = onSnapshot(
+    appointmentsQuery,
+    (snapshot) => {
+      appointmentsState = snapshot.docs.map((snapshotDoc) => ({
+        id: snapshotDoc.id,
+        ...snapshotDoc.data(),
+      }));
+
+      updateAdminEmptyState(defaultAdminEmptyMessage);
+      renderAppointments();
+      setFeedbackMessage(adminFeedback, "");
+    },
+    () => {
+      appointmentsState = [];
+      updateAdminEmptyState(
+        getFirebaseErrorMessage(
+          "Não foi possível carregar os agendamentos agora. Tente novamente em instantes."
+        )
+      );
+      renderAppointments();
+      setFeedbackMessage(
+        adminFeedback,
+        getFirebaseErrorMessage(
+          "Não foi possível carregar os agendamentos agora. Tente novamente em instantes."
+        )
+      );
+    }
+  );
+};
+
+const saveAppointment = async (appointment) => {
+  if (!hasFirebaseConfig) {
+    throw new Error("firebase-not-configured");
+  }
+
+  await addDoc(getAppointmentsCollection(), {
+    ...appointment,
+    criadoEm: serverTimestamp(),
+  });
+};
+
+const updateAppointmentStatus = async (appointmentId, status) => {
+  if (!hasFirebaseConfig) {
+    throw new Error("firebase-not-configured");
+  }
+
+  await updateDoc(doc(getAppointmentsCollection(), appointmentId), { status });
+};
+
+const deleteAppointment = async (appointmentId) => {
+  if (!hasFirebaseConfig) {
+    throw new Error("firebase-not-configured");
+  }
+
+  await deleteDoc(doc(getAppointmentsCollection(), appointmentId));
 };
 
 if (adminLoginForm && adminFeedback) {
@@ -499,13 +588,15 @@ if (adminLoginForm && adminFeedback) {
     adminLoginForm.reset();
     updateAdminVisibility();
     renderBarbers();
-    renderAppointments();
+    subscribeAppointments();
   });
 }
 
 if (adminLogoutButton) {
   adminLogoutButton.addEventListener("click", () => {
     setAdminLoggedIn(false);
+    stopAppointmentsSubscription();
+    appointmentsState = [];
     closeManualForm();
     setFeedbackMessage(adminFeedback, "");
     setFeedbackMessage(adminBarberFeedback, "");
@@ -542,7 +633,7 @@ if (adminManualForm && adminManualFeedback) {
 
   attachRequiredFieldValidation(manualRequiredFields);
 
-  adminManualForm.addEventListener("submit", (event) => {
+  adminManualForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     let hasError = false;
@@ -573,18 +664,38 @@ if (adminManualForm && adminManualFeedback) {
       return;
     }
 
-    const appointment = getAppointmentPayload(new FormData(adminManualForm));
-    saveAppointment(appointment);
-    renderAppointments();
-    setFeedbackMessage(
-      adminManualFeedback,
-      "Agendamento manual salvo com sucesso.",
-      true
-    );
+    const submitButton = adminManualForm.querySelector('button[type="submit"]');
+    const appointment = getAppointmentPayload(new FormData(adminManualForm), "admin");
 
-    setTimeout(() => {
-      closeManualForm();
-    }, 500);
+    if (submitButton) {
+      submitButton.disabled = true;
+    }
+
+    setFeedbackMessage(adminManualFeedback, "Salvando agendamento...");
+
+    try {
+      await saveAppointment(appointment);
+      setFeedbackMessage(
+        adminManualFeedback,
+        "Agendamento manual salvo com sucesso.",
+        true
+      );
+
+      setTimeout(() => {
+        closeManualForm();
+      }, 500);
+    } catch (error) {
+      setFeedbackMessage(
+        adminManualFeedback,
+        getFirebaseErrorMessage(
+          "Não foi possível salvar o agendamento manual agora. Tente novamente."
+        )
+      );
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
+    }
   });
 }
 
@@ -668,7 +779,7 @@ if (adminClearFiltersButton) {
 }
 
 if (adminList) {
-  adminList.addEventListener("click", (event) => {
+  adminList.addEventListener("click", async (event) => {
     const actionButton = event.target.closest("[data-admin-action]");
 
     if (!actionButton) {
@@ -676,23 +787,19 @@ if (adminList) {
     }
 
     const action = actionButton.getAttribute("data-admin-action");
-    const appointmentIndex = Number(
-      actionButton.getAttribute("data-admin-index")
+    const appointmentId = String(
+      actionButton.getAttribute("data-admin-id") || ""
+    ).trim();
+    const appointment = appointmentsState.find(
+      (savedAppointment) => savedAppointment.id === appointmentId
     );
-    const appointments = loadAppointments();
 
-    if (
-      Number.isNaN(appointmentIndex) ||
-      appointmentIndex < 0 ||
-      appointmentIndex >= appointments.length
-    ) {
+    if (!appointment) {
       return;
     }
 
     if (action === "whatsapp") {
-      const whatsappUrl = buildAdminWhatsappUrl(
-        appointments[appointmentIndex].telefone
-      );
+      const whatsappUrl = buildAdminWhatsappUrl(appointment.telefone);
 
       if (!whatsappUrl) {
         return;
@@ -702,18 +809,22 @@ if (adminList) {
       return;
     }
 
-    if (action === "delete") {
-      appointments.splice(appointmentIndex, 1);
-    } else if (action === "complete") {
-      appointments[appointmentIndex].status = "concluído";
-    } else if (action === "cancel") {
-      appointments[appointmentIndex].status = "cancelado";
-    } else {
-      return;
+    try {
+      if (action === "delete") {
+        await deleteAppointment(appointmentId);
+      } else if (action === "complete") {
+        await updateAppointmentStatus(appointmentId, "concluído");
+      } else if (action === "cancel") {
+        await updateAppointmentStatus(appointmentId, "cancelado");
+      }
+    } catch (error) {
+      setFeedbackMessage(
+        adminFeedback,
+        getFirebaseErrorMessage(
+          "Não foi possível atualizar este agendamento agora. Tente novamente."
+        )
+      );
     }
-
-    updateAppointments(appointments);
-    renderAppointments();
   });
 }
 
@@ -748,5 +859,5 @@ updateAdminVisibility();
 renderBarbers();
 
 if (isAdminLoggedIn()) {
-  renderAppointments();
+  subscribeAppointments();
 }
