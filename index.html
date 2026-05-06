@@ -341,77 +341,145 @@
           </div>
 
           <form class="booking-form reveal" data-booking-form novalidate>
-            <div class="form-grid">
-              <label class="field">
-                <span>Nome do cliente</span>
-                <input type="text" name="nome" placeholder="Seu nome completo" required>
-              </label>
+            <div class="booking-app">
+              <div class="booking-app-head">
+                <div>
+                  <p class="booking-app-kicker">Agendamento online</p>
+                  <h3>Escolha serviço, profissional e horário</h3>
+                </div>
+                <span class="booking-app-badge">Tempo real</span>
+              </div>
 
-              <label class="field">
-                <span>Telefone</span>
-                <input type="tel" name="telefone" placeholder="(63) 99124-0071" required>
-              </label>
+              <div class="booking-app-body">
+                <section class="booking-stage booking-stage-profile">
+                  <div class="booking-stage-head">
+                    <span class="booking-stage-step">01</span>
+                    <div>
+                      <h4>Seus dados</h4>
+                      <p>Informe rapidamente quem vai ser atendido.</p>
+                    </div>
+                  </div>
 
-              <label class="field">
-                <span>Serviço</span>
-                <select name="servico" required>
-                  <option value="" selected disabled>Selecione um serviço</option>
-                  <option value="Corte">Corte</option>
-                  <option value="Barba">Barba</option>
-                  <option value="Sobrancelha">Sobrancelha</option>
-                  <option value="Selagem">Selagem</option>
-                  <option value="Botox">Botox</option>
-                  <option value="Progressiva">Progressiva</option>
-                  <option value="Relaxamento">Relaxamento</option>
-                  <option value="Perfil do cabelo">Perfil do cabelo</option>
-                  <option value="Luzes">Luzes</option>
-                  <option value="Platinado">Platinado</option>
-                  <option value="Corte com visagismo">Corte com visagismo</option>
-                  <option value="Barba com visagismo">Barba com visagismo</option>
-                </select>
-              </label>
+                  <div class="form-grid booking-profile-grid">
+                    <label class="field">
+                      <span>Nome do cliente</span>
+                      <input type="text" name="nome" placeholder="Seu nome completo" required>
+                    </label>
 
-              <label class="field">
-                <span>Barbeiro</span>
-                <select name="barbeiro" data-public-barber-select required>
-                  <option value="" selected disabled>Escolha o profissional</option>
-                </select>
-              </label>
+                    <label class="field">
+                      <span>Telefone</span>
+                      <input type="tel" name="telefone" placeholder="(63) 99124-0071" required>
+                    </label>
 
-              <label class="field">
-                <span>Data</span>
-                <input type="date" name="data" required>
-              </label>
+                    <label class="field field-service">
+                      <span>Serviço</span>
+                      <select name="servico" required>
+                        <option value="" selected disabled>Selecione um serviço</option>
+                        <option value="Corte">Corte</option>
+                        <option value="Barba">Barba</option>
+                        <option value="Sobrancelha">Sobrancelha</option>
+                        <option value="Selagem">Selagem</option>
+                        <option value="Botox">Botox</option>
+                        <option value="Progressiva">Progressiva</option>
+                        <option value="Relaxamento">Relaxamento</option>
+                        <option value="Perfil do cabelo">Perfil do cabelo</option>
+                        <option value="Luzes">Luzes</option>
+                        <option value="Platinado">Platinado</option>
+                        <option value="Corte com visagismo">Corte com visagismo</option>
+                        <option value="Barba com visagismo">Barba com visagismo</option>
+                      </select>
+                    </label>
+                  </div>
+                </section>
 
-              <label class="field field-schedule">
-                <span>Horário</span>
-                <select class="booking-time-select" name="horario" data-booking-time-select required>
-                  <option value="" selected disabled>Escolha o horário</option>
-                  <option value="09:00">09:00</option>
-                  <option value="10:00">10:00</option>
-                  <option value="11:00">11:00</option>
-                  <option value="12:00">12:00</option>
-                  <option value="13:00">13:00</option>
-                  <option value="14:00">14:00</option>
-                  <option value="15:00">15:00</option>
-                  <option value="16:00">16:00</option>
-                  <option value="17:00">17:00</option>
-                  <option value="18:00">18:00</option>
-                  <option value="19:00">19:00</option>
-                  <option value="20:00">20:00</option>
-                </select>
-                <p class="schedule-helper" data-schedule-helper>
-                  Escolha o profissional e a data para ver os horários.
-                </p>
-                <div class="schedule-grid" data-schedule-grid aria-live="polite"></div>
-              </label>
+                <section class="booking-stage booking-stage-date">
+                  <div class="booking-stage-head">
+                    <span class="booking-stage-step">02</span>
+                    <div>
+                      <h4>Escolha a data</h4>
+                      <p>Toque em um dia para continuar com o agendamento.</p>
+                    </div>
+                  </div>
+
+                  <div class="booking-date-chips" data-booking-date-chips></div>
+
+                  <label class="field booking-date-field">
+                    <span>Outra data</span>
+                    <input class="booking-date-input" type="date" name="data" required>
+                  </label>
+                </section>
+
+                <section class="booking-stage booking-stage-barber">
+                  <div class="booking-stage-head">
+                    <span class="booking-stage-step">03</span>
+                    <div>
+                      <h4>Escolha o profissional</h4>
+                      <p>Selecione o barbeiro que vai realizar o atendimento.</p>
+                    </div>
+                  </div>
+
+                  <label class="field booking-native-field">
+                    <span>Barbeiro</span>
+                    <select
+                      class="booking-native-control"
+                      name="barbeiro"
+                      data-public-barber-select
+                      required
+                    >
+                      <option value="" selected disabled>Escolha o profissional</option>
+                    </select>
+                  </label>
+
+                  <div class="booking-barber-grid" data-booking-barber-grid></div>
+                </section>
+
+                <section class="booking-stage booking-stage-time">
+                  <div class="booking-stage-head">
+                    <span class="booking-stage-step">04</span>
+                    <div>
+                      <h4>Escolha o horário</h4>
+                      <p>Horários ocupados ficam bloqueados automaticamente.</p>
+                    </div>
+                  </div>
+
+                  <label class="field field-schedule booking-native-field">
+                    <span>Horário</span>
+                    <select
+                      class="booking-time-select booking-native-control"
+                      name="horario"
+                      data-booking-time-select
+                      required
+                    >
+                      <option value="" selected disabled>Escolha o horário</option>
+                      <option value="09:00">09:00</option>
+                      <option value="10:00">10:00</option>
+                      <option value="11:00">11:00</option>
+                      <option value="12:00">12:00</option>
+                      <option value="13:00">13:00</option>
+                      <option value="14:00">14:00</option>
+                      <option value="15:00">15:00</option>
+                      <option value="16:00">16:00</option>
+                      <option value="17:00">17:00</option>
+                      <option value="18:00">18:00</option>
+                      <option value="19:00">19:00</option>
+                      <option value="20:00">20:00</option>
+                    </select>
+                  </label>
+
+                  <p class="schedule-helper" data-schedule-helper>
+                    Escolha o profissional e a data para ver os horários.
+                  </p>
+                  <div class="schedule-grid" data-schedule-grid aria-live="polite"></div>
+                </section>
+              </div>
+
+              <div class="booking-submit-bar">
+                <p class="form-feedback" data-form-feedback aria-live="polite"></p>
+                <button class="button button-gold button-large" type="submit">
+                  Confirmar agendamento
+                </button>
+              </div>
             </div>
-
-            <p class="form-feedback" data-form-feedback aria-live="polite"></p>
-
-            <button class="button button-gold button-large" type="submit">
-              Confirmar agendamento
-            </button>
           </form>
         </div>
       </div>

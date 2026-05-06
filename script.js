@@ -25,6 +25,8 @@ const publicBarberSelect = document.querySelector("[data-public-barber-select]")
 const bookingTimeSelect = document.querySelector("[data-booking-time-select]");
 const scheduleHelper = document.querySelector("[data-schedule-helper]");
 const scheduleGrid = document.querySelector("[data-schedule-grid]");
+const bookingDateChips = document.querySelector("[data-booking-date-chips]");
+const bookingBarberGrid = document.querySelector("[data-booking-barber-grid]");
 
 const barbersStorageKey = "coronelsBarbeariaBarbers";
 const defaultBarbers = [
@@ -69,6 +71,8 @@ const hasValidPhoneDigits = (value) => getLocalPhoneDigits(value).length === 11;
 
 let scheduleUnsubscribe = null;
 let occupiedScheduleSlots = new Set();
+const shortWeekdayFormatter = new Intl.DateTimeFormat("pt-BR", { weekday: "short" });
+const shortMonthFormatter = new Intl.DateTimeFormat("pt-BR", { month: "short" });
 
 const buildWhatsAppUrl = (message) =>
   `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
@@ -168,6 +172,24 @@ const formatDate = (dateValue) => {
   return `${day}/${month}/${year}`;
 };
 
+const parseDateValue = (dateValue) => {
+  const [year, month, day] = String(dateValue || "").split("-").map(Number);
+
+  if (!year || !month || !day) {
+    return null;
+  }
+
+  return new Date(year, month - 1, day);
+};
+
+const toDateValue = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
 const normalizeBarber = (barber) => {
   if (typeof barber === "string") {
     const barberName = barber.trim();
@@ -242,10 +264,12 @@ const populateBarberSelect = (select, barbers, placeholder) => {
 
   if (currentValue && barbers.some((barber) => barber.nome === currentValue)) {
     select.value = currentValue;
+    renderBarberCards();
     return;
   }
 
   select.value = "";
+  renderBarberCards();
 };
 
 const getScheduleSlots = () =>
@@ -261,6 +285,106 @@ const setScheduleHelperMessage = (message) => {
   }
 
   scheduleHelper.textContent = message;
+};
+
+const getDateChipValues = (selectedDate = "") => {
+  const values = [];
+  const today = new Date();
+
+  for (let index = 0; index < 7; index += 1) {
+    const nextDate = new Date(today);
+    nextDate.setDate(today.getDate() + index);
+    values.push(toDateValue(nextDate));
+  }
+
+  if (selectedDate && !values.includes(selectedDate)) {
+    values.push(selectedDate);
+  }
+
+  return [...new Set(values)];
+};
+
+const renderDateChips = () => {
+  if (!bookingDateChips || !bookingForm) {
+    return;
+  }
+
+  const bookingDateField = bookingForm.querySelector('input[name="data"]');
+
+  if (!bookingDateField) {
+    return;
+  }
+
+  const selectedDate = String(bookingDateField.value || "").trim();
+  const todayValue = getTodayDateValue();
+
+  bookingDateChips.innerHTML = getDateChipValues(selectedDate)
+    .map((dateValue) => {
+      const parsedDate = parseDateValue(dateValue);
+
+      if (!parsedDate) {
+        return "";
+      }
+
+      const isSelected = selectedDate === dateValue;
+      const isToday = dateValue === todayValue;
+      const weekdayLabel = isToday
+        ? "Hoje"
+        : shortWeekdayFormatter
+            .format(parsedDate)
+            .replace(".", "")
+            .replace(/^\w/, (letter) => letter.toUpperCase());
+      const monthLabel = shortMonthFormatter
+        .format(parsedDate)
+        .replace(".", "")
+        .replace(/^\w/, (letter) => letter.toUpperCase());
+
+      return `
+        <button
+          class="booking-date-chip ${isSelected ? "is-selected" : ""}"
+          type="button"
+          data-booking-date="${dateValue}"
+          aria-pressed="${isSelected ? "true" : "false"}"
+        >
+          <span class="booking-date-chip-day">${weekdayLabel}</span>
+          <strong class="booking-date-chip-date">${String(parsedDate.getDate()).padStart(2, "0")}</strong>
+          <span class="booking-date-chip-month">${monthLabel}</span>
+        </button>
+      `;
+    })
+    .join("");
+};
+
+const renderBarberCards = () => {
+  if (!bookingBarberGrid || !publicBarberSelect) {
+    return;
+  }
+
+  const currentValue = String(publicBarberSelect.value || "").trim();
+  const specialitiesByName = new Map(
+    getAvailableBarbers().map((barber) => [barber.nome, barber.especialidade])
+  );
+
+  bookingBarberGrid.innerHTML = [...publicBarberSelect.options]
+    .filter((option) => option.value)
+    .map((option) => {
+      const isSelected = currentValue === option.value;
+      const speciality =
+        specialitiesByName.get(option.value) || "Atendimento especializado";
+
+      return `
+        <button
+          class="booking-barber-card ${isSelected ? "is-selected" : ""}"
+          type="button"
+          data-booking-barber="${option.value}"
+          aria-pressed="${isSelected ? "true" : "false"}"
+        >
+          <strong>${option.value}</strong>
+          <span>${speciality}</span>
+        </button>
+      `;
+    })
+    .join("");
 };
 
 const renderScheduleGrid = () => {
@@ -446,6 +570,8 @@ if (bookingForm && formFeedback) {
   const bookingPhoneField = bookingForm.querySelector('input[name="telefone"]');
   const handleScheduleContextChange = () => {
     clearSelectedScheduleTime();
+    renderDateChips();
+    renderBarberCards();
     subscribeScheduleAvailability(
       String(publicBarberSelect?.value || "").trim(),
       String(bookingDateField?.value || "").trim()
@@ -468,6 +594,52 @@ if (bookingForm && formFeedback) {
 
   if (publicBarberSelect) {
     publicBarberSelect.addEventListener("change", handleScheduleContextChange);
+  }
+
+  if (bookingDateChips && bookingDateField) {
+    renderDateChips();
+    bookingDateChips.addEventListener("click", (event) => {
+      const dateButton = event.target.closest("[data-booking-date]");
+
+      if (!dateButton) {
+        return;
+      }
+
+      const selectedDate = String(
+        dateButton.getAttribute("data-booking-date") || ""
+      ).trim();
+
+      if (!selectedDate) {
+        return;
+      }
+
+      bookingDateField.value = selectedDate;
+      toggleFieldError(bookingDateField, false);
+      handleScheduleContextChange();
+    });
+  }
+
+  if (bookingBarberGrid && publicBarberSelect) {
+    renderBarberCards();
+    bookingBarberGrid.addEventListener("click", (event) => {
+      const barberButton = event.target.closest("[data-booking-barber]");
+
+      if (!barberButton) {
+        return;
+      }
+
+      const selectedBarber = String(
+        barberButton.getAttribute("data-booking-barber") || ""
+      ).trim();
+
+      if (!selectedBarber) {
+        return;
+      }
+
+      publicBarberSelect.value = selectedBarber;
+      toggleFieldError(publicBarberSelect, false);
+      handleScheduleContextChange();
+    });
   }
 
   if (scheduleGrid && bookingTimeSelect) {
@@ -580,6 +752,8 @@ if (bookingForm && formFeedback) {
         getAvailableBarbers(),
         "Escolha o profissional"
       );
+      renderDateChips();
+      renderBarberCards();
       clearSelectedScheduleTime();
       stopScheduleSubscription();
       occupiedScheduleSlots = new Set();
