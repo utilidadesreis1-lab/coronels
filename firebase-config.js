@@ -13,12 +13,12 @@ import {
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "",
-  authDomain: "",
+  apiKey: "AIzaSyCS8N1NtSFBr1LQ9vKhjOjNOvOFdYQ4KlE",
+  authDomain: "coronels-barbearia.firebaseapp.com",
   projectId: "coronels-barbearia",
-  storageBucket: "",
-  messagingSenderId: "",
-  appId: "",
+  storageBucket: "coronels-barbearia.firebasestorage.app",
+  messagingSenderId: "996086201256",
+  appId: "1:996086201256:web:7288b5d2a22a127dc33b9d",
 };
 
 const hasFirebaseConfig = Object.values(firebaseConfig).every(
