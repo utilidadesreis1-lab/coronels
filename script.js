@@ -26,6 +26,38 @@ const defaultBarbers = [
   { nome: "Profissional 3", especialidade: "Atendimento geral" },
 ];
 
+const sanitizePhoneDigits = (value) => String(value || "").replace(/\D/g, "");
+
+const getLocalPhoneDigits = (value) => {
+  const digits = sanitizePhoneDigits(value);
+
+  if (digits.startsWith("55") && digits.length === 13) {
+    return digits.slice(2);
+  }
+
+  return digits.slice(0, 11);
+};
+
+const formatPhone = (value) => {
+  const digits = getLocalPhoneDigits(value);
+
+  if (!digits) {
+    return "";
+  }
+
+  if (digits.length <= 2) {
+    return `(${digits}`;
+  }
+
+  if (digits.length <= 7) {
+    return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+  }
+
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`;
+};
+
+const hasValidPhoneDigits = (value) => getLocalPhoneDigits(value).length === 11;
+
 const buildWhatsAppUrl = (message) =>
   `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
 
@@ -206,7 +238,7 @@ const populateBarberSelect = (select, barbers, placeholder) => {
 
 const getAppointmentPayload = (formData) => ({
   nome: String(formData.get("nome") || "").trim(),
-  telefone: String(formData.get("telefone") || "").trim(),
+  telefone: formatPhone(formData.get("telefone")),
   servico: String(formData.get("servico") || "").trim(),
   barbeiro: String(formData.get("barbeiro") || "").trim(),
   data: String(formData.get("data") || "").trim(),
@@ -243,9 +275,19 @@ populateBarberSelect(
 if (bookingForm && formFeedback) {
   const requiredFields = [...bookingForm.querySelectorAll("[required]")];
   const bookingDateField = bookingForm.querySelector('input[name="data"]');
+  const bookingPhoneField = bookingForm.querySelector('input[name="telefone"]');
 
   if (bookingDateField) {
     bookingDateField.min = getTodayDateValue();
+  }
+
+  if (bookingPhoneField) {
+    bookingPhoneField.setAttribute("inputmode", "numeric");
+    bookingPhoneField.setAttribute("autocomplete", "tel");
+    bookingPhoneField.setAttribute("maxlength", "15");
+    bookingPhoneField.addEventListener("input", () => {
+      bookingPhoneField.value = formatPhone(bookingPhoneField.value);
+    });
   }
 
   requiredFields.forEach((field) => {
@@ -287,6 +329,13 @@ if (bookingForm && formFeedback) {
     if (bookingDateField && bookingDateField.value < getTodayDateValue()) {
       toggleFieldError(bookingDateField, true);
       formFeedback.textContent = "Escolha uma data igual ou posterior ao dia de hoje.";
+      formFeedback.classList.remove("is-success");
+      return;
+    }
+
+    if (bookingPhoneField && !hasValidPhoneDigits(bookingPhoneField.value)) {
+      toggleFieldError(bookingPhoneField, true);
+      formFeedback.textContent = "Informe um telefone válido com DDD.";
       formFeedback.classList.remove("is-success");
       return;
     }

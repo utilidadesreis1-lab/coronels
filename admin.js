@@ -50,6 +50,38 @@ const defaultBarbers = [
 ];
 const defaultAdminEmptyMessage = "Nenhum agendamento salvo até o momento.";
 
+const sanitizePhoneDigits = (value) => String(value || "").replace(/\D/g, "");
+
+const getLocalPhoneDigits = (value) => {
+  const digits = sanitizePhoneDigits(value);
+
+  if (digits.startsWith("55") && digits.length === 13) {
+    return digits.slice(2);
+  }
+
+  return digits;
+};
+
+const formatPhone = (value) => {
+  const digits = getLocalPhoneDigits(value).slice(0, 11);
+
+  if (!digits) {
+    return "";
+  }
+
+  if (digits.length <= 2) {
+    return `(${digits}`;
+  }
+
+  if (digits.length <= 7) {
+    return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+  }
+
+  return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7, 11)}`;
+};
+
+const hasValidPhoneDigits = (value) => getLocalPhoneDigits(value).length === 11;
+
 let appointmentsState = [];
 let unsubscribeAppointments = null;
 
@@ -180,9 +212,17 @@ const attachRequiredFieldValidation = (fields) => {
 };
 
 const buildWhatsappNumber = (phone) => {
-  const sanitizedPhone = String(phone || "").replace(/\D/g, "");
+  const sanitizedPhone = sanitizePhoneDigits(phone);
 
   if (!sanitizedPhone) {
+    return "";
+  }
+
+  if (sanitizedPhone.startsWith("55") && sanitizedPhone.length === 13) {
+    return sanitizedPhone;
+  }
+
+  if (sanitizedPhone.length !== 11) {
     return "";
   }
 
@@ -205,7 +245,7 @@ const buildAdminWhatsappUrl = (phone) => {
 
 const getAppointmentPayload = (formData, origem) => ({
   nome: String(formData.get("nome") || "").trim(),
-  telefone: String(formData.get("telefone") || "").trim(),
+  telefone: formatPhone(formData.get("telefone")),
   servico: String(formData.get("servico") || "").trim(),
   barbeiro: String(formData.get("barbeiro") || "").trim(),
   data: String(formData.get("data") || "").trim(),
@@ -626,9 +666,19 @@ if (adminCloseManualButton) {
 if (adminManualForm && adminManualFeedback) {
   const manualRequiredFields = [...adminManualForm.querySelectorAll("[required]")];
   const manualDateField = adminManualForm.querySelector('input[name="data"]');
+  const manualPhoneField = adminManualForm.querySelector('input[name="telefone"]');
 
   if (manualDateField) {
     manualDateField.min = getTodayDateValue();
+  }
+
+  if (manualPhoneField) {
+    manualPhoneField.setAttribute("inputmode", "numeric");
+    manualPhoneField.setAttribute("autocomplete", "tel");
+    manualPhoneField.setAttribute("maxlength", "15");
+    manualPhoneField.addEventListener("input", () => {
+      manualPhoneField.value = formatPhone(manualPhoneField.value);
+    });
   }
 
   attachRequiredFieldValidation(manualRequiredFields);
@@ -660,6 +710,15 @@ if (adminManualForm && adminManualFeedback) {
       setFeedbackMessage(
         adminManualFeedback,
         "Escolha uma data igual ou posterior ao dia de hoje."
+      );
+      return;
+    }
+
+    if (manualPhoneField && !hasValidPhoneDigits(manualPhoneField.value)) {
+      toggleFieldError(manualPhoneField, true);
+      setFeedbackMessage(
+        adminManualFeedback,
+        "Informe um telefone válido com DDD."
       );
       return;
     }
