@@ -234,7 +234,7 @@ const saveAppointment = (appointment) => {
 populateBarberSelect(
   publicBarberSelect,
   getAvailableBarbers(),
-  "Selecione um barbeiro"
+  "Escolha o profissional"
 );
 
 if (bookingForm && formFeedback) {
