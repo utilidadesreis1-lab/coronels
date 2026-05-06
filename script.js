@@ -39,6 +39,22 @@ const defaultBarbers = [
 ];
 const defaultScheduleHelperMessage =
   "Escolha o profissional e a data para ver os horários.";
+const barberVisualMeta = {
+  Caio: {
+    image: "assets/barbeiros/caio.png",
+    initial: "C",
+  },
+  Guerra: {
+    image: "assets/barbeiros/guerra.jfif",
+    initial: "G",
+  },
+  Felipe: {
+    initial: "F",
+  },
+  Olivan: {
+    initial: "O",
+  },
+};
 const serviceMeta = {
   Corte: {
     price: "R$ 40",
@@ -298,6 +314,17 @@ const getAvailableBarbers = () => {
   return defaultBarbers.map((barber) => ({ ...barber }));
 };
 
+const getBarberVisual = (barberName) => {
+  const safeName = String(barberName || "").trim();
+  const fallbackInitial = safeName ? safeName.charAt(0).toUpperCase() : "?";
+  const metadata = barberVisualMeta[safeName] || {};
+
+  return {
+    image: metadata.image || "",
+    initial: metadata.initial || fallbackInitial,
+  };
+};
+
 const renderServiceCards = () => {
   if (!bookingServiceGrid || !publicServiceSelect) {
     return;
@@ -464,6 +491,8 @@ const renderBarberCards = () => {
       const isSelected = currentValue === option.value;
       const speciality =
         specialitiesByName.get(option.value) || "Atendimento especializado";
+      const visual = getBarberVisual(option.value);
+      const hasImage = Boolean(visual.image);
 
       return `
         <button
@@ -472,12 +501,55 @@ const renderBarberCards = () => {
           data-booking-barber="${option.value}"
           aria-pressed="${isSelected ? "true" : "false"}"
         >
+          <div class="booking-barber-card-media">
+            <div class="booking-barber-avatar" data-booking-barber-avatar>
+              ${
+                hasImage
+                  ? `<img
+                      src="${visual.image}"
+                      alt="${option.value}"
+                      loading="lazy"
+                      data-booking-barber-image
+                    >`
+                  : ""
+              }
+              <span>${visual.initial}</span>
+            </div>
+          </div>
           <strong>${option.value}</strong>
           <span>${speciality}</span>
         </button>
       `;
     })
     .join("");
+
+  bookingBarberGrid
+    .querySelectorAll("[data-booking-barber-image]")
+    .forEach((imageElement) => {
+      const avatar = imageElement.closest("[data-booking-barber-avatar]");
+
+      if (!avatar) {
+        return;
+      }
+
+      const applyLoadedState = () => {
+        avatar.classList.add("has-photo");
+      };
+
+      if (imageElement.complete && imageElement.naturalWidth > 0) {
+        applyLoadedState();
+        return;
+      }
+
+      imageElement.addEventListener("load", applyLoadedState, { once: true });
+      imageElement.addEventListener(
+        "error",
+        () => {
+          avatar.classList.remove("has-photo");
+        },
+        { once: true }
+      );
+    });
 };
 
 const renderScheduleGrid = () => {
