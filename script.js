@@ -21,21 +21,76 @@ const whatsappLinks = document.querySelectorAll("[data-whatsapp-link]");
 const revealItems = document.querySelectorAll(".reveal");
 const bookingForm = document.querySelector("[data-booking-form]");
 const formFeedback = document.querySelector("[data-form-feedback]");
+const publicServiceSelect = document.querySelector("[data-public-service-select]");
 const publicBarberSelect = document.querySelector("[data-public-barber-select]");
 const bookingTimeSelect = document.querySelector("[data-booking-time-select]");
 const scheduleHelper = document.querySelector("[data-schedule-helper]");
 const scheduleGrid = document.querySelector("[data-schedule-grid]");
 const bookingDateChips = document.querySelector("[data-booking-date-chips]");
+const bookingServiceGrid = document.querySelector("[data-booking-service-grid]");
 const bookingBarberGrid = document.querySelector("[data-booking-barber-grid]");
 
 const barbersStorageKey = "coronelsBarbeariaBarbers";
 const defaultBarbers = [
-  { nome: "Profissional 1", especialidade: "Atendimento geral" },
-  { nome: "Profissional 2", especialidade: "Atendimento geral" },
-  { nome: "Profissional 3", especialidade: "Atendimento geral" },
+  { nome: "Guerra", especialidade: "Corte, estilo e acabamento" },
+  { nome: "Caio", especialidade: "Barba, alinhamento e detalhe" },
+  { nome: "Felipe", especialidade: "Corte moderno e finalização" },
+  { nome: "Olivan", especialidade: "Visual premium e atendimento completo" },
 ];
 const defaultScheduleHelperMessage =
   "Escolha o profissional e a data para ver os horários.";
+const serviceMeta = {
+  Corte: {
+    price: "R$ 40",
+    description: "Acabamento masculino alinhado para o dia a dia.",
+  },
+  Barba: {
+    price: "R$ 40",
+    description: "Desenho preciso com acabamento limpo e marcante.",
+  },
+  Sobrancelha: {
+    price: "R$ 20",
+    description: "Detalhe sutil para reforçar presença e expressão.",
+  },
+  Selagem: {
+    price: "R$ 100",
+    description: "Disciplina os fios com brilho e controle.",
+  },
+  Botox: {
+    price: "R$ 100",
+    description: "Redução de volume com toque mais polido.",
+  },
+  Progressiva: {
+    price: "R$ 100",
+    description: "Mais praticidade com alinhamento e menos frizz.",
+  },
+  Relaxamento: {
+    price: "R$ 50",
+    description: "Controle de textura com caimento mais natural.",
+  },
+  "Perfil do cabelo": {
+    price: "R$ 20",
+    description: "Contorno e precisão para um acabamento limpo.",
+  },
+  Luzes: {
+    price: "R$ 120",
+    description: "Iluminação estratégica para destacar o visual.",
+  },
+  Platinado: {
+    price: "R$ 150",
+    description: "Coloração de alto impacto com acabamento premium.",
+  },
+  "Corte com visagismo": {
+    price: "R$ 600",
+    description:
+      "Análise personalizada de rosto, estilo e imagem para um visual exclusivo.",
+  },
+  "Barba com visagismo": {
+    price: "R$ 100",
+    description:
+      "Desenho de barba personalizado com proporção facial e acabamento premium.",
+  },
+};
 
 const sanitizePhoneDigits = (value) => String(value || "").replace(/\D/g, "");
 
@@ -232,12 +287,50 @@ const loadBarbers = () => {
 
 const getAvailableBarbers = () => {
   const savedBarbers = loadBarbers();
+  const hasOnlyPlaceholderBarbers =
+    savedBarbers.length > 0 &&
+    savedBarbers.every((barber) => /^Profissional\s+\d+$/i.test(barber.nome));
 
-  if (savedBarbers.length) {
+  if (savedBarbers.length && !hasOnlyPlaceholderBarbers) {
     return savedBarbers;
   }
 
   return defaultBarbers.map((barber) => ({ ...barber }));
+};
+
+const renderServiceCards = () => {
+  if (!bookingServiceGrid || !publicServiceSelect) {
+    return;
+  }
+
+  const currentValue = String(publicServiceSelect.value || "").trim();
+
+  bookingServiceGrid.innerHTML = [...publicServiceSelect.options]
+    .filter((option) => option.value)
+    .map((option) => {
+      const serviceName = option.value;
+      const isSelected = currentValue === serviceName;
+      const details = serviceMeta[serviceName] || {
+        price: "",
+        description: "Atendimento premium da Coronel's Barbearia.",
+      };
+
+      return `
+        <button
+          class="booking-service-card ${isSelected ? "is-selected" : ""}"
+          type="button"
+          data-booking-service="${serviceName}"
+          aria-pressed="${isSelected ? "true" : "false"}"
+        >
+          <div class="booking-service-card-top">
+            <strong>${serviceName}</strong>
+            <span>${details.price}</span>
+          </div>
+          <p>${details.description}</p>
+        </button>
+      `;
+    })
+    .join("");
 };
 
 const populateBarberSelect = (select, barbers, placeholder) => {
@@ -563,6 +656,7 @@ populateBarberSelect(
   getAvailableBarbers(),
   "Escolha o profissional"
 );
+renderServiceCards();
 
 if (bookingForm && formFeedback) {
   const requiredFields = [...bookingForm.querySelectorAll("[required]")];
@@ -594,6 +688,13 @@ if (bookingForm && formFeedback) {
 
   if (publicBarberSelect) {
     publicBarberSelect.addEventListener("change", handleScheduleContextChange);
+  }
+
+  if (publicServiceSelect) {
+    publicServiceSelect.addEventListener("change", () => {
+      toggleFieldError(publicServiceSelect, false);
+      renderServiceCards();
+    });
   }
 
   if (bookingDateChips && bookingDateField) {
@@ -639,6 +740,29 @@ if (bookingForm && formFeedback) {
       publicBarberSelect.value = selectedBarber;
       toggleFieldError(publicBarberSelect, false);
       handleScheduleContextChange();
+    });
+  }
+
+  if (bookingServiceGrid && publicServiceSelect) {
+    renderServiceCards();
+    bookingServiceGrid.addEventListener("click", (event) => {
+      const serviceButton = event.target.closest("[data-booking-service]");
+
+      if (!serviceButton) {
+        return;
+      }
+
+      const selectedService = String(
+        serviceButton.getAttribute("data-booking-service") || ""
+      ).trim();
+
+      if (!selectedService) {
+        return;
+      }
+
+      publicServiceSelect.value = selectedService;
+      toggleFieldError(publicServiceSelect, false);
+      renderServiceCards();
     });
   }
 
@@ -752,6 +876,10 @@ if (bookingForm && formFeedback) {
         getAvailableBarbers(),
         "Escolha o profissional"
       );
+      if (publicServiceSelect) {
+        publicServiceSelect.value = "";
+        renderServiceCards();
+      }
       renderDateChips();
       renderBarberCards();
       clearSelectedScheduleTime();

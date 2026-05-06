@@ -945,6 +945,30 @@ button {
   text-transform: uppercase;
 }
 
+.booking-app-progress {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.65rem;
+  padding: 0 1.15rem 0.15rem;
+}
+
+.booking-app-progress span {
+  min-height: 42px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.55rem 0.7rem;
+  border-radius: 999px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background: rgba(255, 255, 255, 0.03);
+  color: rgba(244, 241, 235, 0.72);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  text-align: center;
+}
+
 .booking-app-body {
   display: flex;
   flex-direction: column;
@@ -1001,7 +1025,97 @@ button {
 }
 
 .field-service {
-  grid-column: 1 / -1;
+  display: none;
+}
+
+.booking-stage-caption {
+  margin: 0.95rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.booking-service-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.85rem;
+}
+
+.booking-service-card {
+  min-height: 134px;
+  padding: 1rem;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 0.85rem;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)),
+    rgba(255, 255, 255, 0.02);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease;
+}
+
+.booking-service-card:hover,
+.booking-service-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.3);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.16);
+}
+
+.booking-service-card-top {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0.9rem;
+}
+
+.booking-service-card-top strong {
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1.3;
+}
+
+.booking-service-card-top span {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0.35rem 0.7rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  color: var(--text);
+  font-size: 0.78rem;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.booking-service-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.88rem;
+  line-height: 1.6;
+}
+
+.booking-service-card.is-selected {
+  border-color: rgba(255, 255, 255, 0.36);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.16), rgba(255, 255, 255, 0.06)),
+    rgba(255, 255, 255, 0.07);
+  box-shadow: 0 18px 30px rgba(255, 255, 255, 0.1);
+}
+
+.booking-service-card.is-selected strong,
+.booking-service-card.is-selected span,
+.booking-service-card.is-selected p {
+  color: #101010;
 }
 
 .booking-date-chips {
@@ -1088,14 +1202,19 @@ button {
   margin-top: 1rem;
 }
 
+.booking-date-input {
+  min-height: 62px;
+  font-weight: 700;
+}
+
 .booking-barber-grid {
   display: grid;
-  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.85rem;
 }
 
 .booking-barber-card {
-  min-height: 108px;
+  min-height: 118px;
   padding: 0.95rem;
   display: flex;
   flex-direction: column;
@@ -1164,10 +1283,19 @@ button {
   color: var(--muted);
   font-size: 0.9rem;
   line-height: 1.7;
+  padding: 0.85rem 1rem;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.025);
 }
 
 .schedule-grid {
   gap: 0.9rem;
+  padding: 0.4rem;
+  border-radius: 24px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0.015)),
+    rgba(255, 255, 255, 0.015);
 }
 
 .schedule-slot {
@@ -1185,6 +1313,7 @@ button {
   letter-spacing: 0.14em;
 }
 
+.booking-stage-service .field.is-invalid ~ .booking-service-grid,
 .booking-stage-barber .field.is-invalid ~ .booking-barber-grid,
 .field-schedule.is-invalid ~ .schedule-grid,
 .booking-stage-date .field.is-invalid .booking-date-input {
@@ -1192,6 +1321,7 @@ button {
   box-shadow: 0 0 0 4px rgba(214, 103, 103, 0.1);
 }
 
+.booking-stage-service .field.is-invalid ~ .booking-service-grid,
 .booking-stage-barber .field.is-invalid ~ .booking-barber-grid,
 .field-schedule.is-invalid ~ .schedule-grid {
   padding: 0.35rem;
@@ -2073,6 +2203,11 @@ button {
     padding: 1rem 1rem 0.25rem;
   }
 
+  .booking-app-progress {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    padding: 0 1rem 0.15rem;
+  }
+
   .booking-app-head h3 {
     font-size: 2rem;
   }
@@ -2086,6 +2221,7 @@ button {
     grid-auto-columns: minmax(88px, 1fr);
   }
 
+  .booking-service-grid,
   .booking-barber-grid {
     grid-template-columns: 1fr;
   }

@@ -324,18 +324,18 @@
             <p class="eyebrow">Agendamento</p>
             <h2>Agende seu horário</h2>
             <p>
-              Escolha o serviço, selecione o profissional e envie sua solicitação
-              com todos os dados prontos pelo WhatsApp.
+              Monte seu atendimento em poucos toques, visualize os horários livres
+              em tempo real e confirme tudo com a mensagem pronta no WhatsApp.
             </p>
 
             <div class="booking-points">
               <div>
-                <strong>Atendimento sem complicação</strong>
-                <span>Preencha os dados e confirme em poucos segundos.</span>
+                <strong>Fluxo simples e rápido</strong>
+                <span>Preencha seus dados, escolha o serviço e reserve sem complicação.</span>
               </div>
               <div>
-                <strong>Contato direto</strong>
-                <span>A mensagem chega pronta para agilizar seu atendimento.</span>
+                <strong>Horários em tempo real</strong>
+                <span>Você já enxerga os horários disponíveis antes de confirmar.</span>
               </div>
             </div>
           </div>
@@ -345,9 +345,17 @@
               <div class="booking-app-head">
                 <div>
                   <p class="booking-app-kicker">Agendamento online</p>
-                  <h3>Escolha serviço, profissional e horário</h3>
+                  <h3>Seu horário com experiência de app</h3>
                 </div>
                 <span class="booking-app-badge">Tempo real</span>
+              </div>
+
+              <div class="booking-app-progress" aria-hidden="true">
+                <span>Dados</span>
+                <span>Serviço</span>
+                <span>Profissional</span>
+                <span>Data</span>
+                <span>Horário</span>
               </div>
 
               <div class="booking-app-body">
@@ -356,7 +364,7 @@
                     <span class="booking-stage-step">01</span>
                     <div>
                       <h4>Seus dados</h4>
-                      <p>Informe rapidamente quem vai ser atendido.</p>
+                      <p>Comece com seus dados para deixar a reserva pronta.</p>
                     </div>
                   </div>
 
@@ -370,10 +378,26 @@
                       <span>Telefone</span>
                       <input type="tel" name="telefone" placeholder="(63) 99124-0071" required>
                     </label>
+                  </div>
+                </section>
 
-                    <label class="field field-service">
+                <section class="booking-stage booking-stage-service">
+                  <div class="booking-stage-head">
+                    <span class="booking-stage-step">02</span>
+                    <div>
+                      <h4>Escolha o serviço</h4>
+                      <p>Selecione o atendimento desejado para continuar.</p>
+                    </div>
+                  </div>
+
+                  <label class="field field-service booking-native-field">
                       <span>Serviço</span>
-                      <select name="servico" required>
+                      <select
+                        class="booking-native-control"
+                        name="servico"
+                        data-public-service-select
+                        required
+                      >
                         <option value="" selected disabled>Selecione um serviço</option>
                         <option value="Corte">Corte</option>
                         <option value="Barba">Barba</option>
@@ -388,25 +412,10 @@
                         <option value="Corte com visagismo">Corte com visagismo</option>
                         <option value="Barba com visagismo">Barba com visagismo</option>
                       </select>
-                    </label>
-                  </div>
-                </section>
-
-                <section class="booking-stage booking-stage-date">
-                  <div class="booking-stage-head">
-                    <span class="booking-stage-step">02</span>
-                    <div>
-                      <h4>Escolha a data</h4>
-                      <p>Toque em um dia para continuar com o agendamento.</p>
-                    </div>
-                  </div>
-
-                  <div class="booking-date-chips" data-booking-date-chips></div>
-
-                  <label class="field booking-date-field">
-                    <span>Outra data</span>
-                    <input class="booking-date-input" type="date" name="data" required>
                   </label>
+
+                  <div class="booking-service-grid" data-booking-service-grid></div>
+                  <p class="booking-stage-caption">Toque em um card para escolher seu serviço.</p>
                 </section>
 
                 <section class="booking-stage booking-stage-barber">
@@ -414,7 +423,7 @@
                     <span class="booking-stage-step">03</span>
                     <div>
                       <h4>Escolha o profissional</h4>
-                      <p>Selecione o barbeiro que vai realizar o atendimento.</p>
+                      <p>Veja os barbeiros em destaque e toque para selecionar.</p>
                     </div>
                   </div>
 
@@ -433,12 +442,29 @@
                   <div class="booking-barber-grid" data-booking-barber-grid></div>
                 </section>
 
-                <section class="booking-stage booking-stage-time">
+                <section class="booking-stage booking-stage-date">
                   <div class="booking-stage-head">
                     <span class="booking-stage-step">04</span>
                     <div>
+                      <h4>Escolha a data</h4>
+                      <p>Escolha um dia disponível ou use o calendário completo.</p>
+                    </div>
+                  </div>
+
+                  <div class="booking-date-chips" data-booking-date-chips></div>
+
+                  <label class="field booking-date-field">
+                    <span>Outra data</span>
+                    <input class="booking-date-input" type="date" name="data" required>
+                  </label>
+                </section>
+
+                <section class="booking-stage booking-stage-time">
+                  <div class="booking-stage-head">
+                    <span class="booking-stage-step">05</span>
+                    <div>
                       <h4>Escolha o horário</h4>
-                      <p>Horários ocupados ficam bloqueados automaticamente.</p>
+                      <p>Horários ocupados ficam bloqueados e a grade atualiza em tempo real.</p>
                     </div>
                   </div>
 
