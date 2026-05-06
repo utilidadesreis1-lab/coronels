@@ -1,4 +1,4 @@
-import {
+﻿import {
   addDoc,
   getDocs,
   getAppointmentsCollection,
@@ -33,7 +33,7 @@ const defaultBarbers = [
   { nome: "Profissional 3", especialidade: "Atendimento geral" },
 ];
 const defaultScheduleHelperMessage =
-  "Escolha o profissional e a data para ver os horÃ¡rios.";
+  "Escolha o profissional e a data para ver os horários.";
 
 const sanitizePhoneDigits = (value) => String(value || "").replace(/\D/g, "");
 
@@ -601,3 +601,4 @@ if (bookingForm && formFeedback) {
     }
   });
 }
+

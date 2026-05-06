@@ -1,4 +1,4 @@
-import {
+﻿import {
   addDoc,
   deleteDoc,
   doc,
@@ -955,3 +955,4 @@ renderBarbers();
 if (isAdminLoggedIn()) {
   subscribeAppointments();
 }
+
