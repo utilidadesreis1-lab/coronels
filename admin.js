@@ -39,7 +39,7 @@ const barbersStorageKey = "coronelsBarbeariaBarbers";
 const adminAuthStorageKey = "coronelsBarbeariaAdminLoggedIn";
 const adminCredentials = {
   email: "admin@coronels.com",
-  password: "123456",
+  password: "Coronels@2026",
 };
 const adminWhatsappMessage =
   "Olá, aqui é da Coronel's Barbearia. Estamos entrando em contato sobre seu agendamento.";
