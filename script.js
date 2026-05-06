@@ -32,6 +32,9 @@ const scheduleGrid = document.querySelector("[data-schedule-grid]");
 const bookingDateChips = document.querySelector("[data-booking-date-chips]");
 const bookingServiceGrid = document.querySelector("[data-booking-service-grid]");
 const bookingBarberGrid = document.querySelector("[data-booking-barber-grid]");
+const bookingServiceToggle = document.querySelector("[data-booking-service-toggle]");
+const bookingServicePanel = document.querySelector("[data-booking-service-panel]");
+const bookingServiceSummary = document.querySelector("[data-booking-service-summary]");
 
 const defaultBarbers = [
   { id: "guerra", nome: "Guerra", fotoUrl: "assets/barbeiros/guerra.jfif", ativo: true },
@@ -437,6 +440,32 @@ const renderServiceCards = () => {
     .join("");
 };
 
+const setServiceAccordionState = (isOpen) => {
+  if (!bookingServiceToggle || !bookingServicePanel) {
+    return;
+  }
+
+  bookingServiceToggle.setAttribute("aria-expanded", String(isOpen));
+  bookingServicePanel.hidden = !isOpen;
+};
+
+const updateServiceSummary = () => {
+  if (!bookingServiceSummary || !publicServiceSelect) {
+    return;
+  }
+
+  const selectedService = String(publicServiceSelect.value || "").trim();
+
+  if (!selectedService) {
+    bookingServiceSummary.textContent = "Toque para abrir a lista de serviços.";
+    return;
+  }
+
+  const details = serviceMeta[selectedService];
+  const priceLabel = details?.price ? ` — ${details.price}` : "";
+  bookingServiceSummary.textContent = `Serviço escolhido: ${selectedService}${priceLabel}`;
+};
+
 const populateBarberSelect = (select, barbers, placeholder) => {
   if (!select) {
     return;
@@ -806,6 +835,8 @@ populateBarberSelect(
 );
 renderServiceCards();
 subscribePublicBarbers();
+updateServiceSummary();
+setServiceAccordionState(false);
 
 if (bookingForm && formFeedback) {
   const requiredFields = [...bookingForm.querySelectorAll("[required]")];
@@ -843,6 +874,14 @@ if (bookingForm && formFeedback) {
     publicServiceSelect.addEventListener("change", () => {
       toggleFieldError(publicServiceSelect, false);
       renderServiceCards();
+      updateServiceSummary();
+    });
+  }
+
+  if (bookingServiceToggle) {
+    bookingServiceToggle.addEventListener("click", () => {
+      const isExpanded = bookingServiceToggle.getAttribute("aria-expanded") === "true";
+      setServiceAccordionState(!isExpanded);
     });
   }
 
@@ -912,6 +951,8 @@ if (bookingForm && formFeedback) {
       publicServiceSelect.value = selectedService;
       toggleFieldError(publicServiceSelect, false);
       renderServiceCards();
+      updateServiceSummary();
+      setServiceAccordionState(false);
     });
   }
 
@@ -1028,6 +1069,7 @@ if (bookingForm && formFeedback) {
       if (publicServiceSelect) {
         publicServiceSelect.value = "";
         renderServiceCards();
+        updateServiceSummary();
       }
       renderDateChips();
       renderBarberCards();

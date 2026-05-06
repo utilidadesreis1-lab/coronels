@@ -414,8 +414,28 @@
                       </select>
                   </label>
 
-                  <div class="booking-service-grid" data-booking-service-grid></div>
-                  <p class="booking-stage-caption">Toque em um card para escolher seu serviço.</p>
+                  <button
+                    class="booking-service-toggle"
+                    type="button"
+                    data-booking-service-toggle
+                    aria-expanded="false"
+                    aria-controls="booking-service-panel"
+                  >
+                    <span class="booking-service-toggle-label">Escolha o serviço</span>
+                    <span class="booking-service-toggle-summary" data-booking-service-summary>
+                      Toque para abrir a lista de serviços.
+                    </span>
+                  </button>
+
+                  <div
+                    class="booking-service-panel"
+                    id="booking-service-panel"
+                    data-booking-service-panel
+                    hidden
+                  >
+                    <div class="booking-service-grid" data-booking-service-grid></div>
+                    <p class="booking-stage-caption">Toque em um card para escolher seu serviço.</p>
+                  </div>
                 </section>
 
                 <section class="booking-stage booking-stage-barber">
