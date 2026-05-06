@@ -3,6 +3,7 @@ import {
   getDocs,
   getAppointmentsCollection,
   hasFirebaseConfig,
+  onSnapshot,
   query,
   serverTimestamp,
   where,
@@ -21,6 +22,9 @@ const revealItems = document.querySelectorAll(".reveal");
 const bookingForm = document.querySelector("[data-booking-form]");
 const formFeedback = document.querySelector("[data-form-feedback]");
 const publicBarberSelect = document.querySelector("[data-public-barber-select]");
+const bookingTimeSelect = document.querySelector("[data-booking-time-select]");
+const scheduleHelper = document.querySelector("[data-schedule-helper]");
+const scheduleGrid = document.querySelector("[data-schedule-grid]");
 
 const barbersStorageKey = "coronelsBarbeariaBarbers";
 const defaultBarbers = [
@@ -28,6 +32,8 @@ const defaultBarbers = [
   { nome: "Profissional 2", especialidade: "Atendimento geral" },
   { nome: "Profissional 3", especialidade: "Atendimento geral" },
 ];
+const defaultScheduleHelperMessage =
+  "Escolha o profissional e a data para ver os horÃ¡rios.";
 
 const sanitizePhoneDigits = (value) => String(value || "").replace(/\D/g, "");
 
@@ -60,6 +66,9 @@ const formatPhone = (value) => {
 };
 
 const hasValidPhoneDigits = (value) => getLocalPhoneDigits(value).length === 11;
+
+let scheduleUnsubscribe = null;
+let occupiedScheduleSlots = new Set();
 
 const buildWhatsAppUrl = (message) =>
   `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
@@ -239,6 +248,138 @@ const populateBarberSelect = (select, barbers, placeholder) => {
   select.value = "";
 };
 
+const getScheduleSlots = () =>
+  bookingTimeSelect
+    ? [...bookingTimeSelect.options]
+        .map((option) => option.value)
+        .filter(Boolean)
+    : [];
+
+const setScheduleHelperMessage = (message) => {
+  if (!scheduleHelper) {
+    return;
+  }
+
+  scheduleHelper.textContent = message;
+};
+
+const renderScheduleGrid = () => {
+  if (!scheduleGrid || !bookingTimeSelect) {
+    return;
+  }
+
+  const selectedTime = bookingTimeSelect.value;
+  const slots = getScheduleSlots();
+  const hasContext =
+    Boolean(publicBarberSelect?.value.trim()) && Boolean(bookingForm?.querySelector('input[name="data"]')?.value.trim());
+
+  if (!hasContext) {
+    scheduleGrid.innerHTML = "";
+    setScheduleHelperMessage(defaultScheduleHelperMessage);
+    return;
+  }
+
+  scheduleGrid.innerHTML = slots
+    .map((time) => {
+      const isOccupied = occupiedScheduleSlots.has(time);
+      const isSelected = selectedTime === time && !isOccupied;
+      const statusLabel = isOccupied
+        ? "Ocupado"
+        : isSelected
+          ? "Selecionado"
+          : "Livre";
+
+      return `
+        <button
+          class="schedule-slot ${isOccupied ? "is-occupied" : "is-available"} ${isSelected ? "is-selected" : ""}"
+          type="button"
+          data-schedule-time="${time}"
+          ${isOccupied ? "disabled" : ""}
+          aria-pressed="${isSelected ? "true" : "false"}"
+        >
+          <strong>${time}</strong>
+          <span>${statusLabel}</span>
+        </button>
+      `;
+    })
+    .join("");
+
+  setScheduleHelperMessage(
+    occupiedScheduleSlots.size
+      ? "Horários livres e ocupados atualizados em tempo real."
+      : "Todos os horários mostrados abaixo estão livres no momento."
+  );
+};
+
+const stopScheduleSubscription = () => {
+  if (typeof scheduleUnsubscribe === "function") {
+    scheduleUnsubscribe();
+    scheduleUnsubscribe = null;
+  }
+};
+
+const clearSelectedScheduleTime = () => {
+  if (!bookingTimeSelect) {
+    return;
+  }
+
+  bookingTimeSelect.value = "";
+  toggleFieldError(bookingTimeSelect, false);
+};
+
+const subscribeScheduleAvailability = (barbeiro, data) => {
+  stopScheduleSubscription();
+  occupiedScheduleSlots = new Set();
+
+  if (!barbeiro || !data) {
+    renderScheduleGrid();
+    return;
+  }
+
+  if (!hasFirebaseConfig) {
+    renderScheduleGrid();
+    setScheduleHelperMessage("Os horários online não estão disponíveis agora.");
+    return;
+  }
+
+  const scheduleQuery = query(
+    getAppointmentsCollection(),
+    where("barbeiro", "==", barbeiro),
+    where("data", "==", data)
+  );
+
+  scheduleUnsubscribe = onSnapshot(
+    scheduleQuery,
+    (snapshot) => {
+      occupiedScheduleSlots = new Set(
+        snapshot.docs
+          .map((appointmentDoc) => appointmentDoc.data())
+          .filter(
+            (appointment) =>
+              String(appointment.status || "pendente").trim().toLowerCase() !==
+              "cancelado"
+          )
+          .map((appointment) => String(appointment.horario || "").trim())
+          .filter(Boolean)
+      );
+
+      if (bookingTimeSelect?.value && occupiedScheduleSlots.has(bookingTimeSelect.value)) {
+        clearSelectedScheduleTime();
+        formFeedback.textContent =
+          "O horário selecionado ficou indisponível. Escolha outro horário.";
+        formFeedback.classList.remove("is-success");
+      }
+
+      renderScheduleGrid();
+    },
+    () => {
+      occupiedScheduleSlots = new Set();
+      renderScheduleGrid();
+      setScheduleHelperMessage("Não foi possível atualizar os horários agora.");
+    }
+  );
+};
+
 const getAppointmentPayload = (formData) => ({
   nome: String(formData.get("nome") || "").trim(),
   telefone: formatPhone(formData.get("telefone")),
@@ -303,9 +444,17 @@ if (bookingForm && formFeedback) {
   const requiredFields = [...bookingForm.querySelectorAll("[required]")];
   const bookingDateField = bookingForm.querySelector('input[name="data"]');
   const bookingPhoneField = bookingForm.querySelector('input[name="telefone"]');
+  const handleScheduleContextChange = () => {
+    clearSelectedScheduleTime();
+    subscribeScheduleAvailability(
+      String(publicBarberSelect?.value || "").trim(),
+      String(bookingDateField?.value || "").trim()
+    );
+  };
 
   if (bookingDateField) {
     bookingDateField.min = getTodayDateValue();
+    bookingDateField.addEventListener("change", handleScheduleContextChange);
   }
 
   if (bookingPhoneField) {
@@ -314,6 +463,35 @@ if (bookingForm && formFeedback) {
     bookingPhoneField.setAttribute("maxlength", "15");
     bookingPhoneField.addEventListener("input", () => {
       bookingPhoneField.value = formatPhone(bookingPhoneField.value);
+    });
+  }
+
+  if (publicBarberSelect) {
+    publicBarberSelect.addEventListener("change", handleScheduleContextChange);
+  }
+
+  if (scheduleGrid && bookingTimeSelect) {
+    renderScheduleGrid();
+    scheduleGrid.addEventListener("click", (event) => {
+      const slotButton = event.target.closest("[data-schedule-time]");
+
+      if (!slotButton || slotButton.disabled) {
+        return;
+      }
+
+      const selectedTime = String(
+        slotButton.getAttribute("data-schedule-time") || ""
+      ).trim();
+
+      if (!selectedTime) {
+        return;
+      }
+
+      bookingTimeSelect.value = selectedTime;
+      toggleFieldError(bookingTimeSelect, false);
+      formFeedback.textContent = "";
+      formFeedback.classList.remove("is-success");
+      renderScheduleGrid();
     });
   }
 
@@ -402,6 +580,10 @@ if (bookingForm && formFeedback) {
         getAvailableBarbers(),
         "Escolha o profissional"
       );
+      clearSelectedScheduleTime();
+      stopScheduleSubscription();
+      occupiedScheduleSlots = new Set();
+      renderScheduleGrid();
     } catch (error) {
       formFeedback.textContent =
         error instanceof Error && error.message === "slot-conflict"

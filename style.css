@@ -664,6 +664,10 @@ button {
   gap: 0.65rem;
 }
 
+.field-schedule {
+  grid-column: 1 / -1;
+}
+
 .field span {
   font-size: 0.92rem;
   font-weight: 700;
@@ -703,6 +707,115 @@ button {
 
 .field select option[value=""] {
   color: rgba(183, 176, 167, 0.82);
+}
+
+.booking-time-select {
+  position: absolute;
+  pointer-events: none;
+  opacity: 0;
+  width: 1px;
+  height: 1px;
+  margin: 0;
+  padding: 0;
+}
+
+.schedule-helper {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+  line-height: 1.7;
+}
+
+.schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.85rem;
+  margin-top: 0.25rem;
+}
+
+.schedule-slot {
+  min-height: 68px;
+  padding: 0.9rem 0.75rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.28rem;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.05), rgba(255, 255, 255, 0.02)),
+    rgba(255, 255, 255, 0.02);
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease,
+    color 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.schedule-slot:hover,
+.schedule-slot:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(255, 255, 255, 0.34);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.16);
+}
+
+.schedule-slot strong {
+  font-size: 1rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.schedule-slot span {
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: rgba(244, 241, 235, 0.64);
+}
+
+.schedule-slot.is-available {
+  border-color: rgba(255, 255, 255, 0.14);
+}
+
+.schedule-slot.is-selected {
+  border-color: rgba(255, 255, 255, 0.42);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.13), rgba(255, 255, 255, 0.05)),
+    rgba(255, 255, 255, 0.06);
+  box-shadow: 0 16px 30px rgba(255, 255, 255, 0.1);
+}
+
+.schedule-slot.is-selected span {
+  color: rgba(16, 16, 16, 0.82);
+}
+
+.schedule-slot.is-selected strong {
+  color: #101010;
+}
+
+.schedule-slot.is-occupied {
+  cursor: not-allowed;
+  opacity: 0.58;
+  border-color: rgba(214, 103, 103, 0.2);
+  background:
+    linear-gradient(180deg, rgba(214, 103, 103, 0.08), rgba(255, 255, 255, 0.02)),
+    rgba(255, 255, 255, 0.015);
+}
+
+.schedule-slot.is-occupied:hover,
+.schedule-slot.is-occupied:focus-visible {
+  transform: none;
+  box-shadow: none;
+  border-color: rgba(214, 103, 103, 0.2);
+}
+
+.schedule-slot.is-occupied span {
+  color: #e2a0a0;
 }
 
 .field input:focus,
@@ -1557,6 +1670,10 @@ button {
   .admin-toolbar {
     flex-direction: column;
     align-items: stretch;
+  }
+
+  .schedule-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .admin-login {
