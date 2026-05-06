@@ -1,11 +1,14 @@
 ﻿import {
   addDoc,
+  doc,
+  getBarbersCollection,
   getDocs,
   getAppointmentsCollection,
   hasFirebaseConfig,
   onSnapshot,
   query,
   serverTimestamp,
+  setDoc,
   where,
 } from "./firebase-config.js";
 
@@ -30,31 +33,14 @@ const bookingDateChips = document.querySelector("[data-booking-date-chips]");
 const bookingServiceGrid = document.querySelector("[data-booking-service-grid]");
 const bookingBarberGrid = document.querySelector("[data-booking-barber-grid]");
 
-const barbersStorageKey = "coronelsBarbeariaBarbers";
 const defaultBarbers = [
-  { nome: "Guerra", especialidade: "Corte, estilo e acabamento" },
-  { nome: "Caio", especialidade: "Barba, alinhamento e detalhe" },
-  { nome: "Felipe", especialidade: "Corte moderno e finalização" },
-  { nome: "Olivan", especialidade: "Visual premium e atendimento completo" },
+  { id: "guerra", nome: "Guerra", fotoUrl: "assets/barbeiros/guerra.jfif", ativo: true },
+  { id: "caio", nome: "Caio", fotoUrl: "assets/barbeiros/caio.png", ativo: true },
+  { id: "felipe", nome: "Felipe", fotoUrl: "", ativo: true },
+  { id: "olivan", nome: "Olivan", fotoUrl: "", ativo: true },
 ];
 const defaultScheduleHelperMessage =
   "Escolha o profissional e a data para ver os horários.";
-const barberVisualMeta = {
-  Caio: {
-    image: "assets/barbeiros/caio.png",
-    initial: "C",
-  },
-  Guerra: {
-    image: "assets/barbeiros/guerra.jfif",
-    initial: "G",
-  },
-  Felipe: {
-    initial: "F",
-  },
-  Olivan: {
-    initial: "O",
-  },
-};
 const serviceMeta = {
   Corte: {
     price: "R$ 40",
@@ -141,7 +127,10 @@ const formatPhone = (value) => {
 const hasValidPhoneDigits = (value) => getLocalPhoneDigits(value).length === 11;
 
 let scheduleUnsubscribe = null;
+let barbersUnsubscribe = null;
 let occupiedScheduleSlots = new Set();
+let publicBarbersState = defaultBarbers.map((barber) => ({ ...barber }));
+let isSeedingDefaultBarbers = false;
 const shortWeekdayFormatter = new Intl.DateTimeFormat("pt-BR", { weekday: "short" });
 const shortMonthFormatter = new Intl.DateTimeFormat("pt-BR", { month: "short" });
 
@@ -262,66 +251,154 @@ const toDateValue = (date) => {
 };
 
 const normalizeBarber = (barber) => {
-  if (typeof barber === "string") {
-    const barberName = barber.trim();
-
-    return barberName
-      ? { nome: barberName, especialidade: "Atendimento geral" }
-      : null;
-  }
-
   if (!barber || typeof barber !== "object") {
     return null;
   }
 
   const nome = String(barber.nome || "").trim();
-  const especialidade = String(
-    barber.especialidade || "Atendimento geral"
-  ).trim();
+  const fotoUrl = String(barber.fotoUrl || "").trim();
+  const ativo = barber.ativo !== false;
+  const id = String(barber.id || "").trim();
 
   if (!nome) {
     return null;
   }
 
   return {
+    id,
     nome,
-    especialidade: especialidade || "Atendimento geral",
+    fotoUrl,
+    ativo,
   };
 };
 
-const loadBarbers = () => {
+const sortBarbers = (barbers) => {
+  const defaultOrder = new Map(defaultBarbers.map((barber, index) => [barber.nome, index]));
+
+  return [...barbers].sort((firstBarber, secondBarber) => {
+    const firstOrder = defaultOrder.get(firstBarber.nome);
+    const secondOrder = defaultOrder.get(secondBarber.nome);
+
+    if (typeof firstOrder === "number" && typeof secondOrder === "number") {
+      return firstOrder - secondOrder;
+    }
+
+    if (typeof firstOrder === "number") {
+      return -1;
+    }
+
+    if (typeof secondOrder === "number") {
+      return 1;
+    }
+
+    return firstBarber.nome.localeCompare(secondBarber.nome, "pt-BR", {
+      sensitivity: "base",
+    });
+  });
+};
+
+const getAvailableBarbers = () =>
+  publicBarbersState.length
+    ? sortBarbers(publicBarbersState)
+    : defaultBarbers.map((barber) => ({ ...barber }));
+
+const seedDefaultBarbers = async () => {
+  if (!hasFirebaseConfig || isSeedingDefaultBarbers) {
+    return;
+  }
+
+  isSeedingDefaultBarbers = true;
+
   try {
-    const savedBarbers = JSON.parse(localStorage.getItem(barbersStorageKey) || "[]");
-
-    return Array.isArray(savedBarbers)
-      ? savedBarbers.map(normalizeBarber).filter(Boolean)
-      : [];
-  } catch (error) {
-    return [];
+    await Promise.all(
+      defaultBarbers.map((barber) =>
+        setDoc(doc(getBarbersCollection(), barber.id), {
+          nome: barber.nome,
+          fotoUrl: barber.fotoUrl,
+          ativo: true,
+          criadoEm: serverTimestamp(),
+        })
+      )
+    );
+  } finally {
+    isSeedingDefaultBarbers = false;
   }
 };
 
-const getAvailableBarbers = () => {
-  const savedBarbers = loadBarbers();
-  const hasOnlyPlaceholderBarbers =
-    savedBarbers.length > 0 &&
-    savedBarbers.every((barber) => /^Profissional\s+\d+$/i.test(barber.nome));
-
-  if (savedBarbers.length && !hasOnlyPlaceholderBarbers) {
-    return savedBarbers;
+const stopBarbersSubscription = () => {
+  if (typeof barbersUnsubscribe === "function") {
+    barbersUnsubscribe();
+    barbersUnsubscribe = null;
   }
-
-  return defaultBarbers.map((barber) => ({ ...barber }));
 };
 
-const getBarberVisual = (barberName) => {
-  const safeName = String(barberName || "").trim();
+const syncPublicBarbers = () => {
+  const bookingDateField = bookingForm?.querySelector('input[name="data"]');
+  const previousBarber = String(publicBarberSelect?.value || "").trim();
+
+  populateBarberSelect(
+    publicBarberSelect,
+    getAvailableBarbers(),
+    "Escolha o profissional"
+  );
+  renderBarberCards();
+
+  const currentBarber = String(publicBarberSelect?.value || "").trim();
+
+  if (previousBarber !== currentBarber) {
+    clearSelectedScheduleTime();
+  }
+
+  subscribeScheduleAvailability(
+    currentBarber,
+    String(bookingDateField?.value || "").trim()
+  );
+};
+
+const subscribePublicBarbers = () => {
+  stopBarbersSubscription();
+
+  if (!hasFirebaseConfig) {
+    publicBarbersState = defaultBarbers.map((barber) => ({ ...barber }));
+    syncPublicBarbers();
+    return;
+  }
+
+  barbersUnsubscribe = onSnapshot(
+    getBarbersCollection(),
+    (snapshot) => {
+      if (snapshot.empty) {
+        publicBarbersState = defaultBarbers.map((barber) => ({ ...barber }));
+        syncPublicBarbers();
+        seedDefaultBarbers();
+        return;
+      }
+
+      publicBarbersState = snapshot.docs
+        .map((snapshotDoc) =>
+          normalizeBarber({
+            id: snapshotDoc.id,
+            ...snapshotDoc.data(),
+          })
+        )
+        .filter((barber) => barber && barber.ativo);
+
+      syncPublicBarbers();
+    },
+    () => {
+      publicBarbersState = defaultBarbers.map((barber) => ({ ...barber }));
+      syncPublicBarbers();
+    }
+  );
+};
+
+const getBarberVisual = (barber) => {
+  const safeName = String(barber?.nome || "").trim();
   const fallbackInitial = safeName ? safeName.charAt(0).toUpperCase() : "?";
-  const metadata = barberVisualMeta[safeName] || {};
 
   return {
-    image: metadata.image || "",
-    initial: metadata.initial || fallbackInitial,
+    image: String(barber?.fotoUrl || "").trim(),
+    initial: fallbackInitial,
   };
 };
 
@@ -481,17 +558,16 @@ const renderBarberCards = () => {
   }
 
   const currentValue = String(publicBarberSelect.value || "").trim();
-  const specialitiesByName = new Map(
-    getAvailableBarbers().map((barber) => [barber.nome, barber.especialidade])
+  const barbersByName = new Map(
+    getAvailableBarbers().map((barber) => [barber.nome, barber])
   );
 
   bookingBarberGrid.innerHTML = [...publicBarberSelect.options]
     .filter((option) => option.value)
     .map((option) => {
       const isSelected = currentValue === option.value;
-      const speciality =
-        specialitiesByName.get(option.value) || "Atendimento especializado";
-      const visual = getBarberVisual(option.value);
+      const barber = barbersByName.get(option.value) || { nome: option.value, fotoUrl: "" };
+      const visual = getBarberVisual(barber);
       const hasImage = Boolean(visual.image);
 
       return `
@@ -517,7 +593,7 @@ const renderBarberCards = () => {
             </div>
           </div>
           <strong>${option.value}</strong>
-          <span>${speciality}</span>
+          <span>Barbeiro profissional</span>
         </button>
       `;
     })
@@ -729,6 +805,7 @@ populateBarberSelect(
   "Escolha o profissional"
 );
 renderServiceCards();
+subscribePublicBarbers();
 
 if (bookingForm && formFeedback) {
   const requiredFields = [...bookingForm.querySelectorAll("[required]")];

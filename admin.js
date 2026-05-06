@@ -2,6 +2,7 @@
   addDoc,
   deleteDoc,
   doc,
+  getBarbersCollection,
   getDocs,
   getAppointmentsCollection,
   hasFirebaseConfig,
@@ -9,6 +10,7 @@
   orderBy,
   query,
   serverTimestamp,
+  setDoc,
   updateDoc,
   where,
 } from "./firebase-config.js";
@@ -37,7 +39,6 @@ const adminList = document.querySelector("[data-admin-list]");
 const adminEmpty = document.querySelector("[data-admin-empty]");
 const adminLogoutButton = document.querySelector("[data-admin-logout]");
 
-const barbersStorageKey = "coronelsBarbeariaBarbers";
 const adminAuthStorageKey = "coronelsBarbeariaAdminLoggedIn";
 const adminCredentials = {
   email: "admin@coronels.com",
@@ -46,9 +47,10 @@ const adminCredentials = {
 const adminWhatsappMessage =
   "Olá, aqui é da Coronel's Barbearia. Estamos entrando em contato sobre seu agendamento.";
 const defaultBarbers = [
-  { nome: "Profissional 1", especialidade: "Atendimento geral" },
-  { nome: "Profissional 2", especialidade: "Atendimento geral" },
-  { nome: "Profissional 3", especialidade: "Atendimento geral" },
+  { id: "guerra", nome: "Guerra", fotoUrl: "assets/barbeiros/guerra.jfif", ativo: true },
+  { id: "caio", nome: "Caio", fotoUrl: "assets/barbeiros/caio.png", ativo: true },
+  { id: "felipe", nome: "Felipe", fotoUrl: "", ativo: true },
+  { id: "olivan", nome: "Olivan", fotoUrl: "", ativo: true },
 ];
 const defaultAdminEmptyMessage = "Nenhum agendamento salvo até o momento.";
 
@@ -86,60 +88,66 @@ const hasValidPhoneDigits = (value) => getLocalPhoneDigits(value).length === 11;
 
 let appointmentsState = [];
 let unsubscribeAppointments = null;
+let barbersState = defaultBarbers.map((barber) => ({ ...barber }));
+let unsubscribeBarbers = null;
+let isSeedingDefaultBarbers = false;
 let lastAppointmentConflict = false;
 
 const normalizeBarber = (barber) => {
-  if (typeof barber === "string") {
-    const barberName = barber.trim();
-
-    return barberName
-      ? { nome: barberName, especialidade: "Atendimento geral" }
-      : null;
-  }
-
   if (!barber || typeof barber !== "object") {
     return null;
   }
 
   const nome = String(barber.nome || "").trim();
-  const especialidade = String(
-    barber.especialidade || "Atendimento geral"
-  ).trim();
+  const fotoUrl = String(barber.fotoUrl || "").trim();
+  const ativo = barber.ativo !== false;
+  const id = String(barber.id || "").trim();
 
   if (!nome) {
     return null;
   }
 
   return {
+    id,
     nome,
-    especialidade: especialidade || "Atendimento geral",
+    fotoUrl,
+    ativo,
   };
 };
 
-const loadBarbers = () => {
-  try {
-    const savedBarbers = JSON.parse(localStorage.getItem(barbersStorageKey) || "[]");
+const sortBarbers = (barbers) => {
+  const defaultOrder = new Map(defaultBarbers.map((barber, index) => [barber.nome, index]));
 
-    return Array.isArray(savedBarbers)
-      ? savedBarbers.map(normalizeBarber).filter(Boolean)
-      : [];
-  } catch (error) {
-    return [];
-  }
+  return [...barbers].sort((firstBarber, secondBarber) => {
+    const firstOrder = defaultOrder.get(firstBarber.nome);
+    const secondOrder = defaultOrder.get(secondBarber.nome);
+
+    if (typeof firstOrder === "number" && typeof secondOrder === "number") {
+      return firstOrder - secondOrder;
+    }
+
+    if (typeof firstOrder === "number") {
+      return -1;
+    }
+
+    if (typeof secondOrder === "number") {
+      return 1;
+    }
+
+    return firstBarber.nome.localeCompare(secondBarber.nome, "pt-BR", {
+      sensitivity: "base",
+    });
+  });
 };
 
-const updateBarbers = (barbers) => {
-  localStorage.setItem(barbersStorageKey, JSON.stringify(barbers));
-};
+const getAvailableBarbers = () =>
+  barbersState.length
+    ? sortBarbers(barbersState)
+    : defaultBarbers.map((barber) => ({ ...barber }));
 
-const getAvailableBarbers = () => {
-  const savedBarbers = loadBarbers();
-
-  if (savedBarbers.length) {
-    return savedBarbers;
-  }
-
-  return defaultBarbers.map((barber) => ({ ...barber }));
+const getBarberInitial = (name) => {
+  const safeName = String(name || "").trim();
+  return safeName ? safeName.charAt(0).toUpperCase() : "?";
 };
 
 const getTodayDateValue = () => {
@@ -259,7 +267,8 @@ const getAppointmentPayload = (formData, origem) => ({
 
 const getBarberPayload = (formData) => ({
   nome: String(formData.get("nome") || "").trim(),
-  especialidade: String(formData.get("especialidade") || "").trim(),
+  fotoUrl: String(formData.get("fotoUrl") || "").trim(),
+  ativo: true,
 });
 
 const isAdminLoggedIn = () =>
@@ -301,7 +310,6 @@ const populateBarberSelect = (select, barbers, placeholder) => {
 
 const renderBarbers = () => {
   const availableBarbers = getAvailableBarbers();
-  const savedBarbers = loadBarbers();
   populateBarberSelect(
     adminManualBarberSelect,
     availableBarbers,
@@ -312,26 +320,38 @@ const renderBarbers = () => {
     return;
   }
 
-  if (!savedBarbers.length) {
+  if (!availableBarbers.length) {
     adminBarbersList.innerHTML =
-      '<p class="admin-empty-copy">Nenhum barbeiro cadastrado ainda. Os profissionais padrão aparecem apenas como fallback no agendamento.</p>';
+      '<p class="admin-empty-copy">Nenhum barbeiro cadastrado ainda.</p>';
     return;
   }
 
-  adminBarbersList.innerHTML = savedBarbers
+  adminBarbersList.innerHTML = availableBarbers
     .map(
-      (barber, index) => `
+      (barber) => `
         <article class="admin-barber-card">
+          <div class="admin-barber-card-media">
+            <div class="admin-barber-avatar ${barber.fotoUrl ? "has-photo" : ""}">
+              ${
+                barber.fotoUrl
+                  ? `<img src="${escapeHtml(barber.fotoUrl)}" alt="${escapeHtml(
+                      barber.nome
+                    )}" loading="lazy" onerror="this.remove(); this.parentElement.classList.remove('has-photo');">`
+                  : ""
+              }
+              <span>${escapeHtml(getBarberInitial(barber.nome))}</span>
+            </div>
+          </div>
           <div class="admin-barber-card-head">
             <div>
               <h4>${escapeHtml(barber.nome)}</h4>
-              <p>${escapeHtml(barber.especialidade)}</p>
+              <p>Barbeiro profissional</p>
             </div>
             <button
               class="admin-action action-delete"
               type="button"
               data-admin-barber-action="delete"
-              data-admin-barber-index="${index}"
+              data-admin-barber-id="${escapeHtml(barber.id)}"
             >
               Excluir
             </button>
@@ -340,6 +360,101 @@ const renderBarbers = () => {
       `
     )
     .join("");
+};
+
+const seedDefaultBarbers = async () => {
+  if (!hasFirebaseConfig || isSeedingDefaultBarbers) {
+    return;
+  }
+
+  isSeedingDefaultBarbers = true;
+
+  try {
+    await Promise.all(
+      defaultBarbers.map((barber) =>
+        setDoc(doc(getBarbersCollection(), barber.id), {
+          nome: barber.nome,
+          fotoUrl: barber.fotoUrl,
+          ativo: true,
+          criadoEm: serverTimestamp(),
+        })
+      )
+    );
+  } finally {
+    isSeedingDefaultBarbers = false;
+  }
+};
+
+const stopBarbersSubscription = () => {
+  if (typeof unsubscribeBarbers === "function") {
+    unsubscribeBarbers();
+    unsubscribeBarbers = null;
+  }
+};
+
+const subscribeBarbers = () => {
+  stopBarbersSubscription();
+
+  if (!hasFirebaseConfig) {
+    barbersState = defaultBarbers.map((barber) => ({ ...barber }));
+    renderBarbers();
+    setFeedbackMessage(
+      adminBarberFeedback,
+      "O Firebase dos barbeiros ainda não está disponível."
+    );
+    return;
+  }
+
+  unsubscribeBarbers = onSnapshot(
+    getBarbersCollection(),
+    (snapshot) => {
+      if (snapshot.empty) {
+        barbersState = defaultBarbers.map((barber) => ({ ...barber }));
+        renderBarbers();
+        seedDefaultBarbers();
+        return;
+      }
+
+      barbersState = snapshot.docs
+        .map((snapshotDoc) =>
+          normalizeBarber({
+            id: snapshotDoc.id,
+            ...snapshotDoc.data(),
+          })
+        )
+        .filter((barber) => barber && barber.ativo);
+
+      renderBarbers();
+      setFeedbackMessage(adminBarberFeedback, "");
+    },
+    () => {
+      setFeedbackMessage(
+        adminBarberFeedback,
+        "Não foi possível carregar os barbeiros agora."
+      );
+    }
+  );
+};
+
+const saveBarber = async (barber) => {
+  if (!hasFirebaseConfig) {
+    throw new Error("firebase-not-configured");
+  }
+
+  await addDoc(getBarbersCollection(), {
+    nome: barber.nome,
+    fotoUrl: barber.fotoUrl,
+    ativo: true,
+    criadoEm: serverTimestamp(),
+  });
+};
+
+const deleteBarber = async (barberId) => {
+  if (!hasFirebaseConfig) {
+    throw new Error("firebase-not-configured");
+  }
+
+  await deleteDoc(doc(getBarbersCollection(), barberId));
 };
 
 const updateAdminVisibility = () => {
@@ -662,7 +777,7 @@ if (adminLoginForm && adminFeedback) {
     setFeedbackMessage(adminFeedback, "");
     adminLoginForm.reset();
     updateAdminVisibility();
-    renderBarbers();
+    subscribeBarbers();
     subscribeAppointments();
   });
 }
@@ -671,7 +786,9 @@ if (adminLogoutButton) {
   adminLogoutButton.addEventListener("click", () => {
     setAdminLoggedIn(false);
     stopAppointmentsSubscription();
+    stopBarbersSubscription();
     appointmentsState = [];
+    barbersState = defaultBarbers.map((barber) => ({ ...barber }));
     closeManualForm();
     setFeedbackMessage(adminFeedback, "");
     setFeedbackMessage(adminBarberFeedback, "");
@@ -794,11 +911,11 @@ if (adminManualForm && adminManualFeedback) {
 }
 
 if (adminBarberForm && adminBarberFeedback) {
-  const barberRequiredFields = [...adminBarberForm.querySelectorAll("[required]")];
+  const barberRequiredFields = [...adminBarberForm.querySelectorAll('[name="nome"][required]')];
 
   attachRequiredFieldValidation(barberRequiredFields);
 
-  adminBarberForm.addEventListener("submit", (event) => {
+  adminBarberForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     let hasError = false;
@@ -815,14 +932,13 @@ if (adminBarberForm && adminBarberFeedback) {
     if (hasError) {
       setFeedbackMessage(
         adminBarberFeedback,
-        "Preencha nome e especialidade para continuar."
+        "Preencha o nome do barbeiro para continuar."
       );
       return;
     }
 
     const barber = getBarberPayload(new FormData(adminBarberForm));
-    const barbers = loadBarbers();
-    const barberAlreadyExists = barbers.some(
+    const barberAlreadyExists = getAvailableBarbers().some(
       (savedBarber) =>
         savedBarber.nome.localeCompare(barber.nome, "pt-BR", {
           sensitivity: "base",
@@ -837,16 +953,33 @@ if (adminBarberForm && adminBarberFeedback) {
       return;
     }
 
-    barbers.push(barber);
-    updateBarbers(barbers);
-    renderBarbers();
-    adminBarberForm.reset();
-    clearFormErrors(adminBarberForm);
-    setFeedbackMessage(
-      adminBarberFeedback,
-      "Barbeiro salvo com sucesso.",
-      true
-    );
+    const submitButton = adminBarberForm.querySelector('button[type="submit"]');
+
+    if (submitButton) {
+      submitButton.disabled = true;
+    }
+
+    setFeedbackMessage(adminBarberFeedback, "Salvando barbeiro...");
+
+    try {
+      await saveBarber(barber);
+      adminBarberForm.reset();
+      clearFormErrors(adminBarberForm);
+      setFeedbackMessage(
+        adminBarberFeedback,
+        "Barbeiro salvo com sucesso.",
+        true
+      );
+    } catch (error) {
+      setFeedbackMessage(
+        adminBarberFeedback,
+        "Não foi possível salvar o barbeiro agora. Tente novamente."
+      );
+    } finally {
+      if (submitButton) {
+        submitButton.disabled = false;
+      }
+    }
   });
 }
 
@@ -923,7 +1056,7 @@ if (adminList) {
 }
 
 if (adminBarbersList) {
-  adminBarbersList.addEventListener("click", (event) => {
+  adminBarbersList.addEventListener("click", async (event) => {
     const deleteButton = event.target.closest("[data-admin-barber-action]");
 
     if (!deleteButton) {
@@ -931,21 +1064,20 @@ if (adminBarbersList) {
     }
 
     const action = deleteButton.getAttribute("data-admin-barber-action");
-    const barberIndex = Number(deleteButton.getAttribute("data-admin-barber-index"));
-    const barbers = loadBarbers();
+    const barberId = String(deleteButton.getAttribute("data-admin-barber-id") || "").trim();
 
-    if (
-      action !== "delete" ||
-      Number.isNaN(barberIndex) ||
-      barberIndex < 0 ||
-      barberIndex >= barbers.length
-    ) {
+    if (action !== "delete" || !barberId) {
       return;
     }
 
-    barbers.splice(barberIndex, 1);
-    updateBarbers(barbers);
-    renderBarbers();
+    try {
+      await deleteBarber(barberId);
+    } catch (error) {
+      setFeedbackMessage(
+        adminBarberFeedback,
+        "Não foi possível excluir o barbeiro agora. Tente novamente."
+      );
+    }
   });
 }
 
@@ -953,6 +1085,7 @@ updateAdminVisibility();
 renderBarbers();
 
 if (isAdminLoggedIn()) {
+  subscribeBarbers();
   subscribeAppointments();
 }
 

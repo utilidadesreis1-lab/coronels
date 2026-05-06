@@ -10,6 +10,7 @@ import {
   orderBy,
   query,
   serverTimestamp,
+  setDoc,
   updateDoc,
   where,
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
@@ -43,11 +44,20 @@ const getAppointmentsCollection = () => {
   return collection(db, "appointments");
 };
 
+const getBarbersCollection = () => {
+  if (!db) {
+    throw new Error("firebase-not-configured");
+  }
+
+  return collection(db, "barbers");
+};
+
 export {
   addDoc,
   deleteDoc,
   doc,
   db,
+  getBarbersCollection,
   getDocs,
   getAppointmentsCollection,
   hasFirebaseConfig,
@@ -55,6 +65,7 @@ export {
   orderBy,
   query,
   serverTimestamp,
+  setDoc,
   updateDoc,
   where,
 };
