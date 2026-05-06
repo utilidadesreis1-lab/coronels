@@ -1,8 +1,11 @@
 import {
   addDoc,
+  getDocs,
   getAppointmentsCollection,
   hasFirebaseConfig,
+  query,
   serverTimestamp,
+  where,
 } from "./firebase-config.js";
 
 const whatsappNumber = "5563991240071";
@@ -255,9 +258,33 @@ const getFirebaseErrorMessage = () => {
   return "Não foi possível salvar seu agendamento agora. Tente novamente em instantes.";
 };
 
+const findAppointmentConflict = async ({ barbeiro, data, horario }) => {
+  if (!hasFirebaseConfig) {
+    throw new Error("firebase-not-configured");
+  }
+
+  const appointmentsQuery = query(
+    getAppointmentsCollection(),
+    where("barbeiro", "==", barbeiro),
+    where("data", "==", data),
+    where("horario", "==", horario)
+  );
+  const snapshot = await getDocs(appointmentsQuery);
+
+  return snapshot.docs.some((appointmentDoc) => {
+    const status = String(appointmentDoc.data().status || "pendente").trim().toLowerCase();
+
+    return status !== "cancelado";
+  });
+};
+
 const saveAppointment = async (appointment) => {
   if (!hasFirebaseConfig) {
     throw new Error("firebase-not-configured");
+  }
+
+  if (await findAppointmentConflict(appointment)) {
+    throw new Error("slot-conflict");
   }
 
   await addDoc(getAppointmentsCollection(), {
@@ -376,7 +403,10 @@ if (bookingForm && formFeedback) {
         "Escolha o profissional"
       );
     } catch (error) {
-      formFeedback.textContent = getFirebaseErrorMessage();
+      formFeedback.textContent =
+        error instanceof Error && error.message === "slot-conflict"
+          ? "Esse hor\u00e1rio j\u00e1 est\u00e1 ocupado para este profissional. Escolha outro hor\u00e1rio."
+          : getFirebaseErrorMessage();
       formFeedback.classList.remove("is-success");
     } finally {
       if (bookingDateField) {

@@ -2,6 +2,7 @@ import {
   addDoc,
   deleteDoc,
   doc,
+  getDocs,
   getAppointmentsCollection,
   hasFirebaseConfig,
   onSnapshot,
@@ -9,6 +10,7 @@ import {
   query,
   serverTimestamp,
   updateDoc,
+  where,
 } from "./firebase-config.js";
 
 const adminLoginForm = document.querySelector("[data-admin-login-form]");
@@ -84,6 +86,7 @@ const hasValidPhoneDigits = (value) => getLocalPhoneDigits(value).length === 11;
 
 let appointmentsState = [];
 let unsubscribeAppointments = null;
+let lastAppointmentConflict = false;
 
 const normalizeBarber = (barber) => {
   if (typeof barber === "string") {
@@ -515,6 +518,11 @@ const renderAppointments = () => {
 };
 
 const getFirebaseErrorMessage = (fallbackMessage) => {
+  if (lastAppointmentConflict) {
+    lastAppointmentConflict = false;
+    return "Esse hor\u00e1rio j\u00e1 est\u00e1 ocupado para este profissional. Escolha outro hor\u00e1rio.";
+  }
+
   if (!hasFirebaseConfig) {
     return "O Firebase ainda não está configurado. Cole o firebaseConfig em firebase-config.js para liberar os agendamentos online.";
   }
@@ -580,9 +588,36 @@ const subscribeAppointments = () => {
   );
 };
 
+const findAppointmentConflict = async ({ barbeiro, data, horario }) => {
+  if (!hasFirebaseConfig) {
+    throw new Error("firebase-not-configured");
+  }
+
+  const appointmentsQuery = query(
+    getAppointmentsCollection(),
+    where("barbeiro", "==", barbeiro),
+    where("data", "==", data),
+    where("horario", "==", horario)
+  );
+  const snapshot = await getDocs(appointmentsQuery);
+
+  return snapshot.docs.some((appointmentDoc) => {
+    const status = String(appointmentDoc.data().status || "pendente").trim().toLowerCase();
+
+    return status !== "cancelado";
+  });
+};
+
 const saveAppointment = async (appointment) => {
   if (!hasFirebaseConfig) {
     throw new Error("firebase-not-configured");
+  }
+
+  lastAppointmentConflict = false;
+
+  if (await findAppointmentConflict(appointment)) {
+    lastAppointmentConflict = true;
+    throw new Error("slot-conflict");
   }
 
   await addDoc(getAppointmentsCollection(), {

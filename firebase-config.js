@@ -4,12 +4,14 @@ import {
   collection,
   deleteDoc,
   doc,
+  getDocs,
   getFirestore,
   onSnapshot,
   orderBy,
   query,
   serverTimestamp,
   updateDoc,
+  where,
 } from "https://www.gstatic.com/firebasejs/12.7.0/firebase-firestore.js";
 
 const firebaseConfig = {
@@ -46,6 +48,7 @@ export {
   deleteDoc,
   doc,
   db,
+  getDocs,
   getAppointmentsCollection,
   hasFirebaseConfig,
   onSnapshot,
@@ -53,4 +56,5 @@ export {
   query,
   serverTimestamp,
   updateDoc,
+  where,
 };
