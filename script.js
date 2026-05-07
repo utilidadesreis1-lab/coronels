@@ -1113,8 +1113,8 @@ const createHeroAdjustmentPanel = () => {
 
   const storageKey = "coronelsHeroAdjustments";
   const defaultSettings = {
-    symbolSize: 112,
-    symbolGap: 22,
+    symbolSize: 300,
+    symbolGap: -28,
     accentSize: 110,
     baseSize: 69,
     blockOffsetY: 0,
@@ -1125,8 +1125,8 @@ const createHeroAdjustmentPanel = () => {
   };
 
   const controls = [
-    { key: "symbolSize", label: "Tamanho do símbolo", min: 56, max: 180, step: 1 },
-    { key: "symbolGap", label: "Distância símbolo/texto", min: 0, max: 72, step: 1 },
+    { key: "symbolSize", label: "Tamanho do símbolo", min: 56, max: 360, step: 1 },
+    { key: "symbolGap", label: "Distância símbolo/texto", min: -120, max: 120, step: 1 },
     { key: "accentSize", label: "Tamanho de Coronel's", min: 52, max: 160, step: 1 },
     { key: "baseSize", label: "Tamanho de BARBEARIA", min: 28, max: 96, step: 1 },
     { key: "blockOffsetY", label: "Posição vertical do bloco", min: -180, max: 180, step: 1 },

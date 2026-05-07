@@ -13,6 +13,8 @@
   --radius-sm: 18px;
   --container: min(92vw, 1480px);
   --header-height: 84px;
+  --hero-brand-symbol-size: 300px;
+  --hero-brand-symbol-gap: -28px;
 }
 
 * {
@@ -2484,7 +2486,7 @@ button {
   }
 
   .hero-brand-symbol-wrap {
-    width: clamp(4.2rem, 8vw, 5.2rem);
+    width: min(180px, 28vw);
   }
 
   .hero-title-accent {
@@ -2564,7 +2566,7 @@ button {
   }
 
   .hero-brand-symbol-wrap {
-    width: 4.2rem;
+    width: min(110px, 30vw);
   }
 
   .hero-title-accent {
