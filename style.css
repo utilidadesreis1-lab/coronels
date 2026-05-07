@@ -342,16 +342,42 @@ button {
   line-height: 0.95;
 }
 
-.hero h1 {
+.hero h1,
+.hero-brand-block {
   margin-top: 0.25rem;
+}
+
+.hero-brand-block {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: clamp(0.9rem, 1.8vw, 1.4rem);
+  max-width: min(100%, 52rem);
+  text-shadow: 0 18px 36px rgba(0, 0, 0, 0.36);
+}
+
+.hero-brand-symbol-wrap {
+  flex: 0 0 auto;
+  width: clamp(4.8rem, 9vw, 7rem);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.hero-brand-symbol {
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+  filter:
+    drop-shadow(0 12px 26px rgba(0, 0, 0, 0.34))
+    drop-shadow(0 0 18px rgba(255, 255, 255, 0.04));
+}
+
+.hero-brand-text {
   display: flex;
   flex-direction: column;
-  align-items: center;
-  gap: 0.35rem;
-  max-width: 11ch;
+  align-items: flex-start;
   line-height: 1;
-  letter-spacing: 0;
-  text-shadow: 0 18px 36px rgba(0, 0, 0, 0.36);
 }
 
 .hero-title-accent {
@@ -371,6 +397,8 @@ button {
   line-height: 0.95;
   letter-spacing: 0.08em;
   text-transform: uppercase;
+  align-self: flex-end;
+  padding-right: 0.12em;
 }
 
 .hero-copy {
@@ -2352,10 +2380,22 @@ button {
     padding-bottom: 4rem;
   }
 
-  .hero h1 {
-    margin-top: 0.15rem;
-    font-size: clamp(3.45rem, 11vw, 5rem);
-    line-height: 0.92;
+  .hero-brand-block {
+    gap: 0.8rem;
+    max-width: min(100%, 40rem);
+  }
+
+  .hero-brand-symbol-wrap {
+    width: clamp(4.2rem, 8vw, 5.2rem);
+  }
+
+  .hero-title-accent {
+    font-size: clamp(3.6rem, 10.5vw, 5.3rem);
+  }
+
+  .hero-title-base {
+    font-size: clamp(2.15rem, 6.8vw, 3.1rem);
+    letter-spacing: 0.065em;
   }
 }
 
@@ -2420,8 +2460,13 @@ button {
     flex-direction: column;
   }
 
-  .hero h1 {
-    gap: 0.2rem;
+  .hero-brand-block {
+    flex-direction: column;
+    gap: 0.55rem;
+  }
+
+  .hero-brand-symbol-wrap {
+    width: 4.2rem;
   }
 
   .hero-title-accent {
@@ -2431,6 +2476,12 @@ button {
   .hero-title-base {
     font-size: clamp(2rem, 7.8vw, 2.8rem);
     letter-spacing: 0.06em;
+    align-self: center;
+    padding-right: 0;
+  }
+
+  .hero-brand-text {
+    align-items: center;
   }
 
   .hero-actions .button,
