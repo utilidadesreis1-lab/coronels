@@ -155,10 +155,11 @@ button {
 }
 
 .brand-text {
-  font-family: "Cormorant Garamond", serif;
-  font-size: 1.45rem;
+  font-family: "Manrope", sans-serif;
+  font-size: 1rem;
   font-weight: 700;
-  letter-spacing: 0.025em;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
   display: inline-flex;
   align-items: center;
   line-height: 1;
@@ -181,8 +182,12 @@ button {
 
 .site-nav a {
   position: relative;
+  font-family: "Manrope", sans-serif;
   color: rgba(244, 241, 235, 0.8);
   font-size: 0.96rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
 }
 
 .site-nav a::after {
@@ -339,13 +344,33 @@ button {
 
 .hero h1 {
   margin-top: 0.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.35rem;
+  max-width: 11ch;
+  line-height: 1;
+  letter-spacing: 0;
+  text-shadow: 0 18px 36px rgba(0, 0, 0, 0.36);
+}
+
+.hero-title-accent {
+  display: block;
   font-family: "Manufacturing Consent", "Cormorant Garamond", serif;
   font-size: clamp(4.2rem, 8.8vw, 6.85rem);
   font-weight: 400;
-  max-width: 9ch;
-  line-height: 0.9;
+  line-height: 0.88;
   letter-spacing: 0.015em;
-  text-shadow: 0 18px 36px rgba(0, 0, 0, 0.36);
+}
+
+.hero-title-base {
+  display: block;
+  font-family: "Cormorant Garamond", serif;
+  font-size: clamp(2.75rem, 5.4vw, 4.3rem);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
 }
 
 .hero-copy {
@@ -2348,7 +2373,7 @@ button {
   }
 
   .brand-text {
-    font-size: 1.12rem;
+    font-size: 0.88rem;
   }
 
   .brand-mark {
@@ -2396,9 +2421,16 @@ button {
   }
 
   .hero h1 {
+    gap: 0.2rem;
+  }
+
+  .hero-title-accent {
     font-size: clamp(2.8rem, 11.8vw, 3.9rem);
-    line-height: 0.94;
-    letter-spacing: 0.012em;
+  }
+
+  .hero-title-base {
+    font-size: clamp(2rem, 7.8vw, 2.8rem);
+    letter-spacing: 0.06em;
   }
 
   .hero-actions .button,
