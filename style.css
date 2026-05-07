@@ -15,20 +15,20 @@
   --header-height: 84px;
   --hero-brand-width: 760px;
   --hero-brand-height: 330px;
-  --hero-brand-scale: 1;
+  --hero-brand-scale: 0.40;
   --hero-brand-offset-x: 0px;
-  --hero-brand-offset-y: 0px;
-  --hero-brand-symbol-size: 300px;
-  --hero-brand-symbol-offset-x: -170px;
-  --hero-brand-symbol-offset-y: 0px;
-  --hero-brand-accent-size: 110px;
-  --hero-brand-accent-offset-x: 90px;
-  --hero-brand-accent-offset-y: -44px;
-  --hero-brand-accent-letter-spacing: 0.015em;
-  --hero-brand-base-size: 69px;
-  --hero-brand-base-offset-x: 160px;
-  --hero-brand-base-offset-y: 58px;
-  --hero-brand-base-letter-spacing: 0.08em;
+  --hero-brand-offset-y: -64px;
+  --hero-brand-symbol-size: 204px;
+  --hero-brand-symbol-offset-x: -249px;
+  --hero-brand-symbol-offset-y: -22px;
+  --hero-brand-accent-size: 138px;
+  --hero-brand-accent-offset-x: 59px;
+  --hero-brand-accent-offset-y: -32px;
+  --hero-brand-accent-letter-spacing: 0.022em;
+  --hero-brand-base-size: 35px;
+  --hero-brand-base-offset-x: 177px;
+  --hero-brand-base-offset-y: 54px;
+  --hero-brand-base-letter-spacing: 0.074em;
 }
 
 * {
