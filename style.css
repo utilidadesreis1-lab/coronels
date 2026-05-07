@@ -13,8 +13,22 @@
   --radius-sm: 18px;
   --container: min(92vw, 1480px);
   --header-height: 84px;
+  --hero-brand-width: 760px;
+  --hero-brand-height: 330px;
+  --hero-brand-scale: 1;
+  --hero-brand-offset-x: 0px;
+  --hero-brand-offset-y: 0px;
   --hero-brand-symbol-size: 300px;
-  --hero-brand-symbol-gap: -28px;
+  --hero-brand-symbol-offset-x: -170px;
+  --hero-brand-symbol-offset-y: 0px;
+  --hero-brand-accent-size: 110px;
+  --hero-brand-accent-offset-x: 90px;
+  --hero-brand-accent-offset-y: -44px;
+  --hero-brand-accent-letter-spacing: 0.015em;
+  --hero-brand-base-size: 69px;
+  --hero-brand-base-offset-x: 160px;
+  --hero-brand-base-offset-y: 58px;
+  --hero-brand-base-letter-spacing: 0.08em;
 }
 
 * {
@@ -350,24 +364,31 @@ button {
 }
 
 .hero-brand-block {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: var(--hero-brand-symbol-gap, clamp(0.9rem, 1.8vw, 1.4rem));
-  max-width: min(100%, 52rem);
+  position: relative;
+  display: block;
+  width: min(100%, var(--hero-brand-width, 760px));
+  max-width: 100%;
+  height: var(--hero-brand-height, 330px);
   text-shadow: 0 18px 36px rgba(0, 0, 0, 0.36);
   transform: translate(
     var(--hero-brand-offset-x, 0px),
     var(--hero-brand-offset-y, 0px)
-  );
+  ) scale(var(--hero-brand-scale, 1));
+  transform-origin: center center;
 }
 
 .hero-brand-symbol-wrap {
-  flex: 0 0 auto;
-  width: var(--hero-brand-symbol-size, clamp(4.8rem, 9vw, 7rem));
-  display: inline-flex;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: var(--hero-brand-symbol-size, 300px);
+  display: flex;
   align-items: center;
   justify-content: center;
+  transform: translate(
+    calc(-50% + var(--hero-brand-symbol-offset-x, 0px)),
+    calc(-50% + var(--hero-brand-symbol-offset-y, 0px))
+  );
 }
 
 .hero-brand-symbol {
@@ -380,36 +401,45 @@ button {
 }
 
 .hero-brand-text {
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
+  position: absolute;
+  inset: 0;
+  display: block;
   line-height: 1;
-  gap: var(--hero-brand-title-gap, 0px);
 }
 
 .hero-title-accent {
-  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: inline-block;
   font-family: "Manufacturing Consent", "Cormorant Garamond", serif;
-  font-size: var(--hero-brand-accent-size, clamp(4.2rem, 8.8vw, 6.85rem));
+  font-size: var(--hero-brand-accent-size, 110px);
   font-weight: 400;
   line-height: 0.88;
-  letter-spacing: 0.015em;
+  letter-spacing: var(--hero-brand-accent-letter-spacing, 0.015em);
+  transform: translate(
+    calc(-50% + var(--hero-brand-accent-offset-x, 0px)),
+    calc(-50% + var(--hero-brand-accent-offset-y, 0px))
+  );
+  white-space: nowrap;
 }
 
 .hero-title-base {
-  display: block;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  display: inline-block;
   font-family: "Cormorant Garamond", serif;
-  font-size: var(--hero-brand-base-size, clamp(2.75rem, 5.4vw, 4.3rem));
+  font-size: var(--hero-brand-base-size, 69px);
   font-weight: 700;
   line-height: 0.95;
-  letter-spacing: 0.08em;
+  letter-spacing: var(--hero-brand-base-letter-spacing, 0.08em);
   text-transform: uppercase;
-  align-self: flex-end;
-  padding-right: 0.12em;
   transform: translate(
-    var(--hero-brand-base-offset-x, 0px),
-    var(--hero-brand-base-offset-y, 0px)
+    calc(-50% + var(--hero-brand-base-offset-x, 0px)),
+    calc(-50% + var(--hero-brand-base-offset-y, 0px))
   );
+  white-space: nowrap;
 }
 
 .hero-adjust-panel {
@@ -2481,21 +2511,8 @@ button {
   }
 
   .hero-brand-block {
-    gap: 0.8rem;
-    max-width: min(100%, 40rem);
-  }
-
-  .hero-brand-symbol-wrap {
-    width: min(180px, 28vw);
-  }
-
-  .hero-title-accent {
-    font-size: clamp(3.6rem, 10.5vw, 5.3rem);
-  }
-
-  .hero-title-base {
-    font-size: clamp(2.15rem, 6.8vw, 3.1rem);
-    letter-spacing: 0.065em;
+    width: min(100%, 620px);
+    height: 260px;
   }
 }
 
@@ -2561,27 +2578,11 @@ button {
   }
 
   .hero-brand-block {
-    flex-direction: column;
-    gap: 0.55rem;
-  }
-
-  .hero-brand-symbol-wrap {
-    width: min(110px, 30vw);
-  }
-
-  .hero-title-accent {
-    font-size: clamp(2.8rem, 11.8vw, 3.9rem);
-  }
-
-  .hero-title-base {
-    font-size: clamp(2rem, 7.8vw, 2.8rem);
-    letter-spacing: 0.06em;
-    align-self: center;
-    padding-right: 0;
-  }
-
-  .hero-brand-text {
-    align-items: center;
+    width: min(100%, 360px);
+    height: 220px;
+    transform:
+      translate(var(--hero-brand-offset-x, 0px), var(--hero-brand-offset-y, 0px))
+      scale(calc(var(--hero-brand-scale, 1) * 0.72));
   }
 
   .hero-actions .button,
