@@ -1095,3 +1095,198 @@ if (bookingForm && formFeedback) {
   });
 }
 
+const heroAdjustMode = new URLSearchParams(window.location.search).get("ajusteHero") === "1";
+
+const createHeroAdjustmentPanel = () => {
+  if (!heroAdjustMode) {
+    return;
+  }
+
+  const heroBrandBlock = document.querySelector(".hero-brand-block");
+  const heroSymbol = document.querySelector(".hero-brand-symbol-wrap");
+  const heroAccent = document.querySelector(".hero-title-accent");
+  const heroBase = document.querySelector(".hero-title-base");
+
+  if (!heroBrandBlock || !heroSymbol || !heroAccent || !heroBase) {
+    return;
+  }
+
+  const storageKey = "coronelsHeroAdjustments";
+  const defaultSettings = {
+    symbolSize: 112,
+    symbolGap: 22,
+    accentSize: 110,
+    baseSize: 69,
+    blockOffsetY: 0,
+    blockOffsetX: 0,
+    baseOffsetX: 0,
+    baseOffsetY: 0,
+    titleGap: 0,
+  };
+
+  const controls = [
+    { key: "symbolSize", label: "Tamanho do símbolo", min: 56, max: 180, step: 1 },
+    { key: "symbolGap", label: "Distância símbolo/texto", min: 0, max: 72, step: 1 },
+    { key: "accentSize", label: "Tamanho de Coronel's", min: 52, max: 160, step: 1 },
+    { key: "baseSize", label: "Tamanho de BARBEARIA", min: 28, max: 96, step: 1 },
+    { key: "blockOffsetY", label: "Posição vertical do bloco", min: -180, max: 180, step: 1 },
+    { key: "blockOffsetX", label: "Posição horizontal do bloco", min: -220, max: 220, step: 1 },
+    { key: "baseOffsetX", label: "Posição horizontal de BARBEARIA", min: -160, max: 160, step: 1 },
+    { key: "baseOffsetY", label: "Posição vertical de BARBEARIA", min: -120, max: 120, step: 1 },
+    { key: "titleGap", label: "Espaço entre Coronel's e BARBEARIA", min: -16, max: 48, step: 1 },
+  ];
+
+  const readStoredSettings = () => {
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      if (!raw) {
+        return { ...defaultSettings };
+      }
+
+      const parsed = JSON.parse(raw);
+
+      return {
+        ...defaultSettings,
+        ...Object.fromEntries(
+          Object.entries(parsed).map(([key, value]) => [key, Number(value)])
+        ),
+      };
+    } catch {
+      return { ...defaultSettings };
+    }
+  };
+
+  let settings = readStoredSettings();
+
+  const panel = document.createElement("aside");
+  panel.className = "hero-adjust-panel";
+  panel.setAttribute("aria-label", "Ajuste Hero");
+
+  panel.innerHTML = `
+    <h3>Ajuste Hero</h3>
+    <p>Ajuste visual temporário do bloco da marca. Só aparece com <code>?ajusteHero=1</code>.</p>
+    <div class="hero-adjust-grid" data-hero-adjust-grid></div>
+    <div class="hero-adjust-actions">
+      <button class="button button-gold" type="button" data-hero-copy-css>Copiar CSS</button>
+      <button class="button button-ghost" type="button" data-hero-reset>Resetar ajustes</button>
+    </div>
+    <div class="hero-adjust-toast" data-hero-adjust-toast></div>
+  `;
+
+  document.body.append(panel);
+
+  const grid = panel.querySelector("[data-hero-adjust-grid]");
+  const toast = panel.querySelector("[data-hero-adjust-toast]");
+  const copyButton = panel.querySelector("[data-hero-copy-css]");
+  const resetButton = panel.querySelector("[data-hero-reset]");
+
+  const valueOutputs = new Map();
+  const inputs = new Map();
+
+  const persistSettings = () => {
+    window.localStorage.setItem(storageKey, JSON.stringify(settings));
+  };
+
+  const cssSnippet = () => `:root {
+  --hero-brand-symbol-size: ${settings.symbolSize}px;
+  --hero-brand-symbol-gap: ${settings.symbolGap}px;
+  --hero-brand-accent-size: ${settings.accentSize}px;
+  --hero-brand-base-size: ${settings.baseSize}px;
+  --hero-brand-offset-y: ${settings.blockOffsetY}px;
+  --hero-brand-offset-x: ${settings.blockOffsetX}px;
+  --hero-brand-base-offset-x: ${settings.baseOffsetX}px;
+  --hero-brand-base-offset-y: ${settings.baseOffsetY}px;
+  --hero-brand-title-gap: ${settings.titleGap}px;
+}`;
+
+  const updateToast = (message) => {
+    if (toast) {
+      toast.textContent = message;
+    }
+  };
+
+  const applyHeroSettings = () => {
+    document.documentElement.style.setProperty("--hero-brand-symbol-size", `${settings.symbolSize}px`);
+    document.documentElement.style.setProperty("--hero-brand-symbol-gap", `${settings.symbolGap}px`);
+    document.documentElement.style.setProperty("--hero-brand-accent-size", `${settings.accentSize}px`);
+    document.documentElement.style.setProperty("--hero-brand-base-size", `${settings.baseSize}px`);
+    document.documentElement.style.setProperty("--hero-brand-offset-y", `${settings.blockOffsetY}px`);
+    document.documentElement.style.setProperty("--hero-brand-offset-x", `${settings.blockOffsetX}px`);
+    document.documentElement.style.setProperty("--hero-brand-base-offset-x", `${settings.baseOffsetX}px`);
+    document.documentElement.style.setProperty("--hero-brand-base-offset-y", `${settings.baseOffsetY}px`);
+    document.documentElement.style.setProperty("--hero-brand-title-gap", `${settings.titleGap}px`);
+
+    controls.forEach(({ key }) => {
+      const input = inputs.get(key);
+      const output = valueOutputs.get(key);
+
+      if (input) {
+        input.value = String(settings[key]);
+      }
+
+      if (output) {
+        output.textContent = `${settings[key]}px`;
+      }
+    });
+  };
+
+  controls.forEach(({ key, label, min, max, step }) => {
+    const control = document.createElement("div");
+    control.className = "hero-adjust-control";
+    control.innerHTML = `
+      <div class="hero-adjust-control-head">
+        <label for="hero-adjust-${key}">${label}</label>
+        <span class="hero-adjust-control-output" data-output-for="${key}">0px</span>
+      </div>
+      <input
+        id="hero-adjust-${key}"
+        type="range"
+        min="${min}"
+        max="${max}"
+        step="${step}"
+        value="${settings[key]}"
+      >
+    `;
+
+    const input = control.querySelector("input");
+    const output = control.querySelector("[data-output-for]");
+
+    input.addEventListener("input", () => {
+      settings = {
+        ...settings,
+        [key]: Number(input.value),
+      };
+      applyHeroSettings();
+      persistSettings();
+      updateToast("Ajuste salvo localmente para teste.");
+    });
+
+    inputs.set(key, input);
+    valueOutputs.set(key, output);
+    grid?.append(control);
+  });
+
+  copyButton?.addEventListener("click", async () => {
+    const content = cssSnippet();
+
+    try {
+      await navigator.clipboard.writeText(content);
+      updateToast("CSS copiado.");
+    } catch {
+      updateToast("Não foi possível copiar automaticamente. Tente novamente.");
+    }
+  });
+
+  resetButton?.addEventListener("click", () => {
+    settings = { ...defaultSettings };
+    window.localStorage.removeItem(storageKey);
+    applyHeroSettings();
+    updateToast("Ajustes resetados.");
+  });
+
+  applyHeroSettings();
+  updateToast("Modo de ajuste ativo.");
+};
+
+createHeroAdjustmentPanel();
+
