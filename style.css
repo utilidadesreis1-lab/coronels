@@ -339,12 +339,12 @@ button {
 
 .hero h1 {
   margin-top: 0.25rem;
-  font-family: "UnifrakturCook", "Cormorant Garamond", serif;
-  font-size: clamp(4.5rem, 9vw, 7.25rem);
-  font-weight: 700;
+  font-family: "Manufacturing Consent", "Cormorant Garamond", serif;
+  font-size: clamp(4.2rem, 8.8vw, 6.85rem);
+  font-weight: 400;
   max-width: 9ch;
-  line-height: 0.88;
-  letter-spacing: 0.03em;
+  line-height: 0.9;
+  letter-spacing: 0.015em;
   text-shadow: 0 18px 36px rgba(0, 0, 0, 0.36);
 }
 
@@ -2329,8 +2329,8 @@ button {
 
   .hero h1 {
     margin-top: 0.15rem;
-    font-size: clamp(3.7rem, 12vw, 5.4rem);
-    line-height: 0.9;
+    font-size: clamp(3.45rem, 11vw, 5rem);
+    line-height: 0.92;
   }
 }
 
@@ -2396,9 +2396,9 @@ button {
   }
 
   .hero h1 {
-    font-size: clamp(3rem, 12.5vw, 4.15rem);
-    line-height: 0.92;
-    letter-spacing: 0.02em;
+    font-size: clamp(2.8rem, 11.8vw, 3.9rem);
+    line-height: 0.94;
+    letter-spacing: 0.012em;
   }
 
   .hero-actions .button,
