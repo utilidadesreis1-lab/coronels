@@ -294,21 +294,21 @@ button {
 
 .hero-media {
   background:
-    linear-gradient(90deg, rgba(7, 7, 7, 0.9) 6%, rgba(7, 7, 7, 0.52) 48%, rgba(7, 7, 7, 0.82) 100%),
+    linear-gradient(90deg, rgba(6, 6, 6, 0.92) 0%, rgba(7, 7, 7, 0.72) 18%, rgba(8, 8, 8, 0.38) 50%, rgba(7, 7, 7, 0.74) 82%, rgba(6, 6, 6, 0.9) 100%),
     url("assets/hero-fundo.jpg") center/cover no-repeat;
   transform: scale(1.04);
 }
 
 .hero-overlay {
   background:
-    linear-gradient(180deg, rgba(10, 10, 11, 0.36) 0%, rgba(10, 10, 11, 0.8) 70%, #0d0e10 100%);
+    linear-gradient(180deg, rgba(10, 10, 11, 0.46) 0%, rgba(10, 10, 11, 0.76) 62%, #0d0e10 100%);
 }
 
 .hero-content {
   position: relative;
   z-index: 1;
   padding-top: calc(var(--header-height) + 2.75rem);
-  padding-bottom: 4.5rem;
+  padding-bottom: 4.8rem;
   min-height: 100svh;
   display: flex;
   flex-direction: column;
@@ -320,34 +320,23 @@ button {
 
 .hero-brand {
   position: relative;
-  width: min(100%, 40rem);
+  width: min(100%, 18rem);
   display: flex;
   justify-content: center;
   align-items: center;
-  margin-top: 0.15rem;
+  margin-top: 0.35rem;
 }
 
 .hero-logo {
-  width: min(100%, 33rem);
+  width: min(100%, 13.5rem);
   object-fit: contain;
   filter:
-    drop-shadow(0 14px 28px rgba(0, 0, 0, 0.42))
-    drop-shadow(0 0 18px rgba(255, 255, 255, 0.05));
-}
-
-.hero-symbol {
-  position: absolute;
-  width: clamp(8rem, 15vw, 11rem);
-  right: clamp(-2rem, -1vw, -0.5rem);
-  top: 50%;
-  transform: translateY(-50%);
-  opacity: 0.045;
-  pointer-events: none;
-  filter: blur(0.2px);
+    drop-shadow(0 10px 24px rgba(0, 0, 0, 0.34))
+    drop-shadow(0 0 16px rgba(255, 255, 255, 0.04));
 }
 
 .eyebrow {
-  margin: 0 0 1rem;
+  margin: 0 0 0.85rem;
   color: var(--gold);
   font-size: 0.86rem;
   font-weight: 800;
@@ -366,13 +355,16 @@ button {
 }
 
 .hero h1 {
-  font-size: clamp(3.8rem, 11vw, 7rem);
-  max-width: 12ch;
+  margin-top: 1.05rem;
+  font-size: clamp(4rem, 10vw, 6.7rem);
+  max-width: 11ch;
+  text-wrap: balance;
+  text-shadow: 0 18px 36px rgba(0, 0, 0, 0.36);
 }
 
 .hero-copy {
   max-width: 36rem;
-  margin: 1.25rem 0 0;
+  margin: 1.4rem 0 0;
   color: rgba(244, 241, 235, 0.82);
   font-size: clamp(1rem, 1.6vw, 1.18rem);
   line-height: 1.85;
@@ -383,7 +375,7 @@ button {
   flex-wrap: wrap;
   gap: 1rem;
   justify-content: center;
-  margin-top: 1.9rem;
+  margin-top: 2.25rem;
 }
 
 .section-heading {
@@ -2304,7 +2296,7 @@ button {
   }
 
   .hero-logo {
-    width: min(100%, 35rem);
+    width: min(100%, 14.5rem);
   }
 }
 
@@ -2354,12 +2346,12 @@ button {
   }
 
   .hero-logo {
-    width: min(100%, 26rem);
+    width: min(100%, 12rem);
   }
 
-  .hero-symbol {
-    width: clamp(6.5rem, 18vw, 8.5rem);
-    right: -0.2rem;
+  .hero h1 {
+    margin-top: 0.95rem;
+    font-size: clamp(3.4rem, 14vw, 4.9rem);
   }
 }
 
@@ -2429,16 +2421,12 @@ button {
   }
 
   .hero-logo {
-    width: min(100%, 19rem);
+    width: min(100%, 10.5rem);
   }
 
-  .hero-symbol {
-    width: 5.5rem;
-    right: 0.25rem;
-    top: auto;
-    bottom: -0.45rem;
-    transform: none;
-    opacity: 0.04;
+  .hero h1 {
+    font-size: clamp(3rem, 13vw, 4rem);
+    line-height: 0.98;
   }
 
   .hero-actions .button,
