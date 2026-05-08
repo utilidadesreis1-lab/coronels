@@ -614,15 +614,15 @@ button {
 
 .about-grid {
   display: grid;
-  grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
-  gap: clamp(1.4rem, 2vw, 2rem);
+  grid-template-columns: minmax(0, 1fr) minmax(0, 0.96fr);
+  gap: clamp(1.6rem, 2.2vw, 2.3rem);
   align-items: stretch;
 }
 
 .about-copy {
   display: grid;
   align-content: start;
-  gap: 1.35rem;
+  gap: 1.5rem;
 }
 
 .about-card,
@@ -646,14 +646,14 @@ button {
 
 .about-card {
   display: grid;
-  gap: 1rem;
+  gap: 1.15rem;
 }
 
 .about-highlights {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
-  margin-top: 0.75rem;
+  gap: 1.05rem;
+  margin-top: 0.95rem;
 }
 
 .about-highlights article,
@@ -681,12 +681,14 @@ button {
 
 .about-media {
   display: grid;
-  gap: 1rem;
+  gap: 1.15rem;
+  align-content: start;
 }
 
 .about-video-card {
   position: relative;
-  min-height: 500px;
+  min-height: 440px;
+  max-height: 500px;
   border-radius: var(--radius);
   overflow: hidden;
   border: 1px solid var(--line);
@@ -724,7 +726,7 @@ button {
 .about-gallery {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1rem;
+  gap: 1.05rem;
 }
 
 .about-gallery-card {
@@ -734,12 +736,12 @@ button {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
     rgba(255, 255, 255, 0.03);
-  box-shadow: 0 18px 42px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
 }
 
 .about-gallery-card img {
   width: 100%;
-  aspect-ratio: 0.94;
+  aspect-ratio: 1.02;
   object-fit: cover;
 }
 
@@ -2559,6 +2561,11 @@ button {
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
 
+  .about-video-card {
+    min-height: 420px;
+    max-height: 480px;
+  }
+
   .admin-login {
     grid-template-columns: 1fr;
   }
@@ -2717,11 +2724,12 @@ button {
   }
 
   .about-video-card {
-    min-height: 320px;
+    min-height: 300px;
+    max-height: 360px;
   }
 
   .about-gallery-card img {
-    aspect-ratio: 1.2;
+    aspect-ratio: 1.12;
   }
 
   .gallery-card-large {
