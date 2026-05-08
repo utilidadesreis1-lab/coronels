@@ -50,6 +50,23 @@
   --hero-brand-base-offset-x: 177px;
   --hero-brand-base-offset-y: 54px;
   --hero-brand-base-letter-spacing: 0.074em;
+  --about-adjust-max-width: 1320px;
+  --about-adjust-min-height: 980px;
+  --about-adjust-padding-top: 112px;
+  --about-adjust-padding-bottom: 112px;
+  --about-adjust-copy-width: 560px;
+  --about-adjust-copy-offset-x: 0px;
+  --about-adjust-copy-offset-y: 0px;
+  --about-adjust-copy-scale: 1;
+  --about-adjust-video-width: 620px;
+  --about-adjust-video-height: 520px;
+  --about-adjust-video-offset-x: 670px;
+  --about-adjust-video-offset-y: 8px;
+  --about-adjust-gallery-offset-x: 0px;
+  --about-adjust-gallery-offset-y: 590px;
+  --about-adjust-gallery-card-width: 320px;
+  --about-adjust-gallery-card-height: 240px;
+  --about-adjust-gallery-gap: 20px;
 }
 
 * {
@@ -486,7 +503,8 @@ button {
 }
 
 .hero-adjust-panel,
-.header-adjust-panel {
+.header-adjust-panel,
+.experience-adjust-panel {
   position: fixed;
   top: 1rem;
   right: 1rem;
@@ -505,7 +523,8 @@ button {
 }
 
 .hero-adjust-panel h3,
-.header-adjust-panel h3 {
+.header-adjust-panel h3,
+.experience-adjust-panel h3 {
   margin: 0 0 0.3rem;
   font-size: 1rem;
   font-weight: 800;
@@ -514,7 +533,8 @@ button {
 }
 
 .hero-adjust-panel p,
-.header-adjust-panel p {
+.header-adjust-panel p,
+.experience-adjust-panel p {
   margin: 0 0 1rem;
   color: var(--muted);
   font-size: 0.88rem;
@@ -524,6 +544,15 @@ button {
 .hero-adjust-grid {
   display: grid;
   gap: 0.9rem;
+}
+
+.hero-adjust-group-title {
+  margin: 0.35rem 0 -0.1rem;
+  color: rgba(244, 241, 235, 0.72);
+  font-size: 0.76rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
 }
 
 .hero-adjust-control {
@@ -822,6 +851,72 @@ button {
   color: var(--muted);
   font-size: 0.93rem;
   line-height: 1.65;
+}
+
+body.experience-adjust-active .about {
+  padding-top: var(--about-adjust-padding-top, 112px);
+  padding-bottom: var(--about-adjust-padding-bottom, 112px);
+}
+
+body.experience-adjust-active .about-grid {
+  position: relative;
+  display: block;
+  width: min(100%, var(--about-adjust-max-width, 1320px));
+  min-height: var(--about-adjust-min-height, 980px);
+  max-width: none;
+  margin-inline: auto;
+}
+
+body.experience-adjust-active .about-copy,
+body.experience-adjust-active .about-media,
+body.experience-adjust-active .about-gallery {
+  position: absolute;
+  inset: 0 auto auto 0;
+  margin: 0;
+}
+
+body.experience-adjust-active .about-copy {
+  width: var(--about-adjust-copy-width, 560px);
+  transform:
+    translate(
+      var(--about-adjust-copy-offset-x, 0px),
+      var(--about-adjust-copy-offset-y, 0px)
+    )
+    scale(var(--about-adjust-copy-scale, 1));
+  transform-origin: top left;
+}
+
+body.experience-adjust-active .about-media {
+  width: var(--about-adjust-video-width, 620px);
+  transform:
+    translate(
+      var(--about-adjust-video-offset-x, 670px),
+      var(--about-adjust-video-offset-y, 8px)
+    );
+}
+
+body.experience-adjust-active .about-video-card {
+  min-height: var(--about-adjust-video-height, 520px);
+  max-height: var(--about-adjust-video-height, 520px);
+  height: var(--about-adjust-video-height, 520px);
+}
+
+body.experience-adjust-active .about-gallery {
+  grid-template-columns: repeat(3, minmax(0, var(--about-adjust-gallery-card-width, 320px)));
+  grid-auto-columns: var(--about-adjust-gallery-card-width, 320px);
+  gap: var(--about-adjust-gallery-gap, 20px);
+  width: max-content;
+  transform:
+    translate(
+      var(--about-adjust-gallery-offset-x, 0px),
+      var(--about-adjust-gallery-offset-y, 590px)
+    );
+}
+
+body.experience-adjust-active .about-gallery-card img {
+  height: var(--about-adjust-gallery-card-height, 240px);
+  aspect-ratio: auto;
+  object-fit: cover;
 }
 
 .differentials-grid {

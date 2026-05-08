@@ -1095,8 +1095,10 @@ if (bookingForm && formFeedback) {
   });
 }
 
-const heroAdjustMode = new URLSearchParams(window.location.search).get("ajusteHero") === "1";
-const headerAdjustMode = new URLSearchParams(window.location.search).get("ajusteHeader") === "1";
+const pageParams = new URLSearchParams(window.location.search);
+const heroAdjustMode = pageParams.get("ajusteHero") === "1";
+const headerAdjustMode = pageParams.get("ajusteHeader") === "1";
+const experienceAdjustMode = pageParams.get("ajusteExperiencia") === "1";
 
 const createHeroAdjustmentPanel = () => {
   if (!heroAdjustMode) {
@@ -1593,4 +1595,263 @@ const createHeaderAdjustmentPanel = () => {
 };
 
 createHeaderAdjustmentPanel();
+
+const createExperienceAdjustmentPanel = () => {
+  if (!experienceAdjustMode) {
+    return;
+  }
+
+  const aboutSection = document.querySelector(".about");
+  const aboutGrid = document.querySelector(".about-grid");
+  const aboutCopy = document.querySelector(".about-copy");
+  const aboutMedia = document.querySelector(".about-media");
+  const aboutGallery = document.querySelector(".about-gallery");
+
+  if (!aboutSection || !aboutGrid || !aboutCopy || !aboutMedia || !aboutGallery) {
+    return;
+  }
+
+  document.body.classList.add("experience-adjust-active");
+
+  const storageKey = "coronelsExperienceAdjustments";
+  const defaultSettings = {
+    copyOffsetX: 0,
+    copyOffsetY: 0,
+    copyWidth: 560,
+    copyScale: 1,
+    videoOffsetX: 670,
+    videoOffsetY: 8,
+    videoWidth: 620,
+    videoHeight: 520,
+    galleryOffsetX: 0,
+    galleryOffsetY: 590,
+    galleryCardWidth: 320,
+    galleryCardHeight: 240,
+    galleryGap: 20,
+    containerMaxWidth: 1320,
+    containerMinHeight: 980,
+    containerPaddingTop: 112,
+    containerPaddingBottom: 112,
+  };
+
+  const controls = [
+    { type: "group", label: "Bloco de texto" },
+    { key: "copyOffsetX", label: "Posição X do texto", min: -400, max: 800, step: 1, unit: "px" },
+    { key: "copyOffsetY", label: "Posição Y do texto", min: -240, max: 900, step: 1, unit: "px" },
+    { key: "copyWidth", label: "Largura do texto", min: 260, max: 900, step: 1, unit: "px" },
+    { key: "copyScale", label: "Escala do texto", min: 0.7, max: 1.4, step: 0.01, unit: "" },
+    { type: "group", label: "Vídeo principal" },
+    { key: "videoOffsetX", label: "Posição X do vídeo", min: -400, max: 1200, step: 1, unit: "px" },
+    { key: "videoOffsetY", label: "Posição Y do vídeo", min: -240, max: 900, step: 1, unit: "px" },
+    { key: "videoWidth", label: "Largura do vídeo", min: 240, max: 900, step: 1, unit: "px" },
+    { key: "videoHeight", label: "Altura do vídeo", min: 220, max: 820, step: 1, unit: "px" },
+    { type: "group", label: "Cards inferiores" },
+    { key: "galleryOffsetX", label: "Posição X dos cards", min: -400, max: 1000, step: 1, unit: "px" },
+    { key: "galleryOffsetY", label: "Posição Y dos cards", min: -240, max: 1300, step: 1, unit: "px" },
+    { key: "galleryCardWidth", label: "Largura dos cards", min: 140, max: 420, step: 1, unit: "px" },
+    { key: "galleryCardHeight", label: "Altura das imagens", min: 140, max: 420, step: 1, unit: "px" },
+    { key: "galleryGap", label: "Espaço entre os cards", min: 0, max: 48, step: 1, unit: "px" },
+    { type: "group", label: "Container geral" },
+    { key: "containerMaxWidth", label: "Largura máxima da seção", min: 900, max: 1800, step: 1, unit: "px" },
+    { key: "containerMinHeight", label: "Altura mínima da seção", min: 700, max: 1800, step: 1, unit: "px" },
+    { key: "containerPaddingTop", label: "Espaçamento superior", min: 0, max: 240, step: 1, unit: "px" },
+    { key: "containerPaddingBottom", label: "Espaçamento inferior", min: 0, max: 260, step: 1, unit: "px" },
+  ];
+
+  const readStoredSettings = () => {
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      if (!raw) {
+        return { ...defaultSettings };
+      }
+
+      const parsed = JSON.parse(raw);
+      return {
+        ...defaultSettings,
+        ...Object.fromEntries(
+          Object.entries(parsed).map(([key, value]) => [key, Number(value)])
+        ),
+      };
+    } catch {
+      return { ...defaultSettings };
+    }
+  };
+
+  let settings = readStoredSettings();
+
+  const panel = document.createElement("aside");
+  panel.className = "experience-adjust-panel";
+  panel.setAttribute("aria-label", "Ajuste Experiência");
+  panel.innerHTML = `
+    <h3>Ajuste Experiência</h3>
+    <p>Ajuste visual temporário da seção “Sobre a experiência”. Só aparece com <code>?ajusteExperiencia=1</code>.</p>
+    <div class="hero-adjust-grid" data-experience-adjust-grid></div>
+    <div class="hero-adjust-actions">
+      <button class="button button-gold" type="button" data-experience-copy-css>Copiar CSS</button>
+      <button class="button button-ghost" type="button" data-experience-reset>Resetar ajustes</button>
+    </div>
+    <div class="hero-adjust-toast" data-experience-adjust-toast></div>
+  `;
+
+  document.body.append(panel);
+
+  const grid = panel.querySelector("[data-experience-adjust-grid]");
+  const toast = panel.querySelector("[data-experience-adjust-toast]");
+  const copyButton = panel.querySelector("[data-experience-copy-css]");
+  const resetButton = panel.querySelector("[data-experience-reset]");
+  const valueOutputs = new Map();
+  const inputs = new Map();
+
+  const persistSettings = () => {
+    window.localStorage.setItem(storageKey, JSON.stringify(settings));
+  };
+
+  const formatControlValue = (key, value) => {
+    const control = controls.find((item) => item.key === key);
+    if (!control) {
+      return String(value);
+    }
+
+    if (control.unit === "") {
+      const decimals = String(control.step).includes(".")
+        ? String(control.step).split(".")[1].length
+        : 0;
+      return Number(value).toFixed(decimals);
+    }
+
+    return `${Math.round(Number(value))}`;
+  };
+
+  const cssSnippet = () => `:root {
+  --about-adjust-max-width: ${formatControlValue("containerMaxWidth", settings.containerMaxWidth)}px;
+  --about-adjust-min-height: ${formatControlValue("containerMinHeight", settings.containerMinHeight)}px;
+  --about-adjust-padding-top: ${formatControlValue("containerPaddingTop", settings.containerPaddingTop)}px;
+  --about-adjust-padding-bottom: ${formatControlValue("containerPaddingBottom", settings.containerPaddingBottom)}px;
+  --about-adjust-copy-width: ${formatControlValue("copyWidth", settings.copyWidth)}px;
+  --about-adjust-copy-offset-x: ${formatControlValue("copyOffsetX", settings.copyOffsetX)}px;
+  --about-adjust-copy-offset-y: ${formatControlValue("copyOffsetY", settings.copyOffsetY)}px;
+  --about-adjust-copy-scale: ${formatControlValue("copyScale", settings.copyScale)};
+  --about-adjust-video-width: ${formatControlValue("videoWidth", settings.videoWidth)}px;
+  --about-adjust-video-height: ${formatControlValue("videoHeight", settings.videoHeight)}px;
+  --about-adjust-video-offset-x: ${formatControlValue("videoOffsetX", settings.videoOffsetX)}px;
+  --about-adjust-video-offset-y: ${formatControlValue("videoOffsetY", settings.videoOffsetY)}px;
+  --about-adjust-gallery-offset-x: ${formatControlValue("galleryOffsetX", settings.galleryOffsetX)}px;
+  --about-adjust-gallery-offset-y: ${formatControlValue("galleryOffsetY", settings.galleryOffsetY)}px;
+  --about-adjust-gallery-card-width: ${formatControlValue("galleryCardWidth", settings.galleryCardWidth)}px;
+  --about-adjust-gallery-card-height: ${formatControlValue("galleryCardHeight", settings.galleryCardHeight)}px;
+  --about-adjust-gallery-gap: ${formatControlValue("galleryGap", settings.galleryGap)}px;
+}`;
+
+  const updateToast = (message) => {
+    if (toast) {
+      toast.textContent = message;
+    }
+  };
+
+  const applyExperienceSettings = () => {
+    document.documentElement.style.setProperty("--about-adjust-max-width", `${settings.containerMaxWidth}px`);
+    document.documentElement.style.setProperty("--about-adjust-min-height", `${settings.containerMinHeight}px`);
+    document.documentElement.style.setProperty("--about-adjust-padding-top", `${settings.containerPaddingTop}px`);
+    document.documentElement.style.setProperty("--about-adjust-padding-bottom", `${settings.containerPaddingBottom}px`);
+    document.documentElement.style.setProperty("--about-adjust-copy-width", `${settings.copyWidth}px`);
+    document.documentElement.style.setProperty("--about-adjust-copy-offset-x", `${settings.copyOffsetX}px`);
+    document.documentElement.style.setProperty("--about-adjust-copy-offset-y", `${settings.copyOffsetY}px`);
+    document.documentElement.style.setProperty("--about-adjust-copy-scale", `${settings.copyScale}`);
+    document.documentElement.style.setProperty("--about-adjust-video-width", `${settings.videoWidth}px`);
+    document.documentElement.style.setProperty("--about-adjust-video-height", `${settings.videoHeight}px`);
+    document.documentElement.style.setProperty("--about-adjust-video-offset-x", `${settings.videoOffsetX}px`);
+    document.documentElement.style.setProperty("--about-adjust-video-offset-y", `${settings.videoOffsetY}px`);
+    document.documentElement.style.setProperty("--about-adjust-gallery-offset-x", `${settings.galleryOffsetX}px`);
+    document.documentElement.style.setProperty("--about-adjust-gallery-offset-y", `${settings.galleryOffsetY}px`);
+    document.documentElement.style.setProperty("--about-adjust-gallery-card-width", `${settings.galleryCardWidth}px`);
+    document.documentElement.style.setProperty("--about-adjust-gallery-card-height", `${settings.galleryCardHeight}px`);
+    document.documentElement.style.setProperty("--about-adjust-gallery-gap", `${settings.galleryGap}px`);
+
+    controls.forEach((control) => {
+      if (!control.key) {
+        return;
+      }
+
+      const input = inputs.get(control.key);
+      const output = valueOutputs.get(control.key);
+
+      if (input) {
+        input.value = String(settings[control.key]);
+      }
+
+      if (output) {
+        output.textContent =
+          control.unit === ""
+            ? formatControlValue(control.key, settings[control.key])
+            : `${formatControlValue(control.key, settings[control.key])}${control.unit}`;
+      }
+    });
+  };
+
+  controls.forEach((control) => {
+    if (control.type === "group") {
+      const title = document.createElement("div");
+      title.className = "hero-adjust-group-title";
+      title.textContent = control.label;
+      grid?.append(title);
+      return;
+    }
+
+    const { key, label, min, max, step } = control;
+    const item = document.createElement("div");
+    item.className = "hero-adjust-control";
+    item.innerHTML = `
+      <div class="hero-adjust-control-head">
+        <label for="experience-adjust-${key}">${label}</label>
+        <span class="hero-adjust-control-output" data-output-for="${key}">0</span>
+      </div>
+      <input
+        id="experience-adjust-${key}"
+        type="range"
+        min="${min}"
+        max="${max}"
+        step="${step}"
+        value="${settings[key]}"
+      >
+    `;
+
+    const input = item.querySelector("input");
+    const output = item.querySelector("[data-output-for]");
+
+    input.addEventListener("input", () => {
+      settings = {
+        ...settings,
+        [key]: Number(input.value),
+      };
+      applyExperienceSettings();
+      persistSettings();
+      updateToast("Ajuste salvo localmente para teste.");
+    });
+
+    inputs.set(key, input);
+    valueOutputs.set(key, output);
+    grid?.append(item);
+  });
+
+  copyButton?.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(cssSnippet());
+      updateToast("CSS copiado.");
+    } catch {
+      updateToast("Não foi possível copiar automaticamente. Tente novamente.");
+    }
+  });
+
+  resetButton?.addEventListener("click", () => {
+    settings = { ...defaultSettings };
+    window.localStorage.removeItem(storageKey);
+    applyExperienceSettings();
+    updateToast("Ajustes resetados.");
+  });
+
+  applyExperienceSettings();
+  updateToast("Modo de ajuste da experiência ativo.");
+};
+
+createExperienceAdjustmentPanel();
 
