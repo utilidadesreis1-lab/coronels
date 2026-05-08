@@ -1096,6 +1096,7 @@ if (bookingForm && formFeedback) {
 }
 
 const heroAdjustMode = new URLSearchParams(window.location.search).get("ajusteHero") === "1";
+const headerAdjustMode = new URLSearchParams(window.location.search).get("ajusteHeader") === "1";
 
 const createHeroAdjustmentPanel = () => {
   if (!heroAdjustMode) {
@@ -1330,4 +1331,254 @@ const createHeroAdjustmentPanel = () => {
 };
 
 createHeroAdjustmentPanel();
+
+const createHeaderAdjustmentPanel = () => {
+  if (!headerAdjustMode) {
+    return;
+  }
+
+  const headerInner = document.querySelector(".header-inner");
+  const brand = document.querySelector(".brand");
+  const brandMark = document.querySelector(".brand-mark");
+  const brandText = document.querySelector(".brand-text");
+  const siteNav = document.querySelector(".site-nav");
+  const headerCta = document.querySelector(".header-cta");
+
+  if (!headerInner || !brand || !brandMark || !brandText || !siteNav || !headerCta) {
+    return;
+  }
+
+  const storageKey = "coronelsHeaderAdjustments";
+  const defaultSettings = {
+    symbolSize: 59,
+    symbolOffsetX: 0,
+    symbolOffsetY: 0,
+    brandTextSize: 16,
+    brandGap: 9,
+    brandOffsetX: 0,
+    brandOffsetY: 0,
+    headerHeight: 84,
+    headerPaddingInline: 0,
+    headerBgOpacity: 0.84,
+    navFontSize: 15.36,
+    navGap: 32,
+    navOffsetX: 0,
+    navOffsetY: 0,
+    ctaOffsetX: 0,
+    ctaOffsetY: 0,
+    ctaFontSize: 15.36,
+    ctaPaddingX: 24,
+    ctaPaddingY: 15.2,
+  };
+
+  const controls = [
+    { key: "symbolSize", label: "Tamanho do símbolo", min: 24, max: 96, step: 1, unit: "px" },
+    { key: "symbolOffsetX", label: "Posição X do símbolo", min: -120, max: 120, step: 1, unit: "px" },
+    { key: "symbolOffsetY", label: "Posição Y do símbolo", min: -120, max: 120, step: 1, unit: "px" },
+    { key: "brandTextSize", label: "Tamanho do texto da marca", min: 10, max: 36, step: 1, unit: "px" },
+    { key: "brandGap", label: "Distância símbolo/texto", min: 0, max: 40, step: 1, unit: "px" },
+    { key: "brandOffsetX", label: "Posição X da marca", min: -200, max: 200, step: 1, unit: "px" },
+    { key: "brandOffsetY", label: "Posição Y da marca", min: -120, max: 120, step: 1, unit: "px" },
+    { key: "headerHeight", label: "Altura do header", min: 56, max: 140, step: 1, unit: "px" },
+    { key: "headerPaddingInline", label: "Padding horizontal do header", min: 0, max: 64, step: 1, unit: "px" },
+    { key: "headerBgOpacity", label: "Opacidade/fundo do header", min: 0, max: 1, step: 0.01, unit: "" },
+    { key: "navFontSize", label: "Tamanho da fonte do menu", min: 10, max: 28, step: 1, unit: "px" },
+    { key: "navGap", label: "Espaçamento entre links", min: 4, max: 64, step: 1, unit: "px" },
+    { key: "navOffsetX", label: "Posição X do menu", min: -200, max: 200, step: 1, unit: "px" },
+    { key: "navOffsetY", label: "Posição Y do menu", min: -120, max: 120, step: 1, unit: "px" },
+    { key: "ctaOffsetX", label: "Posição X do botão", min: -200, max: 200, step: 1, unit: "px" },
+    { key: "ctaOffsetY", label: "Posição Y do botão", min: -120, max: 120, step: 1, unit: "px" },
+    { key: "ctaFontSize", label: "Tamanho da fonte do botão", min: 10, max: 28, step: 1, unit: "px" },
+    { key: "ctaPaddingX", label: "Padding horizontal do botão", min: 8, max: 48, step: 1, unit: "px" },
+    { key: "ctaPaddingY", label: "Padding vertical do botão", min: 6, max: 28, step: 1, unit: "px" },
+  ];
+
+  const readStoredSettings = () => {
+    try {
+      const raw = window.localStorage.getItem(storageKey);
+      if (!raw) {
+        return { ...defaultSettings };
+      }
+
+      const parsed = JSON.parse(raw);
+      return {
+        ...defaultSettings,
+        ...Object.fromEntries(
+          Object.entries(parsed).map(([key, value]) => [key, Number(value)])
+        ),
+      };
+    } catch {
+      return { ...defaultSettings };
+    }
+  };
+
+  let settings = readStoredSettings();
+
+  const panel = document.createElement("aside");
+  panel.className = "header-adjust-panel";
+  panel.setAttribute("aria-label", "Ajuste Header");
+
+  panel.innerHTML = `
+    <h3>Ajuste Header</h3>
+    <p>Ajuste visual temporário da marca, menu e botão do topo. Só aparece com <code>?ajusteHeader=1</code>.</p>
+    <div class="hero-adjust-grid" data-header-adjust-grid></div>
+    <div class="hero-adjust-actions">
+      <button class="button button-gold" type="button" data-header-copy-css>Copiar CSS</button>
+      <button class="button button-ghost" type="button" data-header-reset>Resetar ajustes</button>
+    </div>
+    <div class="hero-adjust-toast" data-header-adjust-toast></div>
+  `;
+
+  document.body.append(panel);
+
+  const grid = panel.querySelector("[data-header-adjust-grid]");
+  const toast = panel.querySelector("[data-header-adjust-toast]");
+  const copyButton = panel.querySelector("[data-header-copy-css]");
+  const resetButton = panel.querySelector("[data-header-reset]");
+  const valueOutputs = new Map();
+  const inputs = new Map();
+
+  const persistSettings = () => {
+    window.localStorage.setItem(storageKey, JSON.stringify(settings));
+  };
+
+  const formatControlValue = (key, value) => {
+    const control = controls.find((item) => item.key === key);
+    if (!control) {
+      return String(value);
+    }
+
+    if (control.unit === "") {
+      const decimals = String(control.step).includes(".")
+        ? String(control.step).split(".")[1].length
+        : 0;
+      return Number(value).toFixed(decimals);
+    }
+
+    return `${Math.round(Number(value))}`;
+  };
+
+  const cssSnippet = () => `:root {
+  --header-height: ${formatControlValue("headerHeight", settings.headerHeight)}px;
+  --header-padding-inline: ${formatControlValue("headerPaddingInline", settings.headerPaddingInline)}px;
+  --header-bg-opacity: ${formatControlValue("headerBgOpacity", settings.headerBgOpacity)};
+  --header-brand-gap: ${formatControlValue("brandGap", settings.brandGap)}px;
+  --header-brand-offset-x: ${formatControlValue("brandOffsetX", settings.brandOffsetX)}px;
+  --header-brand-offset-y: ${formatControlValue("brandOffsetY", settings.brandOffsetY)}px;
+  --header-symbol-size: ${formatControlValue("symbolSize", settings.symbolSize)}px;
+  --header-symbol-offset-x: ${formatControlValue("symbolOffsetX", settings.symbolOffsetX)}px;
+  --header-symbol-offset-y: ${formatControlValue("symbolOffsetY", settings.symbolOffsetY)}px;
+  --header-brand-text-size: ${formatControlValue("brandTextSize", settings.brandTextSize)}px;
+  --header-nav-font-size: ${formatControlValue("navFontSize", settings.navFontSize)}px;
+  --header-nav-gap: ${formatControlValue("navGap", settings.navGap)}px;
+  --header-nav-offset-x: ${formatControlValue("navOffsetX", settings.navOffsetX)}px;
+  --header-nav-offset-y: ${formatControlValue("navOffsetY", settings.navOffsetY)}px;
+  --header-cta-offset-x: ${formatControlValue("ctaOffsetX", settings.ctaOffsetX)}px;
+  --header-cta-offset-y: ${formatControlValue("ctaOffsetY", settings.ctaOffsetY)}px;
+  --header-cta-font-size: ${formatControlValue("ctaFontSize", settings.ctaFontSize)}px;
+  --header-cta-padding-x: ${formatControlValue("ctaPaddingX", settings.ctaPaddingX)}px;
+  --header-cta-padding-y: ${formatControlValue("ctaPaddingY", settings.ctaPaddingY)}px;
+}`;
+
+  const updateToast = (message) => {
+    if (toast) {
+      toast.textContent = message;
+    }
+  };
+
+  const applyHeaderSettings = () => {
+    document.documentElement.style.setProperty("--header-height", `${settings.headerHeight}px`);
+    document.documentElement.style.setProperty("--header-padding-inline", `${settings.headerPaddingInline}px`);
+    document.documentElement.style.setProperty("--header-bg-opacity", `${settings.headerBgOpacity}`);
+    document.documentElement.style.setProperty("--header-brand-gap", `${settings.brandGap}px`);
+    document.documentElement.style.setProperty("--header-brand-offset-x", `${settings.brandOffsetX}px`);
+    document.documentElement.style.setProperty("--header-brand-offset-y", `${settings.brandOffsetY}px`);
+    document.documentElement.style.setProperty("--header-symbol-size", `${settings.symbolSize}px`);
+    document.documentElement.style.setProperty("--header-symbol-offset-x", `${settings.symbolOffsetX}px`);
+    document.documentElement.style.setProperty("--header-symbol-offset-y", `${settings.symbolOffsetY}px`);
+    document.documentElement.style.setProperty("--header-brand-text-size", `${settings.brandTextSize}px`);
+    document.documentElement.style.setProperty("--header-nav-font-size", `${settings.navFontSize}px`);
+    document.documentElement.style.setProperty("--header-nav-gap", `${settings.navGap}px`);
+    document.documentElement.style.setProperty("--header-nav-offset-x", `${settings.navOffsetX}px`);
+    document.documentElement.style.setProperty("--header-nav-offset-y", `${settings.navOffsetY}px`);
+    document.documentElement.style.setProperty("--header-cta-offset-x", `${settings.ctaOffsetX}px`);
+    document.documentElement.style.setProperty("--header-cta-offset-y", `${settings.ctaOffsetY}px`);
+    document.documentElement.style.setProperty("--header-cta-font-size", `${settings.ctaFontSize}px`);
+    document.documentElement.style.setProperty("--header-cta-padding-x", `${settings.ctaPaddingX}px`);
+    document.documentElement.style.setProperty("--header-cta-padding-y", `${settings.ctaPaddingY}px`);
+
+    controls.forEach(({ key, unit }) => {
+      const input = inputs.get(key);
+      const output = valueOutputs.get(key);
+
+      if (input) {
+        input.value = String(settings[key]);
+      }
+
+      if (output) {
+        output.textContent =
+          unit === ""
+            ? formatControlValue(key, settings[key])
+            : `${formatControlValue(key, settings[key])}${unit}`;
+      }
+    });
+  };
+
+  controls.forEach(({ key, label, min, max, step }) => {
+    const control = document.createElement("div");
+    control.className = "hero-adjust-control";
+    control.innerHTML = `
+      <div class="hero-adjust-control-head">
+        <label for="header-adjust-${key}">${label}</label>
+        <span class="hero-adjust-control-output" data-output-for="${key}">0</span>
+      </div>
+      <input
+        id="header-adjust-${key}"
+        type="range"
+        min="${min}"
+        max="${max}"
+        step="${step}"
+        value="${settings[key]}"
+      >
+    `;
+
+    const input = control.querySelector("input");
+    const output = control.querySelector("[data-output-for]");
+
+    input.addEventListener("input", () => {
+      settings = {
+        ...settings,
+        [key]: Number(input.value),
+      };
+      applyHeaderSettings();
+      persistSettings();
+      updateToast("Ajuste salvo localmente para teste.");
+    });
+
+    inputs.set(key, input);
+    valueOutputs.set(key, output);
+    grid?.append(control);
+  });
+
+  copyButton?.addEventListener("click", async () => {
+    try {
+      await navigator.clipboard.writeText(cssSnippet());
+      updateToast("CSS copiado.");
+    } catch {
+      updateToast("Não foi possível copiar automaticamente. Tente novamente.");
+    }
+  });
+
+  resetButton?.addEventListener("click", () => {
+    settings = { ...defaultSettings };
+    window.localStorage.removeItem(storageKey);
+    applyHeaderSettings();
+    updateToast("Ajustes resetados.");
+  });
+
+  applyHeaderSettings();
+  updateToast("Modo de ajuste do header ativo.");
+};
+
+createHeaderAdjustmentPanel();
 

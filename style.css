@@ -13,6 +13,24 @@
   --radius-sm: 18px;
   --container: min(92vw, 1480px);
   --header-height: 84px;
+  --header-padding-inline: 0px;
+  --header-bg-opacity: 0.84;
+  --header-brand-gap: 0.58rem;
+  --header-brand-offset-x: 0px;
+  --header-brand-offset-y: 0px;
+  --header-symbol-size: 3.7rem;
+  --header-symbol-offset-x: 0px;
+  --header-symbol-offset-y: 0px;
+  --header-brand-text-size: 1rem;
+  --header-nav-font-size: 0.96rem;
+  --header-nav-gap: 2rem;
+  --header-nav-offset-x: 0px;
+  --header-nav-offset-y: 0px;
+  --header-cta-offset-x: 0px;
+  --header-cta-offset-y: 0px;
+  --header-cta-font-size: 0.96rem;
+  --header-cta-padding-x: 1.5rem;
+  --header-cta-padding-y: 0.95rem;
   --hero-brand-width: 760px;
   --hero-brand-height: 330px;
   --hero-brand-scale: 0.40;
@@ -95,7 +113,7 @@ button {
 }
 
 .site-header.scrolled {
-  background: rgba(10, 10, 11, 0.84);
+  background: rgba(10, 10, 11, var(--header-bg-opacity, 0.84));
   border-bottom: 1px solid var(--line);
   backdrop-filter: blur(14px);
 }
@@ -106,6 +124,7 @@ button {
 
 .header-inner {
   min-height: var(--header-height);
+  padding-inline: var(--header-padding-inline, 0px);
   display: flex;
   align-items: center;
   justify-content: space-between;
@@ -115,14 +134,18 @@ button {
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: 0.58rem;
+  gap: var(--header-brand-gap, 0.58rem);
   position: relative;
   z-index: 21;
+  transform: translate(
+    var(--header-brand-offset-x, 0px),
+    var(--header-brand-offset-y, 0px)
+  );
 }
 
 .brand-mark {
-  width: 3.7rem;
-  height: 3.7rem;
+  width: var(--header-symbol-size, 3.7rem);
+  height: var(--header-symbol-size, 3.7rem);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -131,6 +154,10 @@ button {
   font-size: 1.5rem;
   font-weight: 700;
   overflow: hidden;
+  transform: translate(
+    var(--header-symbol-offset-x, 0px),
+    var(--header-symbol-offset-y, 0px)
+  );
 }
 
 .brand-icon {
@@ -166,7 +193,7 @@ button {
 
 .brand-text {
   font-family: "Manrope", sans-serif;
-  font-size: 1rem;
+  font-size: var(--header-brand-text-size, 1rem);
   font-weight: 600;
   letter-spacing: 0.008em;
   display: inline-flex;
@@ -185,15 +212,19 @@ button {
 .site-nav {
   display: flex;
   align-items: center;
-  gap: 2rem;
+  gap: var(--header-nav-gap, 2rem);
   margin-left: auto;
+  transform: translate(
+    var(--header-nav-offset-x, 0px),
+    var(--header-nav-offset-y, 0px)
+  );
 }
 
 .site-nav a {
   position: relative;
   font-family: "Manrope", sans-serif;
   color: rgba(244, 241, 235, 0.8);
-  font-size: 0.96rem;
+  font-size: var(--header-nav-font-size, 0.96rem);
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -268,6 +299,16 @@ button {
     border-color 0.25s ease,
     color 0.25s ease,
     box-shadow 0.25s ease;
+}
+
+.header-cta {
+  font-size: var(--header-cta-font-size, 0.96rem);
+  padding-inline: var(--header-cta-padding-x, 1.5rem);
+  padding-block: var(--header-cta-padding-y, 0.95rem);
+  transform: translate(
+    var(--header-cta-offset-x, 0px),
+    var(--header-cta-offset-y, 0px)
+  );
 }
 
 .button:hover,
@@ -435,7 +476,8 @@ button {
   white-space: nowrap;
 }
 
-.hero-adjust-panel {
+.hero-adjust-panel,
+.header-adjust-panel {
   position: fixed;
   top: 1rem;
   right: 1rem;
@@ -453,7 +495,8 @@ button {
   backdrop-filter: blur(16px);
 }
 
-.hero-adjust-panel h3 {
+.hero-adjust-panel h3,
+.header-adjust-panel h3 {
   margin: 0 0 0.3rem;
   font-size: 1rem;
   font-weight: 800;
@@ -461,7 +504,8 @@ button {
   text-transform: uppercase;
 }
 
-.hero-adjust-panel p {
+.hero-adjust-panel p,
+.header-adjust-panel p {
   margin: 0 0 1rem;
   color: var(--muted);
   font-size: 0.88rem;
