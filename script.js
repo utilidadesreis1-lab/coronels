@@ -1350,11 +1350,14 @@ const createHeaderAdjustmentPanel = () => {
 
   const storageKey = "coronelsHeaderAdjustments";
   const defaultSettings = {
+    brandWidth: 240,
     symbolSize: 59,
     symbolOffsetX: 0,
     symbolOffsetY: 0,
     brandTextSize: 16,
-    brandGap: 9,
+    brandTextOffsetX: 58,
+    brandTextOffsetY: 0,
+    brandLetterSpacing: 0.008,
     brandOffsetX: 0,
     brandOffsetY: 0,
     headerHeight: 84,
@@ -1372,13 +1375,16 @@ const createHeaderAdjustmentPanel = () => {
   };
 
   const controls = [
+    { key: "brandWidth", label: "Largura do grupo da marca", min: 140, max: 420, step: 1, unit: "px" },
+    { key: "brandOffsetX", label: "Posição X do grupo da marca", min: -200, max: 200, step: 1, unit: "px" },
+    { key: "brandOffsetY", label: "Posição Y do grupo da marca", min: -120, max: 120, step: 1, unit: "px" },
     { key: "symbolSize", label: "Tamanho do símbolo", min: 24, max: 96, step: 1, unit: "px" },
     { key: "symbolOffsetX", label: "Posição X do símbolo", min: -120, max: 120, step: 1, unit: "px" },
     { key: "symbolOffsetY", label: "Posição Y do símbolo", min: -120, max: 120, step: 1, unit: "px" },
     { key: "brandTextSize", label: "Tamanho do texto da marca", min: 10, max: 36, step: 1, unit: "px" },
-    { key: "brandGap", label: "Distância símbolo/texto", min: 0, max: 40, step: 1, unit: "px" },
-    { key: "brandOffsetX", label: "Posição X da marca", min: -200, max: 200, step: 1, unit: "px" },
-    { key: "brandOffsetY", label: "Posição Y da marca", min: -120, max: 120, step: 1, unit: "px" },
+    { key: "brandTextOffsetX", label: "Posição X do texto", min: -160, max: 220, step: 1, unit: "px" },
+    { key: "brandTextOffsetY", label: "Posição Y do texto", min: -120, max: 120, step: 1, unit: "px" },
+    { key: "brandLetterSpacing", label: "Entre letras do texto", min: -0.02, max: 0.12, step: 0.001, unit: "em" },
     { key: "headerHeight", label: "Altura do header", min: 56, max: 140, step: 1, unit: "px" },
     { key: "headerPaddingInline", label: "Padding horizontal do header", min: 0, max: 64, step: 1, unit: "px" },
     { key: "headerBgOpacity", label: "Opacidade/fundo do header", min: 0, max: 1, step: 0.01, unit: "" },
@@ -1462,13 +1468,17 @@ const createHeaderAdjustmentPanel = () => {
   --header-height: ${formatControlValue("headerHeight", settings.headerHeight)}px;
   --header-padding-inline: ${formatControlValue("headerPaddingInline", settings.headerPaddingInline)}px;
   --header-bg-opacity: ${formatControlValue("headerBgOpacity", settings.headerBgOpacity)};
-  --header-brand-gap: ${formatControlValue("brandGap", settings.brandGap)}px;
+  --header-brand-width: ${formatControlValue("brandWidth", settings.brandWidth)}px;
+  --header-brand-height: ${formatControlValue("headerHeight", settings.headerHeight)}px;
   --header-brand-offset-x: ${formatControlValue("brandOffsetX", settings.brandOffsetX)}px;
   --header-brand-offset-y: ${formatControlValue("brandOffsetY", settings.brandOffsetY)}px;
   --header-symbol-size: ${formatControlValue("symbolSize", settings.symbolSize)}px;
   --header-symbol-offset-x: ${formatControlValue("symbolOffsetX", settings.symbolOffsetX)}px;
   --header-symbol-offset-y: ${formatControlValue("symbolOffsetY", settings.symbolOffsetY)}px;
   --header-brand-text-size: ${formatControlValue("brandTextSize", settings.brandTextSize)}px;
+  --header-brand-text-offset-x: ${formatControlValue("brandTextOffsetX", settings.brandTextOffsetX)}px;
+  --header-brand-text-offset-y: ${formatControlValue("brandTextOffsetY", settings.brandTextOffsetY)}px;
+  --header-brand-letter-spacing: ${formatControlValue("brandLetterSpacing", settings.brandLetterSpacing)}em;
   --header-nav-font-size: ${formatControlValue("navFontSize", settings.navFontSize)}px;
   --header-nav-gap: ${formatControlValue("navGap", settings.navGap)}px;
   --header-nav-offset-x: ${formatControlValue("navOffsetX", settings.navOffsetX)}px;
@@ -1490,13 +1500,17 @@ const createHeaderAdjustmentPanel = () => {
     document.documentElement.style.setProperty("--header-height", `${settings.headerHeight}px`);
     document.documentElement.style.setProperty("--header-padding-inline", `${settings.headerPaddingInline}px`);
     document.documentElement.style.setProperty("--header-bg-opacity", `${settings.headerBgOpacity}`);
-    document.documentElement.style.setProperty("--header-brand-gap", `${settings.brandGap}px`);
+    document.documentElement.style.setProperty("--header-brand-width", `${settings.brandWidth}px`);
+    document.documentElement.style.setProperty("--header-brand-height", `${settings.headerHeight}px`);
     document.documentElement.style.setProperty("--header-brand-offset-x", `${settings.brandOffsetX}px`);
     document.documentElement.style.setProperty("--header-brand-offset-y", `${settings.brandOffsetY}px`);
     document.documentElement.style.setProperty("--header-symbol-size", `${settings.symbolSize}px`);
     document.documentElement.style.setProperty("--header-symbol-offset-x", `${settings.symbolOffsetX}px`);
     document.documentElement.style.setProperty("--header-symbol-offset-y", `${settings.symbolOffsetY}px`);
     document.documentElement.style.setProperty("--header-brand-text-size", `${settings.brandTextSize}px`);
+    document.documentElement.style.setProperty("--header-brand-text-offset-x", `${settings.brandTextOffsetX}px`);
+    document.documentElement.style.setProperty("--header-brand-text-offset-y", `${settings.brandTextOffsetY}px`);
+    document.documentElement.style.setProperty("--header-brand-letter-spacing", `${settings.brandLetterSpacing}em`);
     document.documentElement.style.setProperty("--header-nav-font-size", `${settings.navFontSize}px`);
     document.documentElement.style.setProperty("--header-nav-gap", `${settings.navGap}px`);
     document.documentElement.style.setProperty("--header-nav-offset-x", `${settings.navOffsetX}px`);
