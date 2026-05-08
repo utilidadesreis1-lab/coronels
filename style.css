@@ -614,15 +614,15 @@ button {
 
 .about-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1fr) minmax(0, 0.96fr);
-  gap: clamp(1.6rem, 2.2vw, 2.3rem);
+  grid-template-columns: minmax(0, 1.02fr) minmax(0, 0.92fr);
+  gap: clamp(1.8rem, 2.4vw, 2.7rem);
   align-items: stretch;
 }
 
 .about-copy {
   display: grid;
   align-content: start;
-  gap: 1.5rem;
+  gap: 1.7rem;
 }
 
 .about-card,
@@ -646,14 +646,14 @@ button {
 
 .about-card {
   display: grid;
-  gap: 1.15rem;
+  gap: 1.2rem;
 }
 
 .about-highlights {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.05rem;
-  margin-top: 0.95rem;
+  gap: 1.1rem;
+  margin-top: 1.05rem;
 }
 
 .about-highlights article,
@@ -664,38 +664,42 @@ button {
 }
 
 .about-highlights article {
-  padding: 1.2rem;
+  padding: 1.35rem 1.2rem;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.03)),
+    rgba(255, 255, 255, 0.03);
+  box-shadow: 0 14px 28px rgba(0, 0, 0, 0.16);
 }
 
 .about-highlights strong {
   display: block;
-  margin-bottom: 0.45rem;
-  font-size: 0.95rem;
+  margin-bottom: 0.5rem;
+  font-size: 0.98rem;
 }
 
 .about-highlights span {
   color: var(--muted);
   font-size: 0.92rem;
-  line-height: 1.65;
+  line-height: 1.7;
 }
 
 .about-media {
   display: grid;
-  gap: 1.15rem;
+  gap: 1.2rem;
   align-content: start;
 }
 
 .about-video-card {
   position: relative;
-  min-height: 440px;
-  max-height: 500px;
+  min-height: 420px;
+  max-height: 470px;
   border-radius: var(--radius);
   overflow: hidden;
   border: 1px solid var(--line);
   background:
     radial-gradient(circle at top, rgba(255, 255, 255, 0.08), transparent 42%),
     rgba(255, 255, 255, 0.03);
-  box-shadow: var(--shadow);
+  box-shadow: 0 26px 54px rgba(0, 0, 0, 0.28);
 }
 
 .about-video {
@@ -708,8 +712,8 @@ button {
 .about-video-overlay {
   position: absolute;
   inset: auto 0 0;
-  padding: 1.2rem 1.4rem;
-  background: linear-gradient(180deg, transparent, rgba(7, 7, 8, 0.88));
+  padding: 1.3rem 1.45rem;
+  background: linear-gradient(180deg, transparent, rgba(7, 7, 8, 0.92));
 }
 
 .about-video-overlay span {
@@ -726,7 +730,7 @@ button {
 .about-gallery {
   display: grid;
   grid-template-columns: repeat(3, minmax(0, 1fr));
-  gap: 1.05rem;
+  gap: 1.1rem;
 }
 
 .about-gallery-card {
@@ -736,29 +740,37 @@ button {
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.02)),
     rgba(255, 255, 255, 0.03);
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.18);
+  box-shadow: 0 18px 40px rgba(0, 0, 0, 0.18);
+  transition: transform 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
+}
+
+.about-gallery-card:hover {
+  transform: translateY(-4px);
+  border-color: rgba(255, 255, 255, 0.18);
+  box-shadow: 0 22px 46px rgba(0, 0, 0, 0.22);
 }
 
 .about-gallery-card img {
   width: 100%;
-  aspect-ratio: 1.02;
+  aspect-ratio: 1.04;
   object-fit: cover;
+  object-position: center top;
 }
 
 .about-gallery-copy {
-  padding: 1rem 1rem 1.1rem;
+  padding: 1rem 1rem 1.15rem;
 }
 
 .about-gallery-copy strong {
   display: block;
-  margin-bottom: 0.4rem;
-  font-size: 0.96rem;
+  margin-bottom: 0.45rem;
+  font-size: 0.98rem;
 }
 
 .about-gallery-copy span {
   color: var(--muted);
   font-size: 0.9rem;
-  line-height: 1.6;
+  line-height: 1.62;
 }
 
 .differentials-grid {
@@ -2562,8 +2574,8 @@ button {
   }
 
   .about-video-card {
-    min-height: 420px;
-    max-height: 480px;
+    min-height: 380px;
+    max-height: 440px;
   }
 
   .admin-login {
@@ -2724,12 +2736,13 @@ button {
   }
 
   .about-video-card {
-    min-height: 300px;
-    max-height: 360px;
+    min-height: 280px;
+    max-height: 340px;
   }
 
   .about-gallery-card img {
-    aspect-ratio: 1.12;
+    aspect-ratio: 1.14;
+    object-position: center center;
   }
 
   .gallery-card-large {
