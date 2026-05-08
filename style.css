@@ -55,6 +55,7 @@
   --about-adjust-padding-top: 112px;
   --about-adjust-padding-bottom: 112px;
   --about-adjust-copy-width: 560px;
+  --about-adjust-copy-height: 420px;
   --about-adjust-copy-offset-x: 0px;
   --about-adjust-copy-offset-y: 0px;
   --about-adjust-copy-scale: 1;
@@ -877,6 +878,7 @@ body.experience-adjust-active .about-gallery {
 
 body.experience-adjust-active .about-copy {
   width: var(--about-adjust-copy-width, 560px);
+  min-height: var(--about-adjust-copy-height, 420px);
   transform:
     translate(
       var(--about-adjust-copy-offset-x, 0px),
@@ -884,6 +886,10 @@ body.experience-adjust-active .about-copy {
     )
     scale(var(--about-adjust-copy-scale, 1));
   transform-origin: top left;
+}
+
+body.experience-adjust-active .about-card {
+  min-height: var(--about-adjust-copy-height, 420px);
 }
 
 body.experience-adjust-active .about-media {

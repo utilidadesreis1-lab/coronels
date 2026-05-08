@@ -1618,6 +1618,7 @@ const createExperienceAdjustmentPanel = () => {
     copyOffsetX: 0,
     copyOffsetY: 0,
     copyWidth: 560,
+    copyHeight: 420,
     copyScale: 1,
     videoOffsetX: 670,
     videoOffsetY: 8,
@@ -1639,6 +1640,7 @@ const createExperienceAdjustmentPanel = () => {
     { key: "copyOffsetX", label: "Posição X do texto", min: -400, max: 800, step: 1, unit: "px" },
     { key: "copyOffsetY", label: "Posição Y do texto", min: -240, max: 900, step: 1, unit: "px" },
     { key: "copyWidth", label: "Largura do texto", min: 260, max: 900, step: 1, unit: "px" },
+    { key: "copyHeight", label: "Altura do quadro do texto", min: 220, max: 900, step: 1, unit: "px" },
     { key: "copyScale", label: "Escala do texto", min: 0.7, max: 1.4, step: 0.01, unit: "" },
     { type: "group", label: "Vídeo principal" },
     { key: "videoOffsetX", label: "Posição X do vídeo", min: -400, max: 1200, step: 1, unit: "px" },
@@ -1728,6 +1730,7 @@ const createExperienceAdjustmentPanel = () => {
   --about-adjust-padding-top: ${formatControlValue("containerPaddingTop", settings.containerPaddingTop)}px;
   --about-adjust-padding-bottom: ${formatControlValue("containerPaddingBottom", settings.containerPaddingBottom)}px;
   --about-adjust-copy-width: ${formatControlValue("copyWidth", settings.copyWidth)}px;
+  --about-adjust-copy-height: ${formatControlValue("copyHeight", settings.copyHeight)}px;
   --about-adjust-copy-offset-x: ${formatControlValue("copyOffsetX", settings.copyOffsetX)}px;
   --about-adjust-copy-offset-y: ${formatControlValue("copyOffsetY", settings.copyOffsetY)}px;
   --about-adjust-copy-scale: ${formatControlValue("copyScale", settings.copyScale)};
@@ -1754,6 +1757,7 @@ const createExperienceAdjustmentPanel = () => {
     document.documentElement.style.setProperty("--about-adjust-padding-top", `${settings.containerPaddingTop}px`);
     document.documentElement.style.setProperty("--about-adjust-padding-bottom", `${settings.containerPaddingBottom}px`);
     document.documentElement.style.setProperty("--about-adjust-copy-width", `${settings.copyWidth}px`);
+    document.documentElement.style.setProperty("--about-adjust-copy-height", `${settings.copyHeight}px`);
     document.documentElement.style.setProperty("--about-adjust-copy-offset-x", `${settings.copyOffsetX}px`);
     document.documentElement.style.setProperty("--about-adjust-copy-offset-y", `${settings.copyOffsetY}px`);
     document.documentElement.style.setProperty("--about-adjust-copy-scale", `${settings.copyScale}`);
