@@ -1350,15 +1350,15 @@ const createHeaderAdjustmentPanel = () => {
 
   const storageKey = "coronelsHeaderAdjustments";
   const defaultSettings = {
-    brandWidth: 240,
     symbolSize: 59,
     symbolOffsetX: 0,
     symbolOffsetY: 0,
     brandTextSize: 16,
-    brandTextOffsetX: 58,
+    brandGap: 8,
+    brandTextOffsetX: 0,
     brandTextOffsetY: 0,
-    brandLetterSpacing: 0.008,
-    brandOffsetX: 0,
+    brandLetterSpacing: 0,
+    brandOffsetX: 12,
     brandOffsetY: 0,
     headerHeight: 84,
     headerPaddingInline: 0,
@@ -1375,13 +1375,13 @@ const createHeaderAdjustmentPanel = () => {
   };
 
   const controls = [
-    { key: "brandWidth", label: "Largura do grupo da marca", min: 140, max: 420, step: 1, unit: "px" },
     { key: "brandOffsetX", label: "Posição X do grupo da marca", min: -200, max: 200, step: 1, unit: "px" },
     { key: "brandOffsetY", label: "Posição Y do grupo da marca", min: -120, max: 120, step: 1, unit: "px" },
     { key: "symbolSize", label: "Tamanho do símbolo", min: 24, max: 96, step: 1, unit: "px" },
     { key: "symbolOffsetX", label: "Posição X do símbolo", min: -120, max: 120, step: 1, unit: "px" },
     { key: "symbolOffsetY", label: "Posição Y do símbolo", min: -120, max: 120, step: 1, unit: "px" },
     { key: "brandTextSize", label: "Tamanho do texto da marca", min: 10, max: 36, step: 1, unit: "px" },
+    { key: "brandGap", label: "Espaço entre símbolo e texto", min: 0, max: 40, step: 1, unit: "px" },
     { key: "brandTextOffsetX", label: "Posição X do texto", min: -160, max: 220, step: 1, unit: "px" },
     { key: "brandTextOffsetY", label: "Posição Y do texto", min: -120, max: 120, step: 1, unit: "px" },
     { key: "brandLetterSpacing", label: "Entre letras do texto", min: -0.02, max: 0.12, step: 0.001, unit: "em" },
@@ -1468,8 +1468,7 @@ const createHeaderAdjustmentPanel = () => {
   --header-height: ${formatControlValue("headerHeight", settings.headerHeight)}px;
   --header-padding-inline: ${formatControlValue("headerPaddingInline", settings.headerPaddingInline)}px;
   --header-bg-opacity: ${formatControlValue("headerBgOpacity", settings.headerBgOpacity)};
-  --header-brand-width: ${formatControlValue("brandWidth", settings.brandWidth)}px;
-  --header-brand-height: ${formatControlValue("headerHeight", settings.headerHeight)}px;
+  --header-brand-gap: ${formatControlValue("brandGap", settings.brandGap)}px;
   --header-brand-offset-x: ${formatControlValue("brandOffsetX", settings.brandOffsetX)}px;
   --header-brand-offset-y: ${formatControlValue("brandOffsetY", settings.brandOffsetY)}px;
   --header-symbol-size: ${formatControlValue("symbolSize", settings.symbolSize)}px;
@@ -1500,8 +1499,7 @@ const createHeaderAdjustmentPanel = () => {
     document.documentElement.style.setProperty("--header-height", `${settings.headerHeight}px`);
     document.documentElement.style.setProperty("--header-padding-inline", `${settings.headerPaddingInline}px`);
     document.documentElement.style.setProperty("--header-bg-opacity", `${settings.headerBgOpacity}`);
-    document.documentElement.style.setProperty("--header-brand-width", `${settings.brandWidth}px`);
-    document.documentElement.style.setProperty("--header-brand-height", `${settings.headerHeight}px`);
+    document.documentElement.style.setProperty("--header-brand-gap", `${settings.brandGap}px`);
     document.documentElement.style.setProperty("--header-brand-offset-x", `${settings.brandOffsetX}px`);
     document.documentElement.style.setProperty("--header-brand-offset-y", `${settings.brandOffsetY}px`);
     document.documentElement.style.setProperty("--header-symbol-size", `${settings.symbolSize}px`);
