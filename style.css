@@ -872,19 +872,17 @@ body.experience-adjust-active .about-copy,
 body.experience-adjust-active .about-media,
 body.experience-adjust-active .about-gallery {
   position: absolute;
-  inset: 0 auto auto 0;
+  left: 0;
+  top: 0;
   margin: 0;
 }
 
 body.experience-adjust-active .about-copy {
   width: var(--about-adjust-copy-width, 560px);
   min-height: var(--about-adjust-copy-height, 420px);
-  transform:
-    translate(
-      var(--about-adjust-copy-offset-x, 0px),
-      var(--about-adjust-copy-offset-y, 0px)
-    )
-    scale(var(--about-adjust-copy-scale, 1));
+  left: var(--about-adjust-copy-offset-x, 0px);
+  top: var(--about-adjust-copy-offset-y, 0px);
+  transform: scale(var(--about-adjust-copy-scale, 1));
   transform-origin: top left;
 }
 
@@ -894,11 +892,8 @@ body.experience-adjust-active .about-card {
 
 body.experience-adjust-active .about-media {
   width: var(--about-adjust-video-width, 620px);
-  transform:
-    translate(
-      var(--about-adjust-video-offset-x, 670px),
-      var(--about-adjust-video-offset-y, 8px)
-    );
+  left: var(--about-adjust-video-offset-x, 670px);
+  top: var(--about-adjust-video-offset-y, 8px);
 }
 
 body.experience-adjust-active .about-video-card {
@@ -912,11 +907,8 @@ body.experience-adjust-active .about-gallery {
   grid-auto-columns: var(--about-adjust-gallery-card-width, 320px);
   gap: var(--about-adjust-gallery-gap, 20px);
   width: max-content;
-  transform:
-    translate(
-      var(--about-adjust-gallery-offset-x, 0px),
-      var(--about-adjust-gallery-offset-y, 590px)
-    );
+  left: var(--about-adjust-gallery-offset-x, 0px);
+  top: var(--about-adjust-gallery-offset-y, 590px);
 }
 
 body.experience-adjust-active .about-gallery-card img {
