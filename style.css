@@ -2835,6 +2835,7 @@ body.experience-adjust-active .about-gallery-card img {
 
   .hero-content {
     max-width: 68rem;
+    transform: translateX(-56px);
   }
 }
 
