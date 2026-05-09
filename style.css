@@ -50,24 +50,24 @@
   --hero-brand-base-offset-x: 177px;
   --hero-brand-base-offset-y: 54px;
   --hero-brand-base-letter-spacing: 0.074em;
-  --about-adjust-max-width: 1320px;
-  --about-adjust-min-height: 980px;
-  --about-adjust-padding-top: 112px;
+  --about-adjust-max-width: 1250px;
+  --about-adjust-min-height: 988px;
+  --about-adjust-padding-top: 94px;
   --about-adjust-padding-bottom: 112px;
-  --about-adjust-copy-width: 560px;
+  --about-adjust-copy-width: 847px;
   --about-adjust-copy-height: 420px;
-  --about-adjust-copy-offset-x: 0px;
-  --about-adjust-copy-offset-y: 0px;
-  --about-adjust-copy-scale: 1;
-  --about-adjust-video-width: 620px;
-  --about-adjust-video-height: 520px;
-  --about-adjust-video-offset-x: 670px;
-  --about-adjust-video-offset-y: 8px;
-  --about-adjust-gallery-offset-x: 0px;
-  --about-adjust-gallery-offset-y: 590px;
-  --about-adjust-gallery-card-width: 320px;
-  --about-adjust-gallery-card-height: 240px;
-  --about-adjust-gallery-gap: 20px;
+  --about-adjust-copy-offset-x: -15px;
+  --about-adjust-copy-offset-y: -19px;
+  --about-adjust-copy-scale: 0.87;
+  --about-adjust-video-width: 365px;
+  --about-adjust-video-height: 506px;
+  --about-adjust-video-offset-x: 734px;
+  --about-adjust-video-offset-y: 39px;
+  --about-adjust-gallery-offset-x: -17px;
+  --about-adjust-gallery-offset-y: 565px;
+  --about-adjust-gallery-card-width: 363px;
+  --about-adjust-gallery-card-height: 387px;
+  --about-adjust-gallery-gap: 14px;
 }
 
 * {
@@ -852,6 +852,71 @@ button {
   color: var(--muted);
   font-size: 0.93rem;
   line-height: 1.65;
+}
+
+@media (min-width: 1081px) {
+  .about {
+    padding-top: var(--about-adjust-padding-top, 94px);
+    padding-bottom: var(--about-adjust-padding-bottom, 112px);
+  }
+
+  .about-grid {
+    position: relative;
+    display: block;
+    width: min(100%, var(--about-adjust-max-width, 1250px));
+    min-height: var(--about-adjust-min-height, 988px);
+    max-width: none;
+    margin-inline: auto;
+  }
+
+  .about-copy,
+  .about-media,
+  .about-gallery {
+    position: absolute;
+    left: 0;
+    top: 0;
+    margin: 0;
+  }
+
+  .about-copy {
+    width: var(--about-adjust-copy-width, 847px);
+    min-height: var(--about-adjust-copy-height, 420px);
+    left: var(--about-adjust-copy-offset-x, -15px);
+    top: var(--about-adjust-copy-offset-y, -19px);
+    transform: scale(var(--about-adjust-copy-scale, 0.87));
+    transform-origin: top left;
+  }
+
+  .about-card {
+    min-height: var(--about-adjust-copy-height, 420px);
+  }
+
+  .about-media {
+    width: var(--about-adjust-video-width, 365px);
+    left: var(--about-adjust-video-offset-x, 734px);
+    top: var(--about-adjust-video-offset-y, 39px);
+  }
+
+  .about-video-card {
+    min-height: var(--about-adjust-video-height, 506px);
+    max-height: var(--about-adjust-video-height, 506px);
+    height: var(--about-adjust-video-height, 506px);
+  }
+
+  .about-gallery {
+    grid-template-columns: repeat(3, minmax(0, var(--about-adjust-gallery-card-width, 363px)));
+    grid-auto-columns: var(--about-adjust-gallery-card-width, 363px);
+    gap: var(--about-adjust-gallery-gap, 14px);
+    width: max-content;
+    left: var(--about-adjust-gallery-offset-x, -17px);
+    top: var(--about-adjust-gallery-offset-y, 565px);
+  }
+
+  .about-gallery-card img {
+    height: var(--about-adjust-gallery-card-height, 387px);
+    aspect-ratio: auto;
+    object-fit: cover;
+  }
 }
 
 body.experience-adjust-active .about {
