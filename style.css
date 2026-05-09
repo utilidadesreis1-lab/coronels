@@ -50,6 +50,7 @@
   --hero-brand-base-offset-x: 177px;
   --hero-brand-base-offset-y: 54px;
   --hero-brand-base-letter-spacing: 0.074em;
+  --hero-content-offset-x: -140px;
   --about-adjust-max-width: 1250px;
   --about-adjust-min-height: 988px;
   --about-adjust-padding-top: 94px;
@@ -2835,7 +2836,7 @@ body.experience-adjust-active .about-gallery-card img {
 
   .hero-content {
     max-width: 68rem;
-    transform: translateX(-56px);
+    transform: translateX(var(--hero-content-offset-x, -140px));
   }
 }
 
