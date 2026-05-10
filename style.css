@@ -1245,6 +1245,28 @@ body.experience-adjust-active .about-gallery-card img {
     box-shadow 0.28s ease;
 }
 
+.service-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  min-height: 2rem;
+  margin: 0 0 0.9rem;
+  padding: 0.42rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(214, 188, 123, 0.24);
+  background:
+    linear-gradient(180deg, rgba(214, 188, 123, 0.18), rgba(214, 188, 123, 0.07)),
+    rgba(255, 255, 255, 0.03);
+  color: rgba(247, 236, 209, 0.94);
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.11em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  box-shadow: 0 12px 24px rgba(0, 0, 0, 0.12);
+}
+
 .service-card::before {
   content: "";
   position: absolute;
@@ -1275,18 +1297,55 @@ body.experience-adjust-active .about-gallery-card img {
     inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
 
-.service-card:nth-child(11),
-.service-card:nth-child(12) {
-  border-color: rgba(214, 188, 123, 0.16);
+.service-card--featured,
+.service-card--premium {
+  border-color: rgba(214, 188, 123, 0.18);
+  box-shadow:
+    0 22px 48px rgba(0, 0, 0, 0.2),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06),
+    0 0 0 1px rgba(214, 188, 123, 0.05);
+}
+
+.service-card--featured {
   background:
-    radial-gradient(circle at top right, rgba(214, 188, 123, 0.12), transparent 38%),
-    linear-gradient(180deg, rgba(255, 255, 255, 0.06), rgba(255, 255, 255, 0.024)),
+    radial-gradient(circle at top right, rgba(214, 188, 123, 0.12), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.065), rgba(255, 255, 255, 0.024)),
     rgba(17, 16, 14, 0.9);
 }
 
-.service-card:nth-child(11)::before,
-.service-card:nth-child(12)::before {
+.service-card--premium {
+  border-color: rgba(214, 188, 123, 0.16);
+  background:
+    radial-gradient(circle at top right, rgba(214, 188, 123, 0.16), transparent 38%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.07), rgba(255, 255, 255, 0.026)),
+    rgba(17, 16, 14, 0.92);
+}
+
+.service-card--featured::before,
+.service-card--premium::before {
   width: 4.1rem;
+}
+
+.service-card--featured::after,
+.service-card--premium::after {
+  border-color: rgba(214, 188, 123, 0.08);
+}
+
+.service-card--featured:hover,
+.service-card--premium:hover {
+  border-color: rgba(214, 188, 123, 0.34);
+  box-shadow:
+    0 28px 56px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1px rgba(214, 188, 123, 0.08);
+}
+
+.service-card--featured .service-price,
+.service-card--premium .service-price {
+  border-color: rgba(214, 188, 123, 0.16);
+  background:
+    linear-gradient(180deg, rgba(214, 188, 123, 0.16), rgba(255, 255, 255, 0.035)),
+    rgba(255, 255, 255, 0.03);
 }
 
 .service-index {
@@ -3573,6 +3632,12 @@ body.experience-adjust-active .about-gallery-card img {
   .service-card {
     min-height: auto;
     padding: 1.3rem;
+  }
+
+  .service-badge {
+    margin-bottom: 0.8rem;
+    font-size: 0.7rem;
+    letter-spacing: 0.1em;
   }
 
   .service-card h3 {
