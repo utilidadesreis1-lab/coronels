@@ -53,24 +53,24 @@
   --hero-brand-base-offset-y: 54px;
   --hero-brand-base-letter-spacing: 0.074em;
   --hero-content-offset-x: -140px;
-  --about-adjust-max-width: 1250px;
+  --about-adjust-max-width: 1254px;
   --about-adjust-min-height: 988px;
-  --about-adjust-padding-top: 94px;
-  --about-adjust-padding-bottom: 112px;
-  --about-adjust-copy-width: 847px;
-  --about-adjust-copy-height: 420px;
-  --about-adjust-copy-offset-x: -15px;
-  --about-adjust-copy-offset-y: -19px;
-  --about-adjust-copy-scale: 0.87;
-  --about-adjust-video-width: 365px;
-  --about-adjust-video-height: 506px;
-  --about-adjust-video-offset-x: 734px;
-  --about-adjust-video-offset-y: 39px;
+  --about-adjust-padding-top: 0px;
+  --about-adjust-padding-bottom: 260px;
+  --about-adjust-copy-width: 844px;
+  --about-adjust-copy-height: 423px;
+  --about-adjust-copy-offset-x: -16px;
+  --about-adjust-copy-offset-y: 85px;
+  --about-adjust-copy-scale: 1;
+  --about-adjust-video-width: 409px;
+  --about-adjust-video-height: 646px;
+  --about-adjust-video-offset-x: 857px;
+  --about-adjust-video-offset-y: 95px;
   --about-adjust-gallery-offset-x: -17px;
-  --about-adjust-gallery-offset-y: 565px;
-  --about-adjust-gallery-card-width: 363px;
-  --about-adjust-gallery-card-height: 387px;
-  --about-adjust-gallery-gap: 14px;
+  --about-adjust-gallery-offset-y: 768px;
+  --about-adjust-gallery-card-width: 408px;
+  --about-adjust-gallery-card-height: 420px;
+  --about-adjust-gallery-gap: 29px;
 }
 
 * {
@@ -859,14 +859,14 @@ button {
 
 @media (min-width: 1081px) {
   .about {
-    padding-top: var(--about-adjust-padding-top, 94px);
-    padding-bottom: var(--about-adjust-padding-bottom, 112px);
+    padding-top: var(--about-adjust-padding-top, 0px);
+    padding-bottom: var(--about-adjust-padding-bottom, 260px);
   }
 
   .about-grid {
     position: relative;
     display: block;
-    width: min(100%, var(--about-adjust-max-width, 1250px));
+    width: min(100%, var(--about-adjust-max-width, 1254px));
     min-height: var(--about-adjust-min-height, 988px);
     max-width: none;
     margin-inline: auto;
@@ -882,56 +882,56 @@ button {
   }
 
   .about-copy {
-    width: var(--about-adjust-copy-width, 847px);
-    min-height: var(--about-adjust-copy-height, 420px);
-    left: var(--about-adjust-copy-offset-x, -15px);
-    top: var(--about-adjust-copy-offset-y, -19px);
-    transform: scale(var(--about-adjust-copy-scale, 0.87));
+    width: var(--about-adjust-copy-width, 844px);
+    min-height: var(--about-adjust-copy-height, 423px);
+    left: var(--about-adjust-copy-offset-x, -16px);
+    top: var(--about-adjust-copy-offset-y, 85px);
+    transform: scale(var(--about-adjust-copy-scale, 1));
     transform-origin: top left;
   }
 
   .about-card {
-    min-height: var(--about-adjust-copy-height, 420px);
+    min-height: var(--about-adjust-copy-height, 423px);
   }
 
   .about-media {
-    width: var(--about-adjust-video-width, 365px);
-    left: var(--about-adjust-video-offset-x, 734px);
-    top: var(--about-adjust-video-offset-y, 39px);
+    width: var(--about-adjust-video-width, 409px);
+    left: var(--about-adjust-video-offset-x, 857px);
+    top: var(--about-adjust-video-offset-y, 95px);
   }
 
   .about-video-card {
-    min-height: var(--about-adjust-video-height, 506px);
-    max-height: var(--about-adjust-video-height, 506px);
-    height: var(--about-adjust-video-height, 506px);
+    min-height: var(--about-adjust-video-height, 646px);
+    max-height: var(--about-adjust-video-height, 646px);
+    height: var(--about-adjust-video-height, 646px);
   }
 
   .about-gallery {
-    grid-template-columns: repeat(3, minmax(0, var(--about-adjust-gallery-card-width, 363px)));
-    grid-auto-columns: var(--about-adjust-gallery-card-width, 363px);
-    gap: var(--about-adjust-gallery-gap, 14px);
+    grid-template-columns: repeat(3, minmax(0, var(--about-adjust-gallery-card-width, 408px)));
+    grid-auto-columns: var(--about-adjust-gallery-card-width, 408px);
+    gap: var(--about-adjust-gallery-gap, 29px);
     width: max-content;
     left: var(--about-adjust-gallery-offset-x, -17px);
-    top: var(--about-adjust-gallery-offset-y, 565px);
+    top: var(--about-adjust-gallery-offset-y, 768px);
   }
 
   .about-gallery-card img {
-    height: var(--about-adjust-gallery-card-height, 387px);
+    height: var(--about-adjust-gallery-card-height, 420px);
     aspect-ratio: auto;
     object-fit: cover;
   }
 }
 
 body.experience-adjust-active .about {
-  padding-top: var(--about-adjust-padding-top, 112px);
-  padding-bottom: var(--about-adjust-padding-bottom, 112px);
+  padding-top: var(--about-adjust-padding-top, 0px);
+  padding-bottom: var(--about-adjust-padding-bottom, 260px);
 }
 
 body.experience-adjust-active .about-grid {
   position: relative;
   display: block;
-  width: min(100%, var(--about-adjust-max-width, 1320px));
-  min-height: var(--about-adjust-min-height, 980px);
+  width: min(100%, var(--about-adjust-max-width, 1254px));
+  min-height: var(--about-adjust-min-height, 988px);
   max-width: none;
   margin-inline: auto;
 }
@@ -946,41 +946,41 @@ body.experience-adjust-active .about-gallery {
 }
 
 body.experience-adjust-active .about-copy {
-  width: var(--about-adjust-copy-width, 560px);
-  min-height: var(--about-adjust-copy-height, 420px);
-  left: var(--about-adjust-copy-offset-x, 0px);
-  top: var(--about-adjust-copy-offset-y, 0px);
+  width: var(--about-adjust-copy-width, 844px);
+  min-height: var(--about-adjust-copy-height, 423px);
+  left: var(--about-adjust-copy-offset-x, -16px);
+  top: var(--about-adjust-copy-offset-y, 85px);
   transform: scale(var(--about-adjust-copy-scale, 1));
   transform-origin: top left;
 }
 
 body.experience-adjust-active .about-card {
-  min-height: var(--about-adjust-copy-height, 420px);
+  min-height: var(--about-adjust-copy-height, 423px);
 }
 
 body.experience-adjust-active .about-media {
-  width: var(--about-adjust-video-width, 620px);
-  left: var(--about-adjust-video-offset-x, 670px);
-  top: var(--about-adjust-video-offset-y, 8px);
+  width: var(--about-adjust-video-width, 409px);
+  left: var(--about-adjust-video-offset-x, 857px);
+  top: var(--about-adjust-video-offset-y, 95px);
 }
 
 body.experience-adjust-active .about-video-card {
-  min-height: var(--about-adjust-video-height, 520px);
-  max-height: var(--about-adjust-video-height, 520px);
-  height: var(--about-adjust-video-height, 520px);
+  min-height: var(--about-adjust-video-height, 646px);
+  max-height: var(--about-adjust-video-height, 646px);
+  height: var(--about-adjust-video-height, 646px);
 }
 
 body.experience-adjust-active .about-gallery {
-  grid-template-columns: repeat(3, minmax(0, var(--about-adjust-gallery-card-width, 320px)));
-  grid-auto-columns: var(--about-adjust-gallery-card-width, 320px);
-  gap: var(--about-adjust-gallery-gap, 20px);
+  grid-template-columns: repeat(3, minmax(0, var(--about-adjust-gallery-card-width, 408px)));
+  grid-auto-columns: var(--about-adjust-gallery-card-width, 408px);
+  gap: var(--about-adjust-gallery-gap, 29px);
   width: max-content;
-  left: var(--about-adjust-gallery-offset-x, 0px);
-  top: var(--about-adjust-gallery-offset-y, 590px);
+  left: var(--about-adjust-gallery-offset-x, -17px);
+  top: var(--about-adjust-gallery-offset-y, 768px);
 }
 
 body.experience-adjust-active .about-gallery-card img {
-  height: var(--about-adjust-gallery-card-height, 240px);
+  height: var(--about-adjust-gallery-card-height, 420px);
   aspect-ratio: auto;
   object-fit: cover;
 }
