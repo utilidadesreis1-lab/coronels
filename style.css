@@ -1209,41 +1209,80 @@ body.experience-adjust-active .about-gallery-card img {
 
 .services-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 1rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 1.2rem;
 }
 
 .service-card {
-  padding: 1.6rem;
+  position: relative;
+  overflow: hidden;
+  padding: 1.55rem 1.45rem 1.35rem;
   min-height: 240px;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: transform 0.28s ease, border-color 0.28s ease, background-color 0.28s ease;
+  border-radius: 24px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.1), transparent 34%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.055), rgba(255, 255, 255, 0.022)),
+    rgba(15, 15, 16, 0.86);
+  box-shadow:
+    0 18px 40px rgba(0, 0, 0, 0.18),
+    inset 0 1px 0 rgba(255, 255, 255, 0.05);
+  transition:
+    transform 0.28s ease,
+    border-color 0.28s ease,
+    background-color 0.28s ease,
+    box-shadow 0.28s ease;
+}
+
+.service-card::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto auto 1.45rem;
+  width: 3.4rem;
+  height: 2px;
+  background: linear-gradient(90deg, rgba(214, 188, 123, 0.96), rgba(214, 188, 123, 0));
 }
 
 .service-card:hover {
   transform: translateY(-4px);
   border-color: rgba(255, 255, 255, 0.28);
-  background: linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.03));
+  background:
+    radial-gradient(circle at top right, rgba(255, 255, 255, 0.14), transparent 36%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.032)),
+    rgba(16, 16, 17, 0.92);
+  box-shadow:
+    0 24px 48px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.07);
 }
 
 .service-index {
-  color: var(--gold);
-  font-size: 0.84rem;
+  display: inline-flex;
+  align-items: center;
+  margin-bottom: 0.95rem;
+  padding-top: 0.45rem;
+  color: rgba(221, 193, 128, 0.98);
+  font-size: 0.76rem;
   font-weight: 800;
   letter-spacing: 0.18em;
+  text-transform: uppercase;
+  text-shadow: 0 0 18px rgba(214, 188, 123, 0.14);
 }
 
 .service-card h3 {
-  margin: 1.4rem 0 0.65rem;
-  font-size: 1.35rem;
+  margin: 0 0 0.7rem;
+  font-size: 1.34rem;
+  line-height: 1.24;
 }
 
 .service-card p {
   margin: 0;
   color: var(--muted);
-  line-height: 1.75;
+  line-height: 1.72;
+  font-size: 0.97rem;
+  max-width: 28ch;
 }
 
 .service-meta {
@@ -1251,28 +1290,31 @@ body.experience-adjust-active .about-gallery-card img {
   align-items: end;
   justify-content: space-between;
   gap: 1rem;
-  margin-top: 1.5rem;
-  padding-top: 1rem;
+  margin-top: 1.35rem;
+  padding-top: 1.05rem;
   border-top: 1px solid rgba(255, 255, 255, 0.08);
 }
 
 .service-price {
-  color: var(--text);
-  font-size: 1.75rem;
+  color: rgba(244, 241, 235, 0.98);
+  font-size: 2rem;
   font-weight: 800;
   line-height: 1;
+  letter-spacing: -0.03em;
+  text-shadow: 0 10px 24px rgba(0, 0, 0, 0.18);
 }
 
 .service-duration {
   display: inline-flex;
   align-items: center;
-  padding: 0.5rem 0.8rem;
+  padding: 0.55rem 0.82rem;
   border-radius: 999px;
-  background: rgba(255, 255, 255, 0.05);
-  color: var(--muted);
-  font-size: 0.86rem;
+  background: rgba(255, 255, 255, 0.055);
+  color: rgba(244, 241, 235, 0.74);
+  font-size: 0.8rem;
   font-weight: 700;
-  letter-spacing: 0.04em;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
   white-space: nowrap;
 }
 
