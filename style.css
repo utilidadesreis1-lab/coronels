@@ -36,6 +36,28 @@
   --header-cta-font-size: 15px;
   --header-cta-padding-x: 24px;
   --header-cta-padding-y: 15px;
+  --header-adjust-height: 63px;
+  --header-adjust-max-width: 1250px;
+  --header-adjust-content-offset-x: 0px;
+  --header-adjust-content-offset-y: 0px;
+  --header-adjust-side-padding: 4px;
+  --header-brand-logo-size: 51px;
+  --header-brand-logo-offset-x: 0px;
+  --header-brand-logo-offset-y: 0px;
+  --header-brand-text-size-adjust: 16px;
+  --header-brand-text-offset-x-adjust: 0px;
+  --header-brand-text-offset-y-adjust: 0px;
+  --header-brand-gap-adjust: 8px;
+  --header-menu-offset-x: 0px;
+  --header-menu-offset-y: 0px;
+  --header-menu-gap: 32px;
+  --header-menu-font-size: 14px;
+  --header-button-offset-x: -17px;
+  --header-button-offset-y: 0px;
+  --header-button-width: 176px;
+  --header-button-height: 54px;
+  --header-button-font-size: 15px;
+  --header-button-radius: 999px;
   --hero-brand-width: 760px;
   --hero-brand-height: 330px;
   --hero-brand-scale: 0.53;
@@ -163,18 +185,25 @@ button {
 }
 
 .header-inner {
-  min-height: var(--header-height);
-  padding-inline: var(--header-padding-inline, 0px);
+  min-height: var(--header-adjust-height, var(--header-height));
+  width: 100%;
+  max-width: min(100%, var(--header-adjust-max-width, 1250px));
+  padding-inline: var(--header-adjust-side-padding, var(--header-padding-inline, 0px));
   display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 1.5rem;
+  margin-inline: auto;
+  transform: translate(
+    var(--header-adjust-content-offset-x, 0px),
+    var(--header-adjust-content-offset-y, 0px)
+  );
 }
 
 .brand {
   display: inline-flex;
   align-items: center;
-  gap: var(--header-brand-gap, 8px);
+  gap: var(--header-brand-gap-adjust, var(--header-brand-gap, 8px));
   position: relative;
   z-index: 21;
   transform: translate(
@@ -184,8 +213,8 @@ button {
 }
 
 .brand-mark {
-  width: var(--header-symbol-size, 3.7rem);
-  height: var(--header-symbol-size, 3.7rem);
+  width: var(--header-brand-logo-size, var(--header-symbol-size, 3.7rem));
+  height: var(--header-brand-logo-size, var(--header-symbol-size, 3.7rem));
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -195,8 +224,8 @@ button {
   font-weight: 700;
   overflow: hidden;
   transform: translate(
-    var(--header-symbol-offset-x, 0px),
-    var(--header-symbol-offset-y, 0px)
+    calc(var(--header-symbol-offset-x, 0px) + var(--header-brand-logo-offset-x, 0px)),
+    calc(var(--header-symbol-offset-y, 0px) + var(--header-brand-logo-offset-y, 0px))
   );
   flex: 0 0 auto;
 }
@@ -223,7 +252,7 @@ button {
 .brand-lockup {
   display: inline-flex;
   align-items: center;
-  min-height: var(--header-symbol-size, 3.7rem);
+  min-height: var(--header-brand-logo-size, var(--header-symbol-size, 3.7rem));
 }
 
 .brand-logo {
@@ -234,7 +263,7 @@ button {
 
 .brand-text {
   font-family: "Manrope", sans-serif;
-  font-size: var(--header-brand-text-size, 1rem);
+  font-size: var(--header-brand-text-size-adjust, var(--header-brand-text-size, 1rem));
   font-weight: 600;
   letter-spacing: var(--header-brand-letter-spacing, 0.008em);
   display: inline-flex;
@@ -242,8 +271,8 @@ button {
   line-height: 1.05;
   white-space: nowrap;
   transform: translate(
-    var(--header-brand-text-offset-x, 0px),
-    var(--header-brand-text-offset-y, 0px)
+    calc(var(--header-brand-text-offset-x, 0px) + var(--header-brand-text-offset-x-adjust, 0px)),
+    calc(var(--header-brand-text-offset-y, 0px) + var(--header-brand-text-offset-y-adjust, 0px))
   );
 }
 
@@ -258,11 +287,11 @@ button {
 .site-nav {
   display: flex;
   align-items: center;
-  gap: var(--header-nav-gap, 2rem);
+  gap: var(--header-menu-gap, var(--header-nav-gap, 2rem));
   margin-left: auto;
   transform: translate(
-    var(--header-nav-offset-x, 0px),
-    var(--header-nav-offset-y, 0px)
+    calc(var(--header-nav-offset-x, 0px) + var(--header-menu-offset-x, 0px)),
+    calc(var(--header-nav-offset-y, 0px) + var(--header-menu-offset-y, 0px))
   );
 }
 
@@ -270,7 +299,7 @@ button {
   position: relative;
   font-family: "Manrope", sans-serif;
   color: rgba(244, 241, 235, 0.8);
-  font-size: var(--header-nav-font-size, 0.96rem);
+  font-size: var(--header-menu-font-size, var(--header-nav-font-size, 0.96rem));
   font-weight: 700;
   letter-spacing: 0.04em;
   text-transform: uppercase;
@@ -348,12 +377,15 @@ button {
 }
 
 .header-cta {
-  font-size: var(--header-cta-font-size, 0.96rem);
+  width: var(--header-button-width, auto);
+  min-height: var(--header-button-height, 54px);
+  font-size: var(--header-button-font-size, var(--header-cta-font-size, 0.96rem));
   padding-inline: var(--header-cta-padding-x, 1.5rem);
   padding-block: var(--header-cta-padding-y, 0.95rem);
+  border-radius: var(--header-button-radius, 999px);
   transform: translate(
-    var(--header-cta-offset-x, 0px),
-    var(--header-cta-offset-y, 0px)
+    calc(var(--header-cta-offset-x, 0px) + var(--header-button-offset-x, 0px)),
+    calc(var(--header-cta-offset-y, 0px) + var(--header-button-offset-y, 0px))
   );
 }
 

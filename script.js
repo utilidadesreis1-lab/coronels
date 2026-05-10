@@ -1097,7 +1097,7 @@ if (bookingForm && formFeedback) {
 
 const pageParams = new URLSearchParams(window.location.search);
 const heroAdjustMode = pageParams.get("ajusteHero") === "1";
-const headerAdjustMode = pageParams.get("ajusteHeader") === "1";
+const headerAdjustMode = pageParams.get("ajusteHeader") === "1" || pageParams.get("ajusteCabecalho") === "1";
 const experienceAdjustMode = pageParams.get("ajusteExperiencia") === "1";
 
 const createHeroAdjustmentPanel = () => {
@@ -1403,54 +1403,67 @@ const createHeaderAdjustmentPanel = () => {
   }
 
   const storageKey = "coronelsHeaderAdjustments";
+  const rootStyles = window.getComputedStyle(document.documentElement);
+  const readRootNumber = (name, fallback) => {
+    const raw = rootStyles.getPropertyValue(name).trim();
+    const parsed = Number.parseFloat(raw);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  };
+
   const defaultSettings = {
-    symbolSize: 59,
-    symbolOffsetX: 0,
-    symbolOffsetY: 0,
-    brandTextSize: 16,
-    brandGap: 8,
-    brandTextOffsetX: 0,
-    brandTextOffsetY: 0,
-    brandLetterSpacing: 0,
-    brandOffsetX: 12,
-    brandOffsetY: 0,
-    headerHeight: 84,
-    headerPaddingInline: 0,
-    headerBgOpacity: 0.84,
-    navFontSize: 15.36,
-    navGap: 32,
-    navOffsetX: 0,
-    navOffsetY: 0,
-    ctaOffsetX: 0,
-    ctaOffsetY: 0,
-    ctaFontSize: 15.36,
-    ctaPaddingX: 24,
-    ctaPaddingY: 15.2,
+    headerHeight: readRootNumber("--header-adjust-height", 63),
+    headerMaxWidth: readRootNumber("--header-adjust-max-width", 1250),
+    headerContentOffsetX: readRootNumber("--header-adjust-content-offset-x", 0),
+    headerContentOffsetY: readRootNumber("--header-adjust-content-offset-y", 0),
+    headerSidePadding: readRootNumber("--header-adjust-side-padding", 4),
+    headerBgOpacity: readRootNumber("--header-bg-opacity", 0.84),
+    logoSize: readRootNumber("--header-brand-logo-size", 51),
+    logoOffsetX: readRootNumber("--header-brand-logo-offset-x", 0),
+    logoOffsetY: readRootNumber("--header-brand-logo-offset-y", 0),
+    brandTextSize: readRootNumber("--header-brand-text-size-adjust", 16),
+    brandTextOffsetX: readRootNumber("--header-brand-text-offset-x-adjust", 0),
+    brandTextOffsetY: readRootNumber("--header-brand-text-offset-y-adjust", 0),
+    brandGap: readRootNumber("--header-brand-gap-adjust", 8),
+    menuOffsetX: readRootNumber("--header-menu-offset-x", 0),
+    menuOffsetY: readRootNumber("--header-menu-offset-y", 0),
+    menuGap: readRootNumber("--header-menu-gap", 32),
+    menuFontSize: readRootNumber("--header-menu-font-size", 14),
+    buttonOffsetX: readRootNumber("--header-button-offset-x", -17),
+    buttonOffsetY: readRootNumber("--header-button-offset-y", 0),
+    buttonWidth: readRootNumber("--header-button-width", 176),
+    buttonHeight: readRootNumber("--header-button-height", 54),
+    buttonFontSize: readRootNumber("--header-button-font-size", 15),
+    buttonRadius: readRootNumber("--header-button-radius", 999),
   };
 
   const controls = [
-    { key: "brandOffsetX", label: "Posição X do grupo da marca", min: -200, max: 200, step: 1, unit: "px" },
-    { key: "brandOffsetY", label: "Posição Y do grupo da marca", min: -120, max: 120, step: 1, unit: "px" },
-    { key: "symbolSize", label: "Tamanho do símbolo", min: 24, max: 96, step: 1, unit: "px" },
-    { key: "symbolOffsetX", label: "Posição X do símbolo", min: -120, max: 120, step: 1, unit: "px" },
-    { key: "symbolOffsetY", label: "Posição Y do símbolo", min: -120, max: 120, step: 1, unit: "px" },
-    { key: "brandTextSize", label: "Tamanho do texto da marca", min: 10, max: 36, step: 1, unit: "px" },
-    { key: "brandGap", label: "Espaço entre símbolo e texto", min: 0, max: 40, step: 1, unit: "px" },
-    { key: "brandTextOffsetX", label: "Posição X do texto", min: -160, max: 220, step: 1, unit: "px" },
-    { key: "brandTextOffsetY", label: "Posição Y do texto", min: -120, max: 120, step: 1, unit: "px" },
-    { key: "brandLetterSpacing", label: "Entre letras do texto", min: -0.02, max: 0.12, step: 0.001, unit: "em" },
-    { key: "headerHeight", label: "Altura do header", min: 56, max: 140, step: 1, unit: "px" },
-    { key: "headerPaddingInline", label: "Padding horizontal do header", min: 0, max: 64, step: 1, unit: "px" },
-    { key: "headerBgOpacity", label: "Opacidade/fundo do header", min: 0, max: 1, step: 0.01, unit: "" },
-    { key: "navFontSize", label: "Tamanho da fonte do menu", min: 10, max: 28, step: 1, unit: "px" },
-    { key: "navGap", label: "Espaçamento entre links", min: 4, max: 64, step: 1, unit: "px" },
-    { key: "navOffsetX", label: "Posição X do menu", min: -200, max: 200, step: 1, unit: "px" },
-    { key: "navOffsetY", label: "Posição Y do menu", min: -120, max: 120, step: 1, unit: "px" },
-    { key: "ctaOffsetX", label: "Posição X do botão", min: -200, max: 200, step: 1, unit: "px" },
-    { key: "ctaOffsetY", label: "Posição Y do botão", min: -120, max: 120, step: 1, unit: "px" },
-    { key: "ctaFontSize", label: "Tamanho da fonte do botão", min: 10, max: 28, step: 1, unit: "px" },
-    { key: "ctaPaddingX", label: "Padding horizontal do botão", min: 8, max: 48, step: 1, unit: "px" },
-    { key: "ctaPaddingY", label: "Padding vertical do botão", min: 6, max: 28, step: 1, unit: "px" },
+    { type: "group", label: "Header geral" },
+    { key: "headerHeight", label: "Altura do cabeçalho", min: 56, max: 140, step: 1, unit: "px", cssVar: "--header-adjust-height" },
+    { key: "headerMaxWidth", label: "Largura máxima do conteúdo", min: 900, max: 1600, step: 1, unit: "px", cssVar: "--header-adjust-max-width" },
+    { key: "headerContentOffsetX", label: "Posição X do conteúdo", min: -240, max: 240, step: 1, unit: "px", cssVar: "--header-adjust-content-offset-x" },
+    { key: "headerContentOffsetY", label: "Posição Y do conteúdo", min: -120, max: 120, step: 1, unit: "px", cssVar: "--header-adjust-content-offset-y" },
+    { key: "headerSidePadding", label: "Padding lateral", min: 0, max: 96, step: 1, unit: "px", cssVar: "--header-adjust-side-padding" },
+    { key: "headerBgOpacity", label: "Opacidade do fundo", min: 0, max: 1, step: 0.01, unit: "", cssVar: "--header-bg-opacity" },
+    { type: "group", label: "Logo e marca" },
+    { key: "logoSize", label: "Tamanho do símbolo", min: 18, max: 96, step: 1, unit: "px", cssVar: "--header-brand-logo-size" },
+    { key: "logoOffsetX", label: "Posição X da logo", min: -120, max: 120, step: 1, unit: "px", cssVar: "--header-brand-logo-offset-x" },
+    { key: "logoOffsetY", label: "Posição Y da logo", min: -120, max: 120, step: 1, unit: "px", cssVar: "--header-brand-logo-offset-y" },
+    { key: "brandTextSize", label: "Tamanho do texto da marca", min: 10, max: 32, step: 1, unit: "px", cssVar: "--header-brand-text-size-adjust" },
+    { key: "brandTextOffsetX", label: "Posição X do texto", min: -160, max: 220, step: 1, unit: "px", cssVar: "--header-brand-text-offset-x-adjust" },
+    { key: "brandTextOffsetY", label: "Posição Y do texto", min: -120, max: 120, step: 1, unit: "px", cssVar: "--header-brand-text-offset-y-adjust" },
+    { key: "brandGap", label: "Espaço entre símbolo e texto", min: 0, max: 40, step: 1, unit: "px", cssVar: "--header-brand-gap-adjust" },
+    { type: "group", label: "Menu de navegação" },
+    { key: "menuOffsetX", label: "Posição X do menu", min: -240, max: 240, step: 1, unit: "px", cssVar: "--header-menu-offset-x" },
+    { key: "menuOffsetY", label: "Posição Y do menu", min: -120, max: 120, step: 1, unit: "px", cssVar: "--header-menu-offset-y" },
+    { key: "menuGap", label: "Espaçamento entre links", min: 4, max: 72, step: 1, unit: "px", cssVar: "--header-menu-gap" },
+    { key: "menuFontSize", label: "Tamanho da fonte do menu", min: 10, max: 24, step: 1, unit: "px", cssVar: "--header-menu-font-size" },
+    { type: "group", label: "Botão Agendar horário" },
+    { key: "buttonOffsetX", label: "Posição X do botão", min: -240, max: 240, step: 1, unit: "px", cssVar: "--header-button-offset-x" },
+    { key: "buttonOffsetY", label: "Posição Y do botão", min: -120, max: 120, step: 1, unit: "px", cssVar: "--header-button-offset-y" },
+    { key: "buttonWidth", label: "Largura do botão", min: 120, max: 280, step: 1, unit: "px", cssVar: "--header-button-width" },
+    { key: "buttonHeight", label: "Altura do botão", min: 36, max: 72, step: 1, unit: "px", cssVar: "--header-button-height" },
+    { key: "buttonFontSize", label: "Tamanho da fonte do botão", min: 10, max: 24, step: 1, unit: "px", cssVar: "--header-button-font-size" },
+    { key: "buttonRadius", label: "Arredondamento do botão", min: 0, max: 999, step: 1, unit: "px", cssVar: "--header-button-radius" },
   ];
 
   const readStoredSettings = () => {
@@ -1476,11 +1489,11 @@ const createHeaderAdjustmentPanel = () => {
 
   const panel = document.createElement("aside");
   panel.className = "header-adjust-panel";
-  panel.setAttribute("aria-label", "Ajuste Header");
+  panel.setAttribute("aria-label", "Ajuste Cabeçalho");
 
   panel.innerHTML = `
-    <h3>Ajuste Header</h3>
-    <p>Ajuste visual temporário da marca, menu e botão do topo. Só aparece com <code>?ajusteHeader=1</code>.</p>
+    <h3>Ajuste Cabeçalho</h3>
+    <p>Ajuste visual temporário do topo. Só aparece com <code>?ajusteCabecalho=1</code> ou <code>?ajusteHeader=1</code>.</p>
     <div class="hero-adjust-grid" data-header-adjust-grid></div>
     <div class="hero-adjust-actions">
       <button class="button button-gold" type="button" data-header-copy-css>Copiar CSS</button>
@@ -1518,30 +1531,16 @@ const createHeaderAdjustmentPanel = () => {
     return `${Math.round(Number(value))}`;
   };
 
-  const cssSnippet = () => `:root {
-  --header-height: ${formatControlValue("headerHeight", settings.headerHeight)}px;
-  --header-padding-inline: ${formatControlValue("headerPaddingInline", settings.headerPaddingInline)}px;
-  --header-bg-opacity: ${formatControlValue("headerBgOpacity", settings.headerBgOpacity)};
-  --header-brand-gap: ${formatControlValue("brandGap", settings.brandGap)}px;
-  --header-brand-offset-x: ${formatControlValue("brandOffsetX", settings.brandOffsetX)}px;
-  --header-brand-offset-y: ${formatControlValue("brandOffsetY", settings.brandOffsetY)}px;
-  --header-symbol-size: ${formatControlValue("symbolSize", settings.symbolSize)}px;
-  --header-symbol-offset-x: ${formatControlValue("symbolOffsetX", settings.symbolOffsetX)}px;
-  --header-symbol-offset-y: ${formatControlValue("symbolOffsetY", settings.symbolOffsetY)}px;
-  --header-brand-text-size: ${formatControlValue("brandTextSize", settings.brandTextSize)}px;
-  --header-brand-text-offset-x: ${formatControlValue("brandTextOffsetX", settings.brandTextOffsetX)}px;
-  --header-brand-text-offset-y: ${formatControlValue("brandTextOffsetY", settings.brandTextOffsetY)}px;
-  --header-brand-letter-spacing: ${formatControlValue("brandLetterSpacing", settings.brandLetterSpacing)}em;
-  --header-nav-font-size: ${formatControlValue("navFontSize", settings.navFontSize)}px;
-  --header-nav-gap: ${formatControlValue("navGap", settings.navGap)}px;
-  --header-nav-offset-x: ${formatControlValue("navOffsetX", settings.navOffsetX)}px;
-  --header-nav-offset-y: ${formatControlValue("navOffsetY", settings.navOffsetY)}px;
-  --header-cta-offset-x: ${formatControlValue("ctaOffsetX", settings.ctaOffsetX)}px;
-  --header-cta-offset-y: ${formatControlValue("ctaOffsetY", settings.ctaOffsetY)}px;
-  --header-cta-font-size: ${formatControlValue("ctaFontSize", settings.ctaFontSize)}px;
-  --header-cta-padding-x: ${formatControlValue("ctaPaddingX", settings.ctaPaddingX)}px;
-  --header-cta-padding-y: ${formatControlValue("ctaPaddingY", settings.ctaPaddingY)}px;
-}`;
+  const cssSnippet = () => {
+    const lines = controls
+      .filter((control) => control.key && control.cssVar)
+      .map((control) => {
+        const suffix = control.unit === "" ? "" : control.unit;
+        return `  ${control.cssVar}: ${formatControlValue(control.key, settings[control.key])}${suffix};`;
+      });
+
+    return `:root {\n${lines.join("\n")}\n}`;
+  };
 
   const updateToast = (message) => {
     if (toast) {
@@ -1550,47 +1549,46 @@ const createHeaderAdjustmentPanel = () => {
   };
 
   const applyHeaderSettings = () => {
-    document.documentElement.style.setProperty("--header-height", `${settings.headerHeight}px`);
-    document.documentElement.style.setProperty("--header-padding-inline", `${settings.headerPaddingInline}px`);
-    document.documentElement.style.setProperty("--header-bg-opacity", `${settings.headerBgOpacity}`);
-    document.documentElement.style.setProperty("--header-brand-gap", `${settings.brandGap}px`);
-    document.documentElement.style.setProperty("--header-brand-offset-x", `${settings.brandOffsetX}px`);
-    document.documentElement.style.setProperty("--header-brand-offset-y", `${settings.brandOffsetY}px`);
-    document.documentElement.style.setProperty("--header-symbol-size", `${settings.symbolSize}px`);
-    document.documentElement.style.setProperty("--header-symbol-offset-x", `${settings.symbolOffsetX}px`);
-    document.documentElement.style.setProperty("--header-symbol-offset-y", `${settings.symbolOffsetY}px`);
-    document.documentElement.style.setProperty("--header-brand-text-size", `${settings.brandTextSize}px`);
-    document.documentElement.style.setProperty("--header-brand-text-offset-x", `${settings.brandTextOffsetX}px`);
-    document.documentElement.style.setProperty("--header-brand-text-offset-y", `${settings.brandTextOffsetY}px`);
-    document.documentElement.style.setProperty("--header-brand-letter-spacing", `${settings.brandLetterSpacing}em`);
-    document.documentElement.style.setProperty("--header-nav-font-size", `${settings.navFontSize}px`);
-    document.documentElement.style.setProperty("--header-nav-gap", `${settings.navGap}px`);
-    document.documentElement.style.setProperty("--header-nav-offset-x", `${settings.navOffsetX}px`);
-    document.documentElement.style.setProperty("--header-nav-offset-y", `${settings.navOffsetY}px`);
-    document.documentElement.style.setProperty("--header-cta-offset-x", `${settings.ctaOffsetX}px`);
-    document.documentElement.style.setProperty("--header-cta-offset-y", `${settings.ctaOffsetY}px`);
-    document.documentElement.style.setProperty("--header-cta-font-size", `${settings.ctaFontSize}px`);
-    document.documentElement.style.setProperty("--header-cta-padding-x", `${settings.ctaPaddingX}px`);
-    document.documentElement.style.setProperty("--header-cta-padding-y", `${settings.ctaPaddingY}px`);
+    controls.forEach((control) => {
+      if (!control.key || !control.cssVar) {
+        return;
+      }
 
-    controls.forEach(({ key, unit }) => {
-      const input = inputs.get(key);
-      const output = valueOutputs.get(key);
+      const suffix = control.unit === "" ? "" : control.unit;
+      document.documentElement.style.setProperty(control.cssVar, `${settings[control.key]}${suffix}`);
+    });
+
+    controls.forEach((control) => {
+      if (!control.key) {
+        return;
+      }
+
+      const input = inputs.get(control.key);
+      const output = valueOutputs.get(control.key);
 
       if (input) {
-        input.value = String(settings[key]);
+        input.value = String(settings[control.key]);
       }
 
       if (output) {
         output.textContent =
-          unit === ""
-            ? formatControlValue(key, settings[key])
-            : `${formatControlValue(key, settings[key])}${unit}`;
+          control.unit === ""
+            ? formatControlValue(control.key, settings[control.key])
+            : `${formatControlValue(control.key, settings[control.key])}${control.unit}`;
       }
     });
   };
 
-  controls.forEach(({ key, label, min, max, step }) => {
+  controls.forEach((controlConfig) => {
+    if (controlConfig.type === "group") {
+      const title = document.createElement("div");
+      title.className = "hero-adjust-group-title";
+      title.textContent = controlConfig.label;
+      grid?.append(title);
+      return;
+    }
+
+    const { key, label, min, max, step } = controlConfig;
     const control = document.createElement("div");
     control.className = "hero-adjust-control";
     control.innerHTML = `
@@ -1643,7 +1641,7 @@ const createHeaderAdjustmentPanel = () => {
   });
 
   applyHeaderSettings();
-  updateToast("Modo de ajuste do header ativo.");
+  updateToast("Modo de ajuste do cabeçalho ativo.");
 };
 
 createHeaderAdjustmentPanel();
