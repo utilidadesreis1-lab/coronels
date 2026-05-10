@@ -18,6 +18,7 @@
   --site-wallpaper-size: 520px auto;
   --site-wallpaper-overlay: rgba(5, 5, 5, 0.48);
   --site-wallpaper-opacity: 1;
+  --hero-sections-fade-height: 180px;
   --header-height: 63px;
   --header-padding-inline: 4px;
   --header-bg-opacity: 0.84;
@@ -455,6 +456,23 @@ button {
   display: grid;
   align-items: end;
   overflow: clip;
+}
+
+.hero::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: var(--hero-sections-fade-height, 180px);
+  pointer-events: none;
+  z-index: 0;
+  background: linear-gradient(
+    to bottom,
+    rgba(5, 5, 5, 0),
+    rgba(5, 5, 5, 0.72),
+    rgba(5, 5, 5, 1)
+  );
 }
 
 .hero-media,
