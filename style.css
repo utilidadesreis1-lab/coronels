@@ -75,10 +75,10 @@
   --hero-brand-base-offset-y: 52px;
   --hero-brand-base-letter-spacing: 0.067em;
   --hero-content-offset-x: -40px;
-  --hero-adjust-min-height: 899px;
-  --hero-adjust-content-width: 1354px;
+  --hero-adjust-min-height: 1100px;
+  --hero-adjust-content-width: 560px;
   --hero-adjust-content-offset-x: -40px;
-  --hero-adjust-content-offset-y: -19px;
+  --hero-adjust-content-offset-y: -60px;
   --hero-adjust-content-scale: 1.19;
   --hero-adjust-logo-scale: 1.60;
   --hero-adjust-logo-offset-x: 0px;
