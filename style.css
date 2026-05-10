@@ -38,37 +38,37 @@
   --header-cta-padding-y: 15px;
   --hero-brand-width: 760px;
   --hero-brand-height: 330px;
-  --hero-brand-scale: 0.40;
-  --hero-brand-offset-x: 0px;
-  --hero-brand-offset-y: -64px;
-  --hero-brand-symbol-size: 204px;
-  --hero-brand-symbol-offset-x: -249px;
-  --hero-brand-symbol-offset-y: -22px;
-  --hero-brand-accent-size: 138px;
+  --hero-brand-scale: 0.53;
+  --hero-brand-offset-x: -8px;
+  --hero-brand-offset-y: -29px;
+  --hero-brand-symbol-size: 221px;
+  --hero-brand-symbol-offset-x: -267px;
+  --hero-brand-symbol-offset-y: -33px;
+  --hero-brand-accent-size: 143px;
   --hero-brand-accent-offset-x: 59px;
   --hero-brand-accent-offset-y: -32px;
   --hero-brand-accent-letter-spacing: 0.022em;
-  --hero-brand-base-size: 35px;
-  --hero-brand-base-offset-x: 177px;
-  --hero-brand-base-offset-y: 54px;
-  --hero-brand-base-letter-spacing: 0.074em;
-  --hero-content-offset-x: -140px;
-  --hero-adjust-min-height: 820px;
-  --hero-adjust-content-width: 1088px;
-  --hero-adjust-content-offset-x: -140px;
-  --hero-adjust-content-offset-y: 0px;
-  --hero-adjust-content-scale: 1;
-  --hero-adjust-logo-scale: 1;
+  --hero-brand-base-size: 33px;
+  --hero-brand-base-offset-x: 184px;
+  --hero-brand-base-offset-y: 52px;
+  --hero-brand-base-letter-spacing: 0.067em;
+  --hero-content-offset-x: -40px;
+  --hero-adjust-min-height: 899px;
+  --hero-adjust-content-width: 1354px;
+  --hero-adjust-content-offset-x: -40px;
+  --hero-adjust-content-offset-y: -19px;
+  --hero-adjust-content-scale: 1.19;
+  --hero-adjust-logo-scale: 1.60;
   --hero-adjust-logo-offset-x: 0px;
-  --hero-adjust-logo-offset-y: 0px;
+  --hero-adjust-logo-offset-y: 15px;
   --hero-adjust-copy-offset-x: 0px;
   --hero-adjust-copy-offset-y: 0px;
-  --hero-adjust-copy-width: 576px;
+  --hero-adjust-copy-width: 553px;
   --hero-adjust-buttons-offset-x: 0px;
   --hero-adjust-buttons-offset-y: 0px;
-  --hero-adjust-buttons-gap: 16px;
-  --hero-adjust-bg-position-x: 50%;
-  --hero-adjust-bg-position-y: 50%;
+  --hero-adjust-buttons-gap: 26px;
+  --hero-adjust-bg-position-x: 0%;
+  --hero-adjust-bg-position-y: 100%;
   --about-adjust-max-width: 1254px;
   --about-adjust-min-height: 988px;
   --about-adjust-padding-top: 0px;
@@ -643,19 +643,19 @@ button {
 }
 
 @media (min-width: 1200px) {
-  body.hero-adjust-active .hero-content {
-    max-width: min(100%, var(--hero-adjust-content-width, 1088px));
-    min-height: var(--hero-adjust-min-height, 820px);
+  .hero-content {
+    max-width: min(100%, var(--hero-adjust-content-width, 1354px));
+    min-height: var(--hero-adjust-min-height, 899px);
     transform:
       translate(
-        var(--hero-adjust-content-offset-x, -140px),
-        var(--hero-adjust-content-offset-y, 0px)
+        var(--hero-adjust-content-offset-x, -40px),
+        var(--hero-adjust-content-offset-y, -19px)
       )
-      scale(var(--hero-adjust-content-scale, 1));
+      scale(var(--hero-adjust-content-scale, 1.19));
     transform-origin: center center;
   }
 
-  body.hero-adjust-active .hero-brand-block {
+  .hero-brand-block {
     transform:
       translate(
         calc(var(--hero-brand-offset-x, 0px) + var(--hero-adjust-logo-offset-x, 0px)),
@@ -664,8 +664,8 @@ button {
       scale(calc(var(--hero-brand-scale, 1) * var(--hero-adjust-logo-scale, 1)));
   }
 
-  body.hero-adjust-active .hero-copy {
-    max-width: min(100%, var(--hero-adjust-copy-width, 576px));
+  .hero-copy {
+    max-width: min(100%, var(--hero-adjust-copy-width, 553px));
     transform:
       translate(
         var(--hero-adjust-copy-offset-x, 0px),
@@ -673,8 +673,8 @@ button {
       );
   }
 
-  body.hero-adjust-active .hero-actions {
-    gap: var(--hero-adjust-buttons-gap, 16px);
+  .hero-actions {
+    gap: var(--hero-adjust-buttons-gap, 26px);
     transform:
       translate(
         var(--hero-adjust-buttons-offset-x, 0px),
@@ -2894,8 +2894,7 @@ body.experience-adjust-active .about-gallery-card img {
   }
 
   .hero-content {
-    max-width: 68rem;
-    transform: translateX(var(--hero-content-offset-x, -140px));
+    max-width: min(100%, var(--hero-adjust-content-width, 1354px));
   }
 
   .differentials-grid,
