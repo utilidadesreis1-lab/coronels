@@ -1203,6 +1203,7 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .differentials {
+  margin-top: 80px;
   padding-bottom: 96px;
 }
 
@@ -3056,6 +3057,10 @@ body.experience-adjust-active .about-gallery-card img {
     padding: 88px 0;
   }
 
+  .differentials {
+    margin-top: 48px;
+  }
+
   .header-inner {
     gap: 0.75rem;
     padding-inline: 0.75rem;
@@ -3536,6 +3541,10 @@ body.experience-adjust-active .about-gallery-card img {
 @media (max-width: 480px) {
   .section {
     padding: 64px 0;
+  }
+
+  .differentials {
+    margin-top: 40px;
   }
 
   .brand {
