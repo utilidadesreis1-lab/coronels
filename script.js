@@ -1105,48 +1105,99 @@ const createHeroAdjustmentPanel = () => {
     return;
   }
 
+  const heroContent = document.querySelector(".hero-content");
   const heroBrandBlock = document.querySelector(".hero-brand-block");
   const heroSymbol = document.querySelector(".hero-brand-symbol-wrap");
   const heroAccent = document.querySelector(".hero-title-accent");
   const heroBase = document.querySelector(".hero-title-base");
+  const heroCopy = document.querySelector(".hero-copy");
+  const heroActions = document.querySelector(".hero-actions");
+  const heroMedia = document.querySelector(".hero-media");
 
-  if (!heroBrandBlock || !heroSymbol || !heroAccent || !heroBase) {
+  if (!heroContent || !heroBrandBlock || !heroSymbol || !heroAccent || !heroBase || !heroCopy || !heroActions || !heroMedia) {
     return;
   }
 
+  document.body.classList.add("hero-adjust-active");
+
   const storageKey = "coronelsHeroAdjustments";
+  const rootStyles = window.getComputedStyle(document.documentElement);
+  const readRootNumber = (name, fallback) => {
+    const raw = rootStyles.getPropertyValue(name).trim();
+    const parsed = Number.parseFloat(raw);
+    return Number.isFinite(parsed) ? parsed : fallback;
+  };
+
   const defaultSettings = {
-    groupScale: 1,
-    symbolSize: 300,
-    symbolOffsetX: -170,
-    symbolOffsetY: 0,
-    accentSize: 110,
-    accentOffsetX: 90,
-    accentOffsetY: -44,
-    accentLetterSpacing: 0.015,
-    baseSize: 69,
-    baseOffsetX: 160,
-    baseOffsetY: 58,
-    baseLetterSpacing: 0.08,
-    blockOffsetY: 0,
-    blockOffsetX: 0,
+    heroMinHeight: readRootNumber("--hero-adjust-min-height", 820),
+    contentWidth: readRootNumber("--hero-adjust-content-width", 1088),
+    contentOffsetX: readRootNumber("--hero-adjust-content-offset-x", -140),
+    contentOffsetY: readRootNumber("--hero-adjust-content-offset-y", 0),
+    contentScale: readRootNumber("--hero-adjust-content-scale", 1),
+    logoScale: readRootNumber("--hero-adjust-logo-scale", 1),
+    logoOffsetX: readRootNumber("--hero-adjust-logo-offset-x", 0),
+    logoOffsetY: readRootNumber("--hero-adjust-logo-offset-y", 0),
+    copyWidth: readRootNumber("--hero-adjust-copy-width", 576),
+    copyOffsetX: readRootNumber("--hero-adjust-copy-offset-x", 0),
+    copyOffsetY: readRootNumber("--hero-adjust-copy-offset-y", 0),
+    buttonsOffsetX: readRootNumber("--hero-adjust-buttons-offset-x", 0),
+    buttonsOffsetY: readRootNumber("--hero-adjust-buttons-offset-y", 0),
+    buttonsGap: readRootNumber("--hero-adjust-buttons-gap", 16),
+    bgPositionX: readRootNumber("--hero-adjust-bg-position-x", 50),
+    bgPositionY: readRootNumber("--hero-adjust-bg-position-y", 50),
+    brandScale: readRootNumber("--hero-brand-scale", 0.4),
+    brandOffsetX: readRootNumber("--hero-brand-offset-x", 0),
+    brandOffsetY: readRootNumber("--hero-brand-offset-y", -64),
+    symbolSize: readRootNumber("--hero-brand-symbol-size", 204),
+    symbolOffsetX: readRootNumber("--hero-brand-symbol-offset-x", -249),
+    symbolOffsetY: readRootNumber("--hero-brand-symbol-offset-y", -22),
+    accentSize: readRootNumber("--hero-brand-accent-size", 138),
+    accentOffsetX: readRootNumber("--hero-brand-accent-offset-x", 59),
+    accentOffsetY: readRootNumber("--hero-brand-accent-offset-y", -32),
+    accentLetterSpacing: readRootNumber("--hero-brand-accent-letter-spacing", 0.022),
+    baseSize: readRootNumber("--hero-brand-base-size", 35),
+    baseOffsetX: readRootNumber("--hero-brand-base-offset-x", 177),
+    baseOffsetY: readRootNumber("--hero-brand-base-offset-y", 54),
+    baseLetterSpacing: readRootNumber("--hero-brand-base-letter-spacing", 0.074),
   };
 
   const controls = [
-    { key: "groupScale", label: "Escala geral do grupo", min: 0.4, max: 2, step: 0.01, unit: "" },
-    { key: "blockOffsetX", label: "Posição X do grupo", min: -320, max: 320, step: 1, unit: "px" },
-    { key: "blockOffsetY", label: "Posição Y do grupo", min: -220, max: 220, step: 1, unit: "px" },
-    { key: "symbolSize", label: "Tamanho do símbolo", min: 40, max: 420, step: 1, unit: "px" },
-    { key: "symbolOffsetX", label: "Posição X do símbolo", min: -320, max: 320, step: 1, unit: "px" },
-    { key: "symbolOffsetY", label: "Posição Y do símbolo", min: -220, max: 220, step: 1, unit: "px" },
-    { key: "accentSize", label: "Tamanho de Coronel's", min: 36, max: 180, step: 1, unit: "px" },
-    { key: "accentOffsetX", label: "Posição X de Coronel's", min: -320, max: 320, step: 1, unit: "px" },
-    { key: "accentOffsetY", label: "Posição Y de Coronel's", min: -220, max: 220, step: 1, unit: "px" },
-    { key: "accentLetterSpacing", label: "Entre letras de Coronel's", min: -0.08, max: 0.2, step: 0.001, unit: "em" },
-    { key: "baseSize", label: "Tamanho de BARBEARIA", min: 20, max: 120, step: 1, unit: "px" },
-    { key: "baseOffsetX", label: "Posição X de BARBEARIA", min: -320, max: 320, step: 1, unit: "px" },
-    { key: "baseOffsetY", label: "Posição Y de BARBEARIA", min: -220, max: 220, step: 1, unit: "px" },
-    { key: "baseLetterSpacing", label: "Entre letras de BARBEARIA", min: 0, max: 0.3, step: 0.001, unit: "em" },
+    { type: "group", label: "Bloco principal do hero" },
+    { key: "heroMinHeight", label: "Altura mínima do hero", min: 640, max: 1100, step: 1, unit: "px", cssVar: "--hero-adjust-min-height" },
+    { key: "contentWidth", label: "Largura do bloco", min: 560, max: 1400, step: 1, unit: "px", cssVar: "--hero-adjust-content-width" },
+    { key: "contentOffsetX", label: "Posição X do bloco", min: -320, max: 320, step: 1, unit: "px", cssVar: "--hero-adjust-content-offset-x" },
+    { key: "contentOffsetY", label: "Posição Y do bloco", min: -220, max: 220, step: 1, unit: "px", cssVar: "--hero-adjust-content-offset-y" },
+    { key: "contentScale", label: "Escala geral do bloco", min: 0.6, max: 1.4, step: 0.01, unit: "", cssVar: "--hero-adjust-content-scale" },
+    { type: "group", label: "Logo do hero" },
+    { key: "logoScale", label: "Escala da logo", min: 0.5, max: 1.6, step: 0.01, unit: "", cssVar: "--hero-adjust-logo-scale" },
+    { key: "logoOffsetX", label: "Posição X da logo", min: -220, max: 220, step: 1, unit: "px", cssVar: "--hero-adjust-logo-offset-x" },
+    { key: "logoOffsetY", label: "Posição Y da logo", min: -220, max: 220, step: 1, unit: "px", cssVar: "--hero-adjust-logo-offset-y" },
+    { type: "group", label: "Frase do hero" },
+    { key: "copyWidth", label: "Largura da frase", min: 260, max: 900, step: 1, unit: "px", cssVar: "--hero-adjust-copy-width" },
+    { key: "copyOffsetX", label: "Posição X da frase", min: -220, max: 220, step: 1, unit: "px", cssVar: "--hero-adjust-copy-offset-x" },
+    { key: "copyOffsetY", label: "Posição Y da frase", min: -220, max: 220, step: 1, unit: "px", cssVar: "--hero-adjust-copy-offset-y" },
+    { type: "group", label: "Botões do hero" },
+    { key: "buttonsOffsetX", label: "Posição X dos botões", min: -220, max: 220, step: 1, unit: "px", cssVar: "--hero-adjust-buttons-offset-x" },
+    { key: "buttonsOffsetY", label: "Posição Y dos botões", min: -220, max: 220, step: 1, unit: "px", cssVar: "--hero-adjust-buttons-offset-y" },
+    { key: "buttonsGap", label: "Espaço entre botões", min: 0, max: 48, step: 1, unit: "px", cssVar: "--hero-adjust-buttons-gap" },
+    { type: "group", label: "Fundo do hero" },
+    { key: "bgPositionX", label: "Posição X do fundo", min: 0, max: 100, step: 1, unit: "%", cssVar: "--hero-adjust-bg-position-x" },
+    { key: "bgPositionY", label: "Posição Y do fundo", min: 0, max: 100, step: 1, unit: "%", cssVar: "--hero-adjust-bg-position-y" },
+    { type: "group", label: "Marca interna (avançado)" },
+    { key: "brandScale", label: "Escala base da marca", min: 0.2, max: 1.4, step: 0.01, unit: "", cssVar: "--hero-brand-scale" },
+    { key: "brandOffsetX", label: "Posição X base da marca", min: -320, max: 320, step: 1, unit: "px", cssVar: "--hero-brand-offset-x" },
+    { key: "brandOffsetY", label: "Posição Y base da marca", min: -220, max: 220, step: 1, unit: "px", cssVar: "--hero-brand-offset-y" },
+    { key: "symbolSize", label: "Tamanho do símbolo", min: 40, max: 420, step: 1, unit: "px", cssVar: "--hero-brand-symbol-size" },
+    { key: "symbolOffsetX", label: "Posição X do símbolo", min: -320, max: 320, step: 1, unit: "px", cssVar: "--hero-brand-symbol-offset-x" },
+    { key: "symbolOffsetY", label: "Posição Y do símbolo", min: -220, max: 220, step: 1, unit: "px", cssVar: "--hero-brand-symbol-offset-y" },
+    { key: "accentSize", label: "Tamanho de Coronel's", min: 36, max: 180, step: 1, unit: "px", cssVar: "--hero-brand-accent-size" },
+    { key: "accentOffsetX", label: "Posição X de Coronel's", min: -320, max: 320, step: 1, unit: "px", cssVar: "--hero-brand-accent-offset-x" },
+    { key: "accentOffsetY", label: "Posição Y de Coronel's", min: -220, max: 220, step: 1, unit: "px", cssVar: "--hero-brand-accent-offset-y" },
+    { key: "accentLetterSpacing", label: "Entre letras de Coronel's", min: -0.08, max: 0.2, step: 0.001, unit: "em", cssVar: "--hero-brand-accent-letter-spacing" },
+    { key: "baseSize", label: "Tamanho de BARBEARIA", min: 20, max: 120, step: 1, unit: "px", cssVar: "--hero-brand-base-size" },
+    { key: "baseOffsetX", label: "Posição X de BARBEARIA", min: -320, max: 320, step: 1, unit: "px", cssVar: "--hero-brand-base-offset-x" },
+    { key: "baseOffsetY", label: "Posição Y de BARBEARIA", min: -220, max: 220, step: 1, unit: "px", cssVar: "--hero-brand-base-offset-y" },
+    { key: "baseLetterSpacing", label: "Entre letras de BARBEARIA", min: 0, max: 0.3, step: 0.001, unit: "em", cssVar: "--hero-brand-base-letter-spacing" },
   ];
 
   const readStoredSettings = () => {
@@ -1177,7 +1228,7 @@ const createHeroAdjustmentPanel = () => {
 
   panel.innerHTML = `
     <h3>Ajuste Hero</h3>
-    <p>Ajuste visual temporário do bloco da marca. Só aparece com <code>?ajusteHero=1</code>.</p>
+    <p>Ajuste visual temporário do hero. Só aparece com <code>?ajusteHero=1</code>.</p>
     <div class="hero-adjust-grid" data-hero-adjust-grid></div>
     <div class="hero-adjust-actions">
       <button class="button button-gold" type="button" data-hero-copy-css>Copiar CSS</button>
@@ -1207,7 +1258,7 @@ const createHeroAdjustmentPanel = () => {
       return String(value);
     }
 
-    if (control.unit === "em" || control.unit === "") {
+    if (control.unit === "em" || control.unit === "" || control.unit === "%") {
       const decimals = String(control.step).includes(".")
         ? String(control.step).split(".")[1].length
         : 0;
@@ -1218,22 +1269,16 @@ const createHeroAdjustmentPanel = () => {
     return `${Math.round(Number(value))}`;
   };
 
-  const cssSnippet = () => `:root {
-  --hero-brand-scale: ${formatControlValue("groupScale", settings.groupScale)};
-  --hero-brand-offset-x: ${formatControlValue("blockOffsetX", settings.blockOffsetX)}px;
-  --hero-brand-offset-y: ${formatControlValue("blockOffsetY", settings.blockOffsetY)}px;
-  --hero-brand-symbol-size: ${formatControlValue("symbolSize", settings.symbolSize)}px;
-  --hero-brand-symbol-offset-x: ${formatControlValue("symbolOffsetX", settings.symbolOffsetX)}px;
-  --hero-brand-symbol-offset-y: ${formatControlValue("symbolOffsetY", settings.symbolOffsetY)}px;
-  --hero-brand-accent-size: ${formatControlValue("accentSize", settings.accentSize)}px;
-  --hero-brand-accent-offset-x: ${formatControlValue("accentOffsetX", settings.accentOffsetX)}px;
-  --hero-brand-accent-offset-y: ${formatControlValue("accentOffsetY", settings.accentOffsetY)}px;
-  --hero-brand-accent-letter-spacing: ${formatControlValue("accentLetterSpacing", settings.accentLetterSpacing)}em;
-  --hero-brand-base-size: ${formatControlValue("baseSize", settings.baseSize)}px;
-  --hero-brand-base-offset-x: ${formatControlValue("baseOffsetX", settings.baseOffsetX)}px;
-  --hero-brand-base-offset-y: ${formatControlValue("baseOffsetY", settings.baseOffsetY)}px;
-  --hero-brand-base-letter-spacing: ${formatControlValue("baseLetterSpacing", settings.baseLetterSpacing)}em;
-}`;
+  const cssSnippet = () => {
+    const lines = controls
+      .filter((control) => control.key && control.cssVar)
+      .map((control) => {
+        const suffix = control.unit === "" ? "" : control.unit;
+        return `  ${control.cssVar}: ${formatControlValue(control.key, settings[control.key])}${suffix};`;
+      });
+
+    return `:root {\n${lines.join("\n")}\n}`;
+  };
 
   const updateToast = (message) => {
     if (toast) {
@@ -1242,39 +1287,46 @@ const createHeroAdjustmentPanel = () => {
   };
 
   const applyHeroSettings = () => {
-    document.documentElement.style.setProperty("--hero-brand-scale", `${settings.groupScale}`);
-    document.documentElement.style.setProperty("--hero-brand-offset-y", `${settings.blockOffsetY}px`);
-    document.documentElement.style.setProperty("--hero-brand-offset-x", `${settings.blockOffsetX}px`);
-    document.documentElement.style.setProperty("--hero-brand-symbol-size", `${settings.symbolSize}px`);
-    document.documentElement.style.setProperty("--hero-brand-symbol-offset-x", `${settings.symbolOffsetX}px`);
-    document.documentElement.style.setProperty("--hero-brand-symbol-offset-y", `${settings.symbolOffsetY}px`);
-    document.documentElement.style.setProperty("--hero-brand-accent-size", `${settings.accentSize}px`);
-    document.documentElement.style.setProperty("--hero-brand-accent-offset-x", `${settings.accentOffsetX}px`);
-    document.documentElement.style.setProperty("--hero-brand-accent-offset-y", `${settings.accentOffsetY}px`);
-    document.documentElement.style.setProperty("--hero-brand-accent-letter-spacing", `${settings.accentLetterSpacing}em`);
-    document.documentElement.style.setProperty("--hero-brand-base-size", `${settings.baseSize}px`);
-    document.documentElement.style.setProperty("--hero-brand-base-offset-x", `${settings.baseOffsetX}px`);
-    document.documentElement.style.setProperty("--hero-brand-base-offset-y", `${settings.baseOffsetY}px`);
-    document.documentElement.style.setProperty("--hero-brand-base-letter-spacing", `${settings.baseLetterSpacing}em`);
+    controls.forEach((control) => {
+      if (!control.key || !control.cssVar) {
+        return;
+      }
 
-    controls.forEach(({ key, unit }) => {
-      const input = inputs.get(key);
-      const output = valueOutputs.get(key);
+      const suffix = control.unit === "" ? "" : control.unit;
+      document.documentElement.style.setProperty(control.cssVar, `${settings[control.key]}${suffix}`);
+    });
+
+    controls.forEach((control) => {
+      if (!control.key) {
+        return;
+      }
+
+      const input = inputs.get(control.key);
+      const output = valueOutputs.get(control.key);
 
       if (input) {
-        input.value = String(settings[key]);
+        input.value = String(settings[control.key]);
       }
 
       if (output) {
         output.textContent =
-          unit === ""
-            ? formatControlValue(key, settings[key])
-            : `${formatControlValue(key, settings[key])}${unit}`;
+          control.unit === ""
+            ? formatControlValue(control.key, settings[control.key])
+            : `${formatControlValue(control.key, settings[control.key])}${control.unit}`;
       }
     });
   };
 
-  controls.forEach(({ key, label, min, max, step }) => {
+  controls.forEach((controlConfig) => {
+    if (controlConfig.type === "group") {
+      const title = document.createElement("div");
+      title.className = "hero-adjust-group-title";
+      title.textContent = controlConfig.label;
+      grid?.append(title);
+      return;
+    }
+
+    const { key, label, min, max, step } = controlConfig;
     const control = document.createElement("div");
     control.className = "hero-adjust-control";
     control.innerHTML = `
@@ -1329,7 +1381,7 @@ const createHeroAdjustmentPanel = () => {
   });
 
   applyHeroSettings();
-  updateToast("Modo de ajuste ativo.");
+  updateToast("Modo de ajuste do hero ativo.");
 };
 
 createHeroAdjustmentPanel();

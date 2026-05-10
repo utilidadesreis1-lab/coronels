@@ -53,6 +53,22 @@
   --hero-brand-base-offset-y: 54px;
   --hero-brand-base-letter-spacing: 0.074em;
   --hero-content-offset-x: -140px;
+  --hero-adjust-min-height: 820px;
+  --hero-adjust-content-width: 1088px;
+  --hero-adjust-content-offset-x: -140px;
+  --hero-adjust-content-offset-y: 0px;
+  --hero-adjust-content-scale: 1;
+  --hero-adjust-logo-scale: 1;
+  --hero-adjust-logo-offset-x: 0px;
+  --hero-adjust-logo-offset-y: 0px;
+  --hero-adjust-copy-offset-x: 0px;
+  --hero-adjust-copy-offset-y: 0px;
+  --hero-adjust-copy-width: 576px;
+  --hero-adjust-buttons-offset-x: 0px;
+  --hero-adjust-buttons-offset-y: 0px;
+  --hero-adjust-buttons-gap: 16px;
+  --hero-adjust-bg-position-x: 50%;
+  --hero-adjust-bg-position-y: 50%;
   --about-adjust-max-width: 1254px;
   --about-adjust-min-height: 988px;
   --about-adjust-padding-top: 0px;
@@ -380,7 +396,7 @@ button {
 .hero-media {
   background:
     linear-gradient(90deg, rgba(6, 6, 6, 0.92) 0%, rgba(7, 7, 7, 0.72) 18%, rgba(8, 8, 8, 0.38) 50%, rgba(7, 7, 7, 0.74) 82%, rgba(6, 6, 6, 0.9) 100%),
-    url("assets/hero-fundo.jpg") center/cover no-repeat;
+    url("assets/hero-fundo.jpg") var(--hero-adjust-bg-position-x, 50%) var(--hero-adjust-bg-position-y, 50%) / cover no-repeat;
   transform: scale(1.04);
 }
 
@@ -624,6 +640,47 @@ button {
   gap: 1rem;
   justify-content: center;
   margin-top: 2.25rem;
+}
+
+@media (min-width: 1200px) {
+  body.hero-adjust-active .hero-content {
+    max-width: min(100%, var(--hero-adjust-content-width, 1088px));
+    min-height: var(--hero-adjust-min-height, 820px);
+    transform:
+      translate(
+        var(--hero-adjust-content-offset-x, -140px),
+        var(--hero-adjust-content-offset-y, 0px)
+      )
+      scale(var(--hero-adjust-content-scale, 1));
+    transform-origin: center center;
+  }
+
+  body.hero-adjust-active .hero-brand-block {
+    transform:
+      translate(
+        calc(var(--hero-brand-offset-x, 0px) + var(--hero-adjust-logo-offset-x, 0px)),
+        calc(var(--hero-brand-offset-y, 0px) + var(--hero-adjust-logo-offset-y, 0px))
+      )
+      scale(calc(var(--hero-brand-scale, 1) * var(--hero-adjust-logo-scale, 1)));
+  }
+
+  body.hero-adjust-active .hero-copy {
+    max-width: min(100%, var(--hero-adjust-copy-width, 576px));
+    transform:
+      translate(
+        var(--hero-adjust-copy-offset-x, 0px),
+        var(--hero-adjust-copy-offset-y, 0px)
+      );
+  }
+
+  body.hero-adjust-active .hero-actions {
+    gap: var(--hero-adjust-buttons-gap, 16px);
+    transform:
+      translate(
+        var(--hero-adjust-buttons-offset-x, 0px),
+        var(--hero-adjust-buttons-offset-y, 0px)
+      );
+  }
 }
 
 .section-heading {
