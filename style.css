@@ -11,7 +11,9 @@
   --shadow: 0 24px 60px rgba(0, 0, 0, 0.35);
   --radius: 28px;
   --radius-sm: 18px;
-  --container: min(92vw, 1480px);
+  --page-max-width: 1380px;
+  --page-side-padding: 32px;
+  --container: min(calc(100% - (var(--page-side-padding) * 2)), var(--page-max-width));
   --header-height: 63px;
   --header-padding-inline: 4px;
   --header-bg-opacity: 0.84;
@@ -2057,7 +2059,7 @@ body.experience-adjust-active .about-gallery-card img {
 
 .contact-card {
   text-align: center;
-  max-width: 54rem;
+  max-width: 62rem;
   margin: 0 auto;
   background:
     radial-gradient(circle at top, rgba(255, 255, 255, 0.14), transparent 42%),
@@ -2837,6 +2839,23 @@ body.experience-adjust-active .about-gallery-card img {
   .hero-content {
     max-width: 68rem;
     transform: translateX(var(--hero-content-offset-x, -140px));
+  }
+
+  .differentials-grid,
+  .services-grid,
+  .gallery-grid,
+  .contact-grid,
+  .booking-layout {
+    gap: 1.25rem;
+  }
+
+  .differential-card {
+    padding: 1.9rem;
+  }
+
+  .service-card {
+    padding: 1.8rem;
+    min-height: 252px;
   }
 }
 
