@@ -42,11 +42,11 @@
   --header-adjust-content-offset-y: 0px;
   --header-adjust-side-padding: 4px;
   --header-brand-logo-size: 63px;
-  --header-brand-logo-offset-x: -62px;
-  --header-brand-logo-offset-y: -1px;
-  --header-brand-text-size-adjust: 18px;
-  --header-brand-text-offset-x-adjust: -61px;
-  --header-brand-text-offset-y-adjust: 0px;
+  --header-brand-logo-offset-x: 0px;
+  --header-brand-logo-offset-y: 0px;
+  --header-brand-text-size-adjust: 22px;
+  --header-brand-text-offset-x-adjust: 0px;
+  --header-brand-text-offset-y-adjust: 1px;
   --header-brand-gap-adjust: 0px;
   --header-menu-offset-x: 0px;
   --header-menu-offset-y: 0px;
@@ -56,7 +56,7 @@
   --header-button-offset-y: 0px;
   --header-button-width: 180px;
   --header-button-height: 36px;
-  --header-button-font-size: 15px;
+  --header-button-font-size: 16px;
   --header-button-radius: 999px;
   --hero-brand-width: 760px;
   --hero-brand-height: 330px;
