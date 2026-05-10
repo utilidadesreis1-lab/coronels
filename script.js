@@ -1169,7 +1169,7 @@ const createHeroAdjustmentPanel = () => {
     { key: "contentOffsetY", label: "Posição Y do bloco", min: -220, max: 220, step: 1, unit: "px", cssVar: "--hero-adjust-content-offset-y" },
     { key: "contentScale", label: "Escala geral do bloco", min: 0.6, max: 1.4, step: 0.01, unit: "", cssVar: "--hero-adjust-content-scale" },
     { type: "group", label: "Logo do hero" },
-    { key: "logoScale", label: "Escala da logo", min: 0.5, max: 1.6, step: 0.01, unit: "", cssVar: "--hero-adjust-logo-scale" },
+    { key: "logoScale", label: "Escala da logo", min: 0.5, max: 2.4, step: 0.01, unit: "", cssVar: "--hero-adjust-logo-scale" },
     { key: "logoOffsetX", label: "Posição X da logo", min: -220, max: 220, step: 1, unit: "px", cssVar: "--hero-adjust-logo-offset-x" },
     { key: "logoOffsetY", label: "Posição Y da logo", min: -220, max: 220, step: 1, unit: "px", cssVar: "--hero-adjust-logo-offset-y" },
     { type: "group", label: "Frase do hero" },
