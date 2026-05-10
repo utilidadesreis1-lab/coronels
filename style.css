@@ -1108,7 +1108,7 @@ body.experience-adjust-active .about-gallery-card img {
   inset: 0 auto auto 1.7rem;
   width: 3.6rem;
   height: 2px;
-  background: linear-gradient(90deg, rgba(243, 243, 244, 0.92), rgba(243, 243, 244, 0));
+  background: linear-gradient(90deg, rgba(214, 188, 123, 0.98), rgba(214, 188, 123, 0));
 }
 
 .differential-card:hover {
@@ -1125,11 +1125,12 @@ body.experience-adjust-active .about-gallery-card img {
   align-items: center;
   margin-bottom: 1.3rem;
   padding-top: 0.5rem;
-  color: rgba(243, 243, 244, 0.82);
+  color: rgba(221, 193, 128, 0.98);
   font-size: 0.78rem;
   font-weight: 800;
   letter-spacing: 0.18em;
   text-transform: uppercase;
+  text-shadow: 0 0 18px rgba(214, 188, 123, 0.16);
 }
 
 .differential-card h3 {
@@ -1149,6 +1150,20 @@ body.experience-adjust-active .about-gallery-card img {
   display: flex;
   justify-content: center;
   margin-top: 2.2rem;
+}
+
+.differentials-cta .button {
+  min-width: 220px;
+  background: linear-gradient(135deg, #fcfcfd 0%, #dddde2 100%);
+  color: #111214;
+  border-color: rgba(255, 255, 255, 0.34);
+  box-shadow: 0 20px 36px rgba(255, 255, 255, 0.12);
+}
+
+.differentials-cta .button:hover,
+.differentials-cta .button:focus-visible {
+  border-color: rgba(255, 255, 255, 0.5);
+  box-shadow: 0 24px 42px rgba(255, 255, 255, 0.16);
 }
 
 .services-grid {
