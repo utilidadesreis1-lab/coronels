@@ -16,7 +16,8 @@
   --container: min(calc(100% - (var(--page-side-padding) * 2)), var(--page-max-width));
   --site-wallpaper-image: url("assets/backgrounds/barbearia-wallpaper-dark.png");
   --site-wallpaper-size: 520px auto;
-  --site-wallpaper-opacity: 0.18;
+  --site-wallpaper-opacity: 0.32;
+  --site-wallpaper-overlay: rgba(5, 5, 5, 0.72);
   --header-height: 63px;
   --header-padding-inline: 4px;
   --header-bg-opacity: 0.84;
@@ -183,14 +184,32 @@ button {
   content: "";
   position: absolute;
   inset: 0;
+  z-index: -2;
+  background-image: var(--site-wallpaper-image);
+  background-size: var(--site-wallpaper-size);
+  background-repeat: repeat;
+  background-position: center top;
+  opacity: var(--site-wallpaper-opacity, 0.32);
+  pointer-events: none;
+}
+
+.about::after,
+.differentials::after,
+.services::after,
+.gallery::after,
+.booking::after,
+.contact::after,
+.site-footer::after {
+  content: "";
+  position: absolute;
+  inset: 0;
   z-index: -1;
-  background-image:
-    linear-gradient(180deg, rgba(10, 10, 11, 0.9), rgba(10, 10, 11, 0.95)),
-    var(--site-wallpaper-image);
-  background-size: 100% 100%, var(--site-wallpaper-size);
-  background-repeat: no-repeat, repeat;
-  background-position: center center, center top;
-  opacity: var(--site-wallpaper-opacity, 0.18);
+  background:
+    linear-gradient(
+      180deg,
+      rgba(8, 8, 9, 0.7),
+      var(--site-wallpaper-overlay, rgba(5, 5, 5, 0.72))
+    );
   pointer-events: none;
 }
 
