@@ -1146,24 +1146,8 @@ body.experience-adjust-active .about-gallery-card img {
   line-height: 1.78;
 }
 
-.differentials-cta {
-  display: flex;
-  justify-content: center;
-  margin-top: 2.2rem;
-}
-
-.differentials-cta .button {
-  min-width: 220px;
-  background: linear-gradient(135deg, #fcfcfd 0%, #dddde2 100%);
-  color: #111214;
-  border-color: rgba(255, 255, 255, 0.34);
-  box-shadow: 0 20px 36px rgba(255, 255, 255, 0.12);
-}
-
-.differentials-cta .button:hover,
-.differentials-cta .button:focus-visible {
-  border-color: rgba(255, 255, 255, 0.5);
-  box-shadow: 0 24px 42px rgba(255, 255, 255, 0.16);
+.differentials {
+  padding-bottom: 96px;
 }
 
 .services-grid {
