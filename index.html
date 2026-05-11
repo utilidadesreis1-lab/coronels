@@ -422,45 +422,109 @@
           </p>
         </div>
 
-        <div class="environment-showcase">
-          <article class="environment-card environment-card-main reveal">
-            <div
-              class="environment-card-media"
-              style="--environment-card-image: url('assets/ambiente/ambiente-1.jpg');"
-              aria-hidden="true"
-            ></div>
-            <div class="environment-card-copy">
-              <span class="environment-card-kicker">Experiência Coronel's</span>
-              <h3>Espaço preparado para sua melhor experiência</h3>
-              <p>Cada detalhe foi pensado para unir conforto, estilo e praticidade no seu atendimento.</p>
-            </div>
-          </article>
+        <!--
+          Troque os fallbacks temporários pelos arquivos reais quando estiverem prontos:
+          assets/ambiente/ambiente-1.jpg
+          assets/ambiente/ambiente-2.jpg
+          assets/ambiente/ambiente-3.jpg
+          assets/ambiente/ambiente-4.jpg
+          assets/ambiente/ambiente-5.jpg
+        -->
+        <div class="environment-carousel reveal" data-environment-carousel data-autoplay-delay="5000">
+          <div class="environment-carousel-viewport">
+            <article class="environment-slide is-active" data-environment-slide>
+              <div
+                class="environment-slide-media"
+                style="--environment-slide-image: url('assets/ambiente/ambiente-1.jpg'), url('assets/recepcao.jpg');"
+                aria-hidden="true"
+              ></div>
+              <div class="environment-slide-copy">
+                <span class="environment-slide-kicker">Experiência Coronel's</span>
+                <h3>Espaço preparado para sua melhor experiência</h3>
+                <p>Cada detalhe foi pensado para unir conforto, estilo e praticidade no seu atendimento.</p>
+              </div>
+            </article>
 
-          <article class="environment-card environment-card-secondary reveal">
-            <div
-              class="environment-card-media"
-              style="--environment-card-image: url('assets/ambiente/ambiente-2.jpg');"
-              aria-hidden="true"
-            ></div>
-            <div class="environment-card-copy">
-              <span class="environment-card-kicker">Ambiente premium</span>
-              <h3>Conforto em cada visita</h3>
-              <p>Um ambiente agradável para você relaxar enquanto cuida do visual.</p>
-            </div>
-          </article>
+            <article class="environment-slide" data-environment-slide>
+              <div
+                class="environment-slide-media"
+                style="--environment-slide-image: url('assets/ambiente/ambiente-2.jpg'), url('assets/fachada.jpg');"
+                aria-hidden="true"
+              ></div>
+              <div class="environment-slide-copy">
+                <span class="environment-slide-kicker">Ambiente premium</span>
+                <h3>Conforto em cada visita</h3>
+                <p>Um ambiente agradável para você relaxar enquanto cuida do visual.</p>
+              </div>
+            </article>
 
-          <article class="environment-card environment-card-secondary reveal">
-            <div
-              class="environment-card-media"
-              style="--environment-card-image: url('assets/ambiente/ambiente-3.jpg');"
-              aria-hidden="true"
-            ></div>
-            <div class="environment-card-copy">
-              <span class="environment-card-kicker">Identidade da casa</span>
-              <h3>Estilo Coronel's</h3>
-              <p>Visual moderno, atendimento com hora marcada e experiência premium.</p>
+            <article class="environment-slide" data-environment-slide>
+              <div
+                class="environment-slide-media"
+                style="--environment-slide-image: url('assets/ambiente/ambiente-3.jpg'), url('assets/ambiente-2.jpg');"
+                aria-hidden="true"
+              ></div>
+              <div class="environment-slide-copy">
+                <span class="environment-slide-kicker">Identidade da casa</span>
+                <h3>Estilo Coronel's</h3>
+                <p>Visual moderno, atendimento com hora marcada e experiência premium.</p>
+              </div>
+            </article>
+
+            <article class="environment-slide" data-environment-slide>
+              <div
+                class="environment-slide-media"
+                style="--environment-slide-image: url('assets/ambiente/ambiente-4.jpg'), url('assets/sobre/atendimento-premium.png');"
+                aria-hidden="true"
+              ></div>
+              <div class="environment-slide-copy">
+                <span class="environment-slide-kicker">Atendimento premium</span>
+                <h3>Atendimento com presença</h3>
+                <p>Uma barbearia feita para quem valoriza cuidado, pontualidade e personalidade.</p>
+              </div>
+            </article>
+
+            <article class="environment-slide" data-environment-slide>
+              <div
+                class="environment-slide-media"
+                style="--environment-slide-image: url('assets/ambiente/ambiente-5.jpg'), url('assets/sobre/equipe-coronels.png');"
+                aria-hidden="true"
+              ></div>
+              <div class="environment-slide-copy">
+                <span class="environment-slide-kicker">Momento de cuidado</span>
+                <h3>Seu momento de cuidado</h3>
+                <p>Mais do que cortar cabelo: uma experiência completa de estilo.</p>
+              </div>
+            </article>
+          </div>
+
+          <div class="environment-carousel-controls">
+            <button
+              class="environment-carousel-arrow"
+              type="button"
+              aria-label="Slide anterior"
+              data-environment-prev
+            >
+              <span aria-hidden="true">‹</span>
+            </button>
+
+            <div class="environment-carousel-dots" aria-label="Indicadores da galeria">
+              <button class="environment-carousel-dot is-active" type="button" aria-label="Ir para o slide 1" data-environment-dot="0"></button>
+              <button class="environment-carousel-dot" type="button" aria-label="Ir para o slide 2" data-environment-dot="1"></button>
+              <button class="environment-carousel-dot" type="button" aria-label="Ir para o slide 3" data-environment-dot="2"></button>
+              <button class="environment-carousel-dot" type="button" aria-label="Ir para o slide 4" data-environment-dot="3"></button>
+              <button class="environment-carousel-dot" type="button" aria-label="Ir para o slide 5" data-environment-dot="4"></button>
             </div>
-          </article>
+
+            <button
+              class="environment-carousel-arrow"
+              type="button"
+              aria-label="Próximo slide"
+              data-environment-next
+            >
+              <span aria-hidden="true">›</span>
+            </button>
+          </div>
         </div>
       </div>
     </section>

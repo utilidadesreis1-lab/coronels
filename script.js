@@ -36,6 +36,7 @@ const bookingServiceToggle = document.querySelector("[data-booking-service-toggl
 const bookingServicePanel = document.querySelector("[data-booking-service-panel]");
 const bookingServiceSummary = document.querySelector("[data-booking-service-summary]");
 const serviceCardSelectButtons = document.querySelectorAll("[data-service-card-select]");
+const environmentCarousel = document.querySelector("[data-environment-carousel]");
 
 let serviceSelectionToastTimeoutId = 0;
 
@@ -208,6 +209,78 @@ if ("IntersectionObserver" in window) {
 } else {
   revealItems.forEach((item) => item.classList.add("is-visible"));
 }
+
+const createEnvironmentCarousel = () => {
+  if (!environmentCarousel) {
+    return;
+  }
+
+  const slides = [...environmentCarousel.querySelectorAll("[data-environment-slide]")];
+  const dots = [...environmentCarousel.querySelectorAll("[data-environment-dot]")];
+  const prevButton = environmentCarousel.querySelector("[data-environment-prev]");
+  const nextButton = environmentCarousel.querySelector("[data-environment-next]");
+  const autoplayDelay = Number(environmentCarousel.getAttribute("data-autoplay-delay")) || 5000;
+
+  if (!slides.length) {
+    return;
+  }
+
+  let currentIndex = Math.max(
+    0,
+    slides.findIndex((slide) => slide.classList.contains("is-active"))
+  );
+  let autoplayId = 0;
+
+  const setActiveSlide = (nextIndex) => {
+    currentIndex = (nextIndex + slides.length) % slides.length;
+
+    slides.forEach((slide, index) => {
+      const isActive = index === currentIndex;
+      slide.classList.toggle("is-active", isActive);
+      slide.setAttribute("aria-hidden", String(!isActive));
+    });
+
+    dots.forEach((dot, index) => {
+      const isActive = index === currentIndex;
+      dot.classList.toggle("is-active", isActive);
+      dot.setAttribute("aria-pressed", String(isActive));
+    });
+  };
+
+  const stopAutoplay = () => {
+    window.clearInterval(autoplayId);
+  };
+
+  const startAutoplay = () => {
+    stopAutoplay();
+    autoplayId = window.setInterval(() => {
+      setActiveSlide(currentIndex + 1);
+    }, autoplayDelay);
+  };
+
+  prevButton?.addEventListener("click", () => {
+    setActiveSlide(currentIndex - 1);
+    startAutoplay();
+  });
+
+  nextButton?.addEventListener("click", () => {
+    setActiveSlide(currentIndex + 1);
+    startAutoplay();
+  });
+
+  dots.forEach((dot, index) => {
+    dot.addEventListener("click", () => {
+      setActiveSlide(index);
+      startAutoplay();
+    });
+  });
+
+  environmentCarousel.addEventListener("mouseenter", stopAutoplay);
+  environmentCarousel.addEventListener("mouseleave", startAutoplay);
+
+  setActiveSlide(currentIndex);
+  startAutoplay();
+};
 
 const toggleFieldError = (field, isInvalid) => {
   const wrapper = field.closest(".field");
@@ -2032,4 +2105,5 @@ const createExperienceAdjustmentPanel = () => {
 };
 
 createExperienceAdjustmentPanel();
+createEnvironmentCarousel();
 
