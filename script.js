@@ -35,6 +35,9 @@ const bookingBarberGrid = document.querySelector("[data-booking-barber-grid]");
 const bookingServiceToggle = document.querySelector("[data-booking-service-toggle]");
 const bookingServicePanel = document.querySelector("[data-booking-service-panel]");
 const bookingServiceSummary = document.querySelector("[data-booking-service-summary]");
+const serviceCardSelectButtons = document.querySelectorAll("[data-service-card-select]");
+
+let serviceSelectionToastTimeoutId = 0;
 
 const defaultBarbers = [
   { id: "guerra", nome: "Guerra", fotoUrl: "assets/barbeiros/guerra.jfif", ativo: true },
@@ -464,6 +467,70 @@ const updateServiceSummary = () => {
   const details = serviceMeta[selectedService];
   const priceLabel = details?.price ? ` — ${details.price}` : "";
   bookingServiceSummary.textContent = `Serviço escolhido: ${selectedService}${priceLabel}`;
+};
+
+const ensureServiceSelectionToast = () => {
+  const existingToast = document.querySelector("[data-service-selection-toast]");
+
+  if (existingToast) {
+    return existingToast;
+  }
+
+  const toast = document.createElement("div");
+  toast.className = "service-selection-toast";
+  toast.setAttribute("data-service-selection-toast", "");
+  toast.setAttribute("role", "status");
+  toast.setAttribute("aria-live", "polite");
+  document.body.appendChild(toast);
+  return toast;
+};
+
+const showServiceSelectionToast = (serviceName) => {
+  const toast = ensureServiceSelectionToast();
+  toast.textContent = `Serviço selecionado: ${serviceName}. Ele já está marcado na aba de agendamento.`;
+  toast.classList.add("is-visible");
+
+  window.clearTimeout(serviceSelectionToastTimeoutId);
+  serviceSelectionToastTimeoutId = window.setTimeout(() => {
+    toast.classList.remove("is-visible");
+  }, 3200);
+};
+
+const selectBookingService = (
+  serviceName,
+  { closeAccordion = false, showToast = false } = {}
+) => {
+  if (!publicServiceSelect) {
+    return false;
+  }
+
+  const normalizedService = String(serviceName || "").trim();
+
+  if (!normalizedService) {
+    return false;
+  }
+
+  const hasOption = [...publicServiceSelect.options].some(
+    (option) => option.value === normalizedService
+  );
+
+  if (!hasOption) {
+    return false;
+  }
+
+  publicServiceSelect.value = normalizedService;
+  toggleFieldError(publicServiceSelect, false);
+  publicServiceSelect.dispatchEvent(new Event("change", { bubbles: true }));
+
+  if (closeAccordion) {
+    setServiceAccordionState(false);
+  }
+
+  if (showToast) {
+    showServiceSelectionToast(normalizedService);
+  }
+
+  return true;
 };
 
 const populateBarberSelect = (select, barbers, placeholder) => {
@@ -948,11 +1015,23 @@ if (bookingForm && formFeedback) {
         return;
       }
 
-      publicServiceSelect.value = selectedService;
-      toggleFieldError(publicServiceSelect, false);
-      renderServiceCards();
-      updateServiceSummary();
-      setServiceAccordionState(false);
+      selectBookingService(selectedService, { closeAccordion: true });
+    });
+  }
+
+  if (serviceCardSelectButtons.length) {
+    serviceCardSelectButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        const selectedService = String(
+          button.getAttribute("data-service-card-select") || ""
+        ).trim();
+
+        if (!selectedService) {
+          return;
+        }
+
+        selectBookingService(selectedService, { showToast: true });
+      });
     });
   }
 
