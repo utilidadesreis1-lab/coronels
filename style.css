@@ -1576,6 +1576,121 @@ body.experience-adjust-active .about-gallery-card img {
   gap: 1rem;
 }
 
+.environment-showcase {
+  display: grid;
+  grid-template-columns: minmax(0, 1.25fr) minmax(0, 0.75fr);
+  gap: 1.15rem;
+  align-items: stretch;
+}
+
+.environment-card {
+  position: relative;
+  overflow: hidden;
+  min-height: 320px;
+  display: flex;
+  align-items: flex-end;
+  border-radius: 28px;
+  border: 1px solid rgba(214, 188, 123, 0.14);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.018)),
+    rgba(12, 12, 13, 0.92);
+  box-shadow:
+    0 22px 48px rgba(0, 0, 0, 0.22),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
+.environment-card::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(circle at top left, rgba(214, 188, 123, 0.12), transparent 30%),
+    linear-gradient(180deg, rgba(4, 4, 4, 0.05), rgba(4, 4, 4, 0.66));
+  z-index: 1;
+  pointer-events: none;
+}
+
+.environment-card::after {
+  content: "";
+  position: absolute;
+  inset: 1rem;
+  border-radius: 22px;
+  border: 1px solid rgba(248, 236, 204, 0.08);
+  pointer-events: none;
+  z-index: 2;
+}
+
+.environment-card-main {
+  min-height: 520px;
+}
+
+.environment-card-secondary {
+  min-height: 252px;
+}
+
+.environment-card-media {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(180deg, rgba(8, 8, 8, 0.08), rgba(8, 8, 8, 0.62)),
+    var(--environment-card-image),
+    radial-gradient(circle at top left, rgba(214, 188, 123, 0.14), transparent 30%),
+    linear-gradient(135deg, rgba(33, 31, 28, 0.96), rgba(11, 11, 12, 0.98));
+  background-size: cover, cover, cover, cover;
+  background-position: center, center, center, center;
+  background-repeat: no-repeat;
+  transform: scale(1.01);
+  transition: transform 0.45s ease, filter 0.45s ease;
+}
+
+.environment-card:hover .environment-card-media {
+  transform: scale(1.04);
+  filter: saturate(1.04);
+}
+
+.environment-card-copy {
+  position: relative;
+  z-index: 3;
+  width: 100%;
+  padding: 1.8rem;
+  display: grid;
+  gap: 0.7rem;
+}
+
+.environment-card-kicker {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  align-self: flex-start;
+  min-height: 2rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid rgba(214, 188, 123, 0.18);
+  background:
+    linear-gradient(180deg, rgba(214, 188, 123, 0.12), rgba(255, 255, 255, 0.035)),
+    rgba(255, 255, 255, 0.035);
+  color: rgba(247, 236, 209, 0.94);
+  font-size: 0.72rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.environment-card-copy h3 {
+  margin: 0;
+  font-size: clamp(1.4rem, 2vw, 2.1rem);
+  line-height: 1.12;
+  max-width: 15ch;
+}
+
+.environment-card-copy p {
+  margin: 0;
+  max-width: 34ch;
+  color: rgba(244, 241, 235, 0.78);
+  font-size: 0.98rem;
+  line-height: 1.72;
+}
+
 .gallery-card {
   position: relative;
   min-height: 380px;
@@ -3263,6 +3378,18 @@ body.experience-adjust-active .about-gallery-card img {
     grid-template-columns: 1fr;
   }
 
+  .environment-showcase {
+    grid-template-columns: 1fr;
+  }
+
+  .environment-card-main {
+    min-height: 460px;
+  }
+
+  .environment-card-secondary {
+    min-height: 260px;
+  }
+
   .about-gallery {
     grid-template-columns: repeat(3, minmax(0, 1fr));
     grid-column: auto;
@@ -3566,6 +3693,44 @@ body.experience-adjust-active .about-gallery-card img {
 
   .gallery-card {
     min-height: 240px;
+  }
+
+  .environment-showcase {
+    gap: 0.95rem;
+  }
+
+  .environment-card {
+    min-height: 280px;
+    border-radius: 24px;
+  }
+
+  .environment-card::after {
+    inset: 0.85rem;
+    border-radius: 18px;
+  }
+
+  .environment-card-main {
+    min-height: 360px;
+  }
+
+  .environment-card-secondary {
+    min-height: 232px;
+  }
+
+  .environment-card-copy {
+    padding: 1.35rem;
+    gap: 0.6rem;
+  }
+
+  .environment-card-copy h3 {
+    max-width: none;
+    font-size: 1.34rem;
+  }
+
+  .environment-card-copy p {
+    max-width: none;
+    font-size: 0.94rem;
+    line-height: 1.65;
   }
 
   .gallery-label span {
@@ -3896,6 +4061,31 @@ body.experience-adjust-active .about-gallery-card img {
     min-height: 36px;
     padding: 0.58rem 0.72rem;
     font-size: 0.7rem;
+  }
+
+  .environment-card {
+    min-height: 250px;
+  }
+
+  .environment-card-main {
+    min-height: 320px;
+  }
+
+  .environment-card-copy {
+    padding: 1.2rem;
+  }
+
+  .environment-card-kicker {
+    font-size: 0.68rem;
+    letter-spacing: 0.1em;
+  }
+
+  .environment-card-copy h3 {
+    font-size: 1.22rem;
+  }
+
+  .environment-card-copy p {
+    font-size: 0.9rem;
   }
 
   .hero-brand-block {
