@@ -1348,6 +1348,35 @@ body.experience-adjust-active .about-gallery-card img {
     rgba(255, 255, 255, 0.03);
 }
 
+.service-card--selected {
+  border-color: rgba(214, 188, 123, 0.34);
+  background:
+    radial-gradient(circle at top right, rgba(214, 188, 123, 0.15), transparent 38%),
+    linear-gradient(180deg, rgba(255, 255, 255, 0.085), rgba(255, 255, 255, 0.03)),
+    rgba(18, 17, 14, 0.94);
+  box-shadow:
+    0 24px 54px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1px rgba(214, 188, 123, 0.08),
+    0 0 26px rgba(214, 188, 123, 0.08);
+}
+
+.service-card--selected::before {
+  width: 4.5rem;
+  background: linear-gradient(90deg, rgba(214, 188, 123, 1), rgba(214, 188, 123, 0));
+}
+
+.service-card--selected::after {
+  border-color: rgba(214, 188, 123, 0.12);
+}
+
+.service-card--selected .service-price {
+  border-color: rgba(214, 188, 123, 0.18);
+  background:
+    linear-gradient(180deg, rgba(214, 188, 123, 0.16), rgba(255, 255, 255, 0.04)),
+    rgba(255, 255, 255, 0.04);
+}
+
 .service-index {
   display: inline-flex;
   align-items: center;
@@ -1465,6 +1494,18 @@ body.experience-adjust-active .about-gallery-card img {
 
 .service-select-button:focus-visible {
   outline: none;
+}
+
+.service-select-button.is-selected {
+  border-color: rgba(214, 188, 123, 0.38);
+  background:
+    linear-gradient(180deg, rgba(214, 188, 123, 0.24), rgba(255, 255, 255, 0.06)),
+    rgba(255, 255, 255, 0.07);
+  color: rgba(253, 248, 238, 0.98);
+  box-shadow:
+    0 16px 30px rgba(0, 0, 0, 0.24),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08),
+    0 0 0 1px rgba(214, 188, 123, 0.08);
 }
 
 .service-selection-toast {

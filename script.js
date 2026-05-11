@@ -469,6 +469,28 @@ const updateServiceSummary = () => {
   bookingServiceSummary.textContent = `Serviço escolhido: ${selectedService}${priceLabel}`;
 };
 
+const updateServiceCardSelectionState = () => {
+  if (!serviceCardSelectButtons.length || !publicServiceSelect) {
+    return;
+  }
+
+  const selectedService = String(publicServiceSelect.value || "").trim();
+
+  serviceCardSelectButtons.forEach((button) => {
+    const serviceName = String(button.getAttribute("data-service-card-select") || "").trim();
+    const serviceCard = button.closest(".service-card");
+    const isSelected = Boolean(selectedService) && serviceName === selectedService;
+
+    button.textContent = isSelected ? "Selecionado" : "Selecionar";
+    button.classList.toggle("is-selected", isSelected);
+    button.setAttribute("aria-pressed", String(isSelected));
+
+    if (serviceCard) {
+      serviceCard.classList.toggle("service-card--selected", isSelected);
+    }
+  });
+};
+
 const ensureServiceSelectionToast = () => {
   const existingToast = document.querySelector("[data-service-selection-toast]");
 
@@ -903,6 +925,7 @@ populateBarberSelect(
 renderServiceCards();
 subscribePublicBarbers();
 updateServiceSummary();
+updateServiceCardSelectionState();
 setServiceAccordionState(false);
 
 if (bookingForm && formFeedback) {
@@ -942,6 +965,7 @@ if (bookingForm && formFeedback) {
       toggleFieldError(publicServiceSelect, false);
       renderServiceCards();
       updateServiceSummary();
+      updateServiceCardSelectionState();
     });
   }
 
@@ -1021,7 +1045,9 @@ if (bookingForm && formFeedback) {
 
   if (serviceCardSelectButtons.length) {
     serviceCardSelectButtons.forEach((button) => {
-      button.addEventListener("click", () => {
+      button.addEventListener("click", (event) => {
+        event.preventDefault();
+
         const selectedService = String(
           button.getAttribute("data-service-card-select") || ""
         ).trim();
@@ -1030,7 +1056,23 @@ if (bookingForm && formFeedback) {
           return;
         }
 
+        const previousScrollX = window.scrollX;
+        const previousScrollY = window.scrollY;
+        const previousHash = window.location.hash;
+
         selectBookingService(selectedService, { showToast: true });
+
+        window.requestAnimationFrame(() => {
+          if (window.location.hash !== previousHash) {
+            const baseUrl = `${window.location.pathname}${window.location.search}`;
+            const nextUrl = previousHash ? `${baseUrl}${previousHash}` : baseUrl;
+            window.history.replaceState(null, "", nextUrl);
+          }
+
+          if (window.scrollX !== previousScrollX || window.scrollY !== previousScrollY) {
+            window.scrollTo(previousScrollX, previousScrollY);
+          }
+        });
       });
     });
   }
