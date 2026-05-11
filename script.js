@@ -509,7 +509,7 @@ const ensureServiceSelectionToast = () => {
 
 const showServiceSelectionToast = (serviceName) => {
   const toast = ensureServiceSelectionToast();
-  toast.textContent = `Serviço selecionado: ${serviceName}. Ele já está marcado na aba de agendamento.`;
+  toast.textContent = `Serviço selecionado com sucesso: ${serviceName}. Finalize escolhendo barbeiro, data e horário.`;
   toast.classList.add("is-visible");
 
   window.clearTimeout(serviceSelectionToastTimeoutId);
