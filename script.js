@@ -248,13 +248,14 @@ const createEnvironmentCarousel = () => {
   };
 
   const stopAutoplay = () => {
-    window.clearInterval(autoplayId);
+    window.clearTimeout(autoplayId);
   };
 
   const startAutoplay = () => {
     stopAutoplay();
-    autoplayId = window.setInterval(() => {
+    autoplayId = window.setTimeout(() => {
       setActiveSlide(currentIndex + 1);
+      startAutoplay();
     }, autoplayDelay);
   };
 
@@ -274,9 +275,6 @@ const createEnvironmentCarousel = () => {
       startAutoplay();
     });
   });
-
-  environmentCarousel.addEventListener("mouseenter", stopAutoplay);
-  environmentCarousel.addEventListener("mouseleave", startAutoplay);
 
   setActiveSlide(currentIndex);
   startAutoplay();
