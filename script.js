@@ -509,7 +509,10 @@ const ensureServiceSelectionToast = () => {
 
 const showServiceSelectionToast = (serviceName) => {
   const toast = ensureServiceSelectionToast();
-  toast.textContent = `Serviço selecionado com sucesso: ${serviceName}. Finalize escolhendo barbeiro, data e horário.`;
+  toast.innerHTML = `
+    <strong>Serviço selecionado com sucesso: ${serviceName}.</strong>
+    <span>Finalize escolhendo barbeiro, data e horário.</span>
+  `;
   toast.classList.add("is-visible");
 
   window.clearTimeout(serviceSelectionToastTimeoutId);
