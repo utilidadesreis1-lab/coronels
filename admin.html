@@ -366,12 +366,16 @@
                               </div>
                             </div>
 
-                            <label class="field">
-                              <span>Profissional / barbeiro</span>
-                              <select name="barbeiro" data-admin-manual-barber-select required>
-                                <option value="" selected disabled>Selecione um barbeiro</option>
-                              </select>
-                            </label>
+                            <div class="admin-manual-choice-shell admin-manual-choice-shell--barber" data-admin-manual-barber-shell>
+                              <label class="field admin-native-field">
+                                <span>Profissional / barbeiro</span>
+                                <select name="barbeiro" data-admin-manual-barber-select required>
+                                  <option value="" selected disabled>Selecione um barbeiro</option>
+                                </select>
+                              </label>
+
+                              <div class="admin-manual-barber-grid" data-admin-manual-barber-grid></div>
+                            </div>
                           </div>
                         </section>
 
@@ -385,10 +389,19 @@
                           </div>
 
                           <div class="admin-manual-grid">
-                            <label class="field">
-                              <span>Data</span>
-                              <input type="date" name="data" required>
-                            </label>
+                            <div class="admin-manual-choice-shell admin-manual-choice-shell--date" data-admin-manual-date-shell>
+                              <label class="field admin-native-field">
+                                <span>Data</span>
+                                <input type="date" name="data" required>
+                              </label>
+
+                              <div class="admin-manual-date-grid" data-admin-manual-date-grid></div>
+
+                              <label class="field admin-manual-date-field">
+                                <span>Outra data</span>
+                                <input type="date" data-admin-manual-date-input>
+                              </label>
+                            </div>
 
                             <div class="admin-manual-choice-shell admin-manual-choice-shell--schedule field-schedule" data-admin-manual-schedule-shell>
                               <label class="field admin-native-field">

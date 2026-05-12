@@ -36,6 +36,11 @@ const adminManualServiceShell = document.querySelector("[data-admin-manual-servi
 const adminManualServiceToggle = document.querySelector("[data-admin-manual-service-toggle]");
 const adminManualServiceSummary = document.querySelector("[data-admin-manual-service-summary]");
 const adminManualServicePanel = document.querySelector("[data-admin-manual-service-panel]");
+const adminManualBarberShell = document.querySelector("[data-admin-manual-barber-shell]");
+const adminManualBarberGrid = document.querySelector("[data-admin-manual-barber-grid]");
+const adminManualDateShell = document.querySelector("[data-admin-manual-date-shell]");
+const adminManualDateGrid = document.querySelector("[data-admin-manual-date-grid]");
+const adminManualDateInput = document.querySelector("[data-admin-manual-date-input]");
 const adminManualScheduleGrid = document.querySelector("[data-admin-manual-schedule-grid]");
 const adminManualScheduleShell = document.querySelector("[data-admin-manual-schedule-shell]");
 const adminManualScheduleHelper = document.querySelector("[data-admin-manual-schedule-helper]");
@@ -232,6 +237,14 @@ const getBarberInitial = (name) => {
   return safeName ? safeName.charAt(0).toUpperCase() : "?";
 };
 
+const shortWeekdayFormatter = new Intl.DateTimeFormat("pt-BR", {
+  weekday: "short",
+});
+
+const shortMonthFormatter = new Intl.DateTimeFormat("pt-BR", {
+  month: "short",
+});
+
 const getTodayDateValue = () => {
   const today = new Date();
   const year = today.getFullYear();
@@ -239,6 +252,35 @@ const getTodayDateValue = () => {
   const day = String(today.getDate()).padStart(2, "0");
 
   return `${year}-${month}-${day}`;
+};
+
+const toDateValue = (date) => {
+  if (!(date instanceof Date) || Number.isNaN(date.getTime())) {
+    return "";
+  }
+
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
+};
+
+const parseDateValue = (dateValue) => {
+  const normalizedDate = String(dateValue || "").trim();
+
+  if (!normalizedDate) {
+    return null;
+  }
+
+  const [year, month, day] = normalizedDate.split("-").map((part) => Number(part));
+
+  if (!year || !month || !day) {
+    return null;
+  }
+
+  const parsedDate = new Date(year, month - 1, day);
+  return Number.isNaN(parsedDate.getTime()) ? null : parsedDate;
 };
 
 const formatDate = (dateValue) => {
@@ -288,6 +330,15 @@ const toggleManualChoiceShellError = (shell, isInvalid) => {
   }
 
   shell.classList.toggle("is-invalid", isInvalid);
+};
+
+const getAdminBarberVisual = (barber) => {
+  const safeName = String(barber?.nome || "").trim();
+
+  return {
+    initial: getBarberInitial(safeName),
+    image: String(barber?.fotoUrl || "").trim(),
+  };
 };
 
 const setFeedbackMessage = (element, message, isSuccess = false) => {
@@ -399,6 +450,209 @@ const selectAdminManualService = (serviceName) => {
   toggleManualChoiceShellError(adminManualServiceShell, false);
   renderAdminManualServiceCards();
   setAdminManualServicePanelState(false);
+  return true;
+};
+
+const renderAdminManualBarberCards = () => {
+  if (!adminManualBarberGrid || !adminManualBarberSelect) {
+    return;
+  }
+
+  const currentValue = String(adminManualBarberSelect.value || "").trim();
+  const availableBarbers = getAvailableBarbers();
+
+  adminManualBarberGrid.innerHTML = availableBarbers
+    .map((barber) => {
+      const isSelected = currentValue === barber.nome;
+      const visual = getAdminBarberVisual(barber);
+      const hasImage = Boolean(visual.image);
+
+      return `
+        <button
+          class="admin-manual-barber-card ${isSelected ? "is-selected" : ""}"
+          type="button"
+          data-admin-manual-barber="${escapeHtml(barber.nome)}"
+          aria-pressed="${isSelected ? "true" : "false"}"
+        >
+          <div class="admin-manual-barber-card-media">
+            <div class="admin-manual-barber-avatar" data-admin-manual-barber-avatar>
+              ${
+                hasImage
+                  ? `<img
+                      src="${escapeHtml(visual.image)}"
+                      alt="${escapeHtml(barber.nome)}"
+                      loading="lazy"
+                      data-admin-manual-barber-image
+                    >`
+                  : ""
+              }
+              <span>${escapeHtml(visual.initial)}</span>
+            </div>
+          </div>
+          <strong>${escapeHtml(barber.nome)}</strong>
+          <span>Barbeiro profissional</span>
+        </button>
+      `;
+    })
+    .join("");
+
+  adminManualBarberGrid
+    .querySelectorAll("[data-admin-manual-barber-image]")
+    .forEach((imageElement) => {
+      const avatar = imageElement.closest("[data-admin-manual-barber-avatar]");
+
+      if (!avatar) {
+        return;
+      }
+
+      const applyLoadedState = () => {
+        avatar.classList.add("has-photo");
+      };
+
+      if (imageElement.complete && imageElement.naturalWidth > 0) {
+        applyLoadedState();
+        return;
+      }
+
+      imageElement.addEventListener("load", applyLoadedState, { once: true });
+      imageElement.addEventListener(
+        "error",
+        () => {
+          avatar.classList.remove("has-photo");
+        },
+        { once: true }
+      );
+    });
+};
+
+const selectAdminManualBarber = (barberName) => {
+  if (!adminManualBarberSelect) {
+    return false;
+  }
+
+  const normalizedBarber = String(barberName || "").trim();
+
+  if (!normalizedBarber) {
+    return false;
+  }
+
+  const hasOption = [...adminManualBarberSelect.options].some(
+    (option) => option.value === normalizedBarber
+  );
+
+  if (!hasOption) {
+    return false;
+  }
+
+  adminManualBarberSelect.value = normalizedBarber;
+  toggleFieldError(adminManualBarberSelect, false);
+  toggleManualChoiceShellError(adminManualBarberShell, false);
+  renderAdminManualBarberCards();
+  syncAdminManualScheduleContext();
+  return true;
+};
+
+const getAdminManualDateChipValues = (selectedDate = "") => {
+  const values = [];
+  const today = new Date();
+
+  for (let index = 0; index < 7; index += 1) {
+    const nextDate = new Date(today);
+    nextDate.setDate(today.getDate() + index);
+    values.push(toDateValue(nextDate));
+  }
+
+  if (selectedDate && !values.includes(selectedDate)) {
+    values.push(selectedDate);
+  }
+
+  return [...new Set(values)];
+};
+
+const updateAdminManualDateInput = () => {
+  if (!adminManualDateInput || !adminManualForm) {
+    return;
+  }
+
+  const manualDateField = adminManualForm.querySelector('input[name="data"]');
+
+  if (!manualDateField) {
+    return;
+  }
+
+  adminManualDateInput.value = manualDateField.value;
+};
+
+const renderAdminManualDateChips = () => {
+  if (!adminManualDateGrid || !adminManualForm) {
+    return;
+  }
+
+  const manualDateField = adminManualForm.querySelector('input[name="data"]');
+
+  if (!manualDateField) {
+    return;
+  }
+
+  const selectedDate = String(manualDateField.value || "").trim();
+  const todayValue = getTodayDateValue();
+
+  adminManualDateGrid.innerHTML = getAdminManualDateChipValues(selectedDate)
+    .map((dateValue) => {
+      const parsedDate = parseDateValue(dateValue);
+
+      if (!parsedDate) {
+        return "";
+      }
+
+      const isSelected = selectedDate === dateValue;
+      const isToday = dateValue === todayValue;
+      const weekdayLabel = isToday
+        ? "Hoje"
+        : shortWeekdayFormatter
+            .format(parsedDate)
+            .replace(".", "")
+            .replace(/^\w/, (letter) => letter.toUpperCase());
+      const monthLabel = shortMonthFormatter
+        .format(parsedDate)
+        .replace(".", "")
+        .replace(/^\w/, (letter) => letter.toUpperCase());
+
+      return `
+        <button
+          class="admin-manual-date-chip ${isSelected ? "is-selected" : ""}"
+          type="button"
+          data-admin-manual-date="${dateValue}"
+          aria-pressed="${isSelected ? "true" : "false"}"
+        >
+          <span class="admin-manual-date-chip-day">${weekdayLabel}</span>
+          <strong class="admin-manual-date-chip-date">${String(parsedDate.getDate()).padStart(2, "0")}</strong>
+          <span class="admin-manual-date-chip-month">${monthLabel}</span>
+        </button>
+      `;
+    })
+    .join("");
+
+  updateAdminManualDateInput();
+};
+
+const selectAdminManualDate = (dateValue) => {
+  if (!adminManualForm) {
+    return false;
+  }
+
+  const manualDateField = adminManualForm.querySelector('input[name="data"]');
+  const normalizedDate = String(dateValue || "").trim();
+
+  if (!manualDateField || !normalizedDate) {
+    return false;
+  }
+
+  manualDateField.value = normalizedDate;
+  toggleFieldError(manualDateField, false);
+  toggleManualChoiceShellError(adminManualDateShell, false);
+  renderAdminManualDateChips();
+  syncAdminManualScheduleContext();
   return true;
 };
 
@@ -700,6 +954,7 @@ const renderBarbers = () => {
     return;
   }
 
+  renderAdminManualBarberCards();
   adminBarbersList.innerHTML = availableBarbers
     .map(
       (barber) => `
@@ -898,7 +1153,12 @@ const closeManualForm = () => {
     getAvailableBarbers(),
     "Selecione um barbeiro"
   );
+  renderAdminManualBarberCards();
+  renderAdminManualDateChips();
+  updateAdminManualDateInput();
   toggleManualChoiceShellError(adminManualServiceShell, false);
+  toggleManualChoiceShellError(adminManualBarberShell, false);
+  toggleManualChoiceShellError(adminManualDateShell, false);
   toggleManualChoiceShellError(adminManualScheduleShell, false);
   renderAdminManualServiceCards();
   setAdminManualServicePanelState(false);
@@ -918,13 +1178,20 @@ const openManualForm = () => {
     getAvailableBarbers(),
     "Selecione um barbeiro"
   );
+  renderAdminManualBarberCards();
 
   const manualDateField = adminManualForm.querySelector('input[name="data"]');
 
   if (manualDateField) {
     manualDateField.min = getTodayDateValue();
+
+    if (adminManualDateInput) {
+      adminManualDateInput.min = manualDateField.min;
+    }
   }
 
+  renderAdminManualDateChips();
+  updateAdminManualDateInput();
   renderAdminManualServiceCards();
   setAdminManualServicePanelState(false);
   renderAdminManualScheduleGrid();
@@ -1414,6 +1681,10 @@ if (adminManualForm && adminManualFeedback) {
 
   if (manualDateField) {
     manualDateField.min = getTodayDateValue();
+
+    if (adminManualDateInput) {
+      adminManualDateInput.min = manualDateField.min;
+    }
   }
 
   if (manualPhoneField) {
@@ -1462,12 +1733,71 @@ if (adminManualForm && adminManualFeedback) {
   if (adminManualBarberSelect) {
     adminManualBarberSelect.addEventListener("change", () => {
       toggleFieldError(adminManualBarberSelect, false);
+      toggleManualChoiceShellError(adminManualBarberShell, false);
+      renderAdminManualBarberCards();
       syncAdminManualScheduleContext();
     });
   }
 
+  if (adminManualBarberGrid) {
+    adminManualBarberGrid.addEventListener("click", (event) => {
+      const barberButton = event.target.closest("[data-admin-manual-barber]");
+
+      if (!barberButton) {
+        return;
+      }
+
+      const selectedBarber = String(
+        barberButton.getAttribute("data-admin-manual-barber") || ""
+      ).trim();
+
+      if (!selectedBarber) {
+        return;
+      }
+
+      selectAdminManualBarber(selectedBarber);
+    });
+  }
+
   if (manualDateField) {
-    manualDateField.addEventListener("change", syncAdminManualScheduleContext);
+    manualDateField.addEventListener("change", () => {
+      toggleFieldError(manualDateField, false);
+      toggleManualChoiceShellError(adminManualDateShell, false);
+      renderAdminManualDateChips();
+      syncAdminManualScheduleContext();
+    });
+  }
+
+  if (adminManualDateGrid) {
+    adminManualDateGrid.addEventListener("click", (event) => {
+      const dateButton = event.target.closest("[data-admin-manual-date]");
+
+      if (!dateButton) {
+        return;
+      }
+
+      const selectedDate = String(
+        dateButton.getAttribute("data-admin-manual-date") || ""
+      ).trim();
+
+      if (!selectedDate) {
+        return;
+      }
+
+      selectAdminManualDate(selectedDate);
+    });
+  }
+
+  if (adminManualDateInput) {
+    adminManualDateInput.addEventListener("change", () => {
+      const selectedDate = String(adminManualDateInput.value || "").trim();
+
+      if (!selectedDate) {
+        return;
+      }
+
+      selectAdminManualDate(selectedDate);
+    });
   }
 
   if (adminManualTimeSelect) {
@@ -1499,6 +1829,9 @@ if (adminManualForm && adminManualFeedback) {
 
   attachRequiredFieldValidation(manualRequiredFields);
   renderAdminManualServiceCards();
+  renderAdminManualBarberCards();
+  renderAdminManualDateChips();
+  updateAdminManualDateInput();
   setAdminManualServicePanelState(false);
   renderAdminManualScheduleGrid();
 
@@ -1519,6 +1852,14 @@ if (adminManualForm && adminManualFeedback) {
     toggleManualChoiceShellError(
       adminManualServiceShell,
       !String(adminManualServiceSelect?.value || "").trim()
+    );
+    toggleManualChoiceShellError(
+      adminManualBarberShell,
+      !String(adminManualBarberSelect?.value || "").trim()
+    );
+    toggleManualChoiceShellError(
+      adminManualDateShell,
+      !String(manualDateField?.value || "").trim()
     );
     toggleManualChoiceShellError(
       adminManualScheduleShell,
