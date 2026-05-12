@@ -3719,20 +3719,22 @@ body.experience-adjust-active .about-gallery-card img {
   :root {
     --site-wallpaper-size: 560px auto;
     --site-wallpaper-overlay: rgba(5, 5, 5, 0.58);
-    --hero-brand-width: 320px;
-    --hero-brand-height: 172px;
-    --hero-brand-scale: 0.48;
+    --hero-brand-width: 350px;
+    --hero-brand-height: 188px;
+    --hero-brand-scale: 1;
     --hero-brand-offset-x: 0px;
-    --hero-brand-offset-y: -10px;
-    --hero-brand-symbol-size: 160px;
-    --hero-brand-symbol-offset-x: -164px;
+    --hero-brand-offset-y: -4px;
+    --hero-brand-symbol-size: 176px;
+    --hero-brand-symbol-offset-x: -144px;
     --hero-brand-symbol-offset-y: -18px;
-    --hero-brand-accent-size: 98px;
-    --hero-brand-accent-offset-x: 34px;
-    --hero-brand-accent-offset-y: -16px;
-    --hero-brand-base-size: 24px;
-    --hero-brand-base-offset-x: 118px;
-    --hero-brand-base-offset-y: 34px;
+    --hero-brand-accent-size: 108px;
+    --hero-brand-accent-offset-x: 18px;
+    --hero-brand-accent-offset-y: -14px;
+    --hero-brand-accent-letter-spacing: 0.016em;
+    --hero-brand-base-size: 26px;
+    --hero-brand-base-offset-x: 84px;
+    --hero-brand-base-offset-y: 40px;
+    --hero-brand-base-letter-spacing: 0.05em;
   }
 
   .container {
@@ -3748,32 +3750,39 @@ body.experience-adjust-active .about-gallery-card img {
   }
 
   .header-inner {
-    min-height: 54px;
-    gap: 0.35rem;
-    padding-inline: 0.35rem;
+    min-height: 52px;
+    gap: 0.3rem;
+    padding-inline: 0.3rem;
   }
 
   .brand-text {
-    font-size: 0.76rem;
+    font-size: 0.72rem;
     line-height: 1.05;
   }
 
   .brand {
     width: auto;
     height: auto;
-    max-width: calc(100% - 8.2rem);
+    min-width: 0;
+    max-width: calc(100% - 7.75rem);
     gap: 0.28rem;
   }
 
+  .brand-lockup {
+    min-width: 0;
+  }
+
   .brand-mark {
-    width: 2.2rem;
-    height: 2.2rem;
+    width: 2.05rem;
+    height: 2.05rem;
   }
 
   .header-cta {
-    min-height: 36px;
-    padding: 0.56rem 0.68rem;
-    font-size: 0.68rem;
+    min-height: 34px;
+    padding: 0.5rem 0.62rem;
+    font-size: 0.64rem;
+    max-width: 6.8rem;
+    text-align: center;
   }
 
   .menu-toggle {
@@ -3908,14 +3917,16 @@ body.experience-adjust-active .about-gallery-card img {
 
   .hero-actions {
     flex-direction: column;
-    gap: 0.85rem;
-    margin-top: 1.45rem;
+    gap: 0.75rem;
+    margin-top: 1.2rem;
+    width: 100%;
+    max-width: min(92vw, 19.5rem);
   }
 
   .hero-brand-block {
-    width: min(92vw, 320px);
-    max-width: 92vw;
-    height: 172px;
+    width: min(94vw, 310px);
+    max-width: 94vw;
+    height: 188px;
     margin-inline: auto;
     overflow: hidden;
     transform:
@@ -3926,14 +3937,22 @@ body.experience-adjust-active .about-gallery-card img {
   .hero-content {
     width: 100%;
     max-width: 100%;
-    padding-top: calc(var(--header-height) + 1.45rem);
-    padding-bottom: 2.6rem;
+    min-height: calc(100svh - 0.5rem);
+    justify-content: flex-start;
+    padding-top: calc(var(--header-height) + 1.15rem);
+    padding-bottom: 1.8rem;
     overflow: hidden;
+  }
+
+  .eyebrow {
+    margin-bottom: 0.6rem;
+    font-size: 0.78rem;
+    letter-spacing: 0.18em;
   }
 
   .hero-copy {
     max-width: min(92vw, 20rem);
-    margin-top: 0.8rem;
+    margin-top: 0.55rem;
     font-size: 0.94rem;
     line-height: 1.62;
   }
@@ -4220,17 +4239,18 @@ body.experience-adjust-active .about-gallery-card img {
   }
 
   .brand {
-    max-width: calc(100% - 7.2rem);
+    max-width: calc(100% - 7rem);
   }
 
   .brand-text {
-    font-size: 0.68rem;
+    font-size: 0.65rem;
   }
 
   .header-cta {
     min-height: 34px;
-    padding: 0.5rem 0.62rem;
-    font-size: 0.64rem;
+    padding: 0.46rem 0.56rem;
+    font-size: 0.61rem;
+    max-width: 6.3rem;
   }
 
   .environment-carousel-viewport {
@@ -4275,16 +4295,16 @@ body.experience-adjust-active .about-gallery-card img {
   }
 
   .hero-brand-block {
-    width: min(92vw, 286px);
-    max-width: 92vw;
-    height: 156px;
+    width: min(94vw, 300px);
+    max-width: 94vw;
+    height: 174px;
     transform:
       translate(var(--hero-brand-offset-x, 0px), var(--hero-brand-offset-y, 0px))
       scale(1);
   }
 
   .hero-copy {
-    max-width: min(92vw, 17.2rem);
+    max-width: min(92vw, 17.6rem);
     font-size: 0.9rem;
   }
 
@@ -4295,46 +4315,56 @@ body.experience-adjust-active .about-gallery-card img {
 
 @media (max-width: 390px) {
   :root {
-    --hero-brand-width: 276px;
-    --hero-brand-height: 146px;
-    --hero-brand-scale: 0.43;
+    --hero-brand-width: 304px;
+    --hero-brand-height: 166px;
+    --hero-brand-scale: 1;
     --hero-brand-offset-x: 0px;
-    --hero-brand-offset-y: -6px;
-    --hero-brand-symbol-size: 136px;
-    --hero-brand-symbol-offset-x: -138px;
+    --hero-brand-offset-y: -2px;
+    --hero-brand-symbol-size: 150px;
+    --hero-brand-symbol-offset-x: -124px;
     --hero-brand-symbol-offset-y: -14px;
-    --hero-brand-accent-size: 82px;
-    --hero-brand-accent-offset-x: 27px;
-    --hero-brand-accent-offset-y: -14px;
-    --hero-brand-base-size: 20px;
-    --hero-brand-base-offset-x: 98px;
-    --hero-brand-base-offset-y: 28px;
+    --hero-brand-accent-size: 92px;
+    --hero-brand-accent-offset-x: 14px;
+    --hero-brand-accent-offset-y: -12px;
+    --hero-brand-accent-letter-spacing: 0.012em;
+    --hero-brand-base-size: 21px;
+    --hero-brand-base-offset-x: 72px;
+    --hero-brand-base-offset-y: 34px;
+    --hero-brand-base-letter-spacing: 0.042em;
   }
 
   .brand-text {
-    font-size: 0.64rem;
+    font-size: 0.61rem;
   }
 
   .header-cta {
-    padding: 0.46rem 0.56rem;
-    font-size: 0.6rem;
+    padding: 0.42rem 0.5rem;
+    font-size: 0.56rem;
+    max-width: 5.9rem;
+  }
+
+  .menu-toggle {
+    width: 2.45rem;
+    height: 2.45rem;
   }
 
   .hero-brand-block {
-    width: min(92vw, 258px);
-    max-width: 92vw;
-    height: 146px;
+    width: min(94vw, 286px);
+    max-width: 94vw;
+    height: 166px;
     transform:
       translate(var(--hero-brand-offset-x, 0px), var(--hero-brand-offset-y, 0px))
       scale(1);
   }
 
   .hero-content {
-    padding-top: calc(var(--header-height) + 1.2rem);
+    min-height: calc(100svh - 0.35rem);
+    padding-top: calc(var(--header-height) + 1rem);
+    padding-bottom: 1.55rem;
   }
 
   .hero-copy {
-    max-width: min(92vw, 15.75rem);
+    max-width: min(92vw, 15.9rem);
     font-size: 0.88rem;
     line-height: 1.56;
   }
@@ -4342,20 +4372,33 @@ body.experience-adjust-active .about-gallery-card img {
 
 @media (max-width: 340px) {
   :root {
-    --hero-brand-width: 248px;
-    --hero-brand-height: 136px;
-    --hero-brand-symbol-size: 124px;
-    --hero-brand-symbol-offset-x: -126px;
-    --hero-brand-accent-size: 74px;
-    --hero-brand-accent-offset-x: 22px;
-    --hero-brand-base-size: 18px;
-    --hero-brand-base-offset-x: 88px;
-    --hero-brand-base-offset-y: 26px;
+    --hero-brand-width: 286px;
+    --hero-brand-height: 158px;
+    --hero-brand-symbol-size: 142px;
+    --hero-brand-symbol-offset-x: -118px;
+    --hero-brand-accent-size: 86px;
+    --hero-brand-accent-offset-x: 10px;
+    --hero-brand-base-size: 19px;
+    --hero-brand-base-offset-x: 64px;
+    --hero-brand-base-offset-y: 32px;
   }
 
   .hero-brand-block {
-    width: min(92vw, 244px);
-    height: 136px;
+    width: min(94vw, 274px);
+    height: 158px;
+  }
+
+  .brand {
+    max-width: calc(100% - 6.7rem);
+  }
+
+  .brand-text {
+    font-size: 0.58rem;
+  }
+
+  .header-cta {
+    max-width: 5.55rem;
+    padding-inline: 0.45rem;
   }
 }
 
