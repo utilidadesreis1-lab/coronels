@@ -33,6 +33,9 @@ const adminManualBarberSelect = document.querySelector(
 const adminManualTimeSelect = document.querySelector("[data-admin-manual-time-select]");
 const adminManualServiceGrid = document.querySelector("[data-admin-manual-service-grid]");
 const adminManualServiceShell = document.querySelector("[data-admin-manual-service-shell]");
+const adminManualServiceToggle = document.querySelector("[data-admin-manual-service-toggle]");
+const adminManualServiceSummary = document.querySelector("[data-admin-manual-service-summary]");
+const adminManualServicePanel = document.querySelector("[data-admin-manual-service-panel]");
 const adminManualScheduleGrid = document.querySelector("[data-admin-manual-schedule-grid]");
 const adminManualScheduleShell = document.querySelector("[data-admin-manual-schedule-shell]");
 const adminManualScheduleHelper = document.querySelector("[data-admin-manual-schedule-helper]");
@@ -309,6 +312,33 @@ const setAdminManualScheduleHelper = (message) => {
   adminManualScheduleHelper.textContent = message;
 };
 
+const setAdminManualServicePanelState = (isOpen) => {
+  if (!adminManualServiceToggle || !adminManualServicePanel) {
+    return;
+  }
+
+  adminManualServiceToggle.setAttribute("aria-expanded", String(isOpen));
+  adminManualServicePanel.hidden = !isOpen;
+  adminManualServiceShell?.classList.toggle("is-open", isOpen);
+};
+
+const updateAdminManualServiceSummary = () => {
+  if (!adminManualServiceSummary || !adminManualServiceSelect) {
+    return;
+  }
+
+  const selectedService = String(adminManualServiceSelect.value || "").trim();
+
+  if (!selectedService) {
+    adminManualServiceSummary.textContent = "Selecione um serviço";
+    return;
+  }
+
+  const details = adminServiceMeta[selectedService];
+  const priceLabel = details?.price ? ` — ${details.price}` : "";
+  adminManualServiceSummary.textContent = `Serviço selecionado: ${selectedService}${priceLabel}`;
+};
+
 const renderAdminManualServiceCards = () => {
   if (!adminManualServiceGrid || !adminManualServiceSelect) {
     return;
@@ -337,11 +367,12 @@ const renderAdminManualServiceCards = () => {
             <strong>${escapeHtml(serviceName)}</strong>
             <span>${escapeHtml(details.price || "")}</span>
           </div>
-          <p>${escapeHtml(details.description || "Atendimento premium da Coronel's Barbearia.")}</p>
         </button>
       `;
     })
     .join("");
+
+  updateAdminManualServiceSummary();
 };
 
 const selectAdminManualService = (serviceName) => {
@@ -367,6 +398,7 @@ const selectAdminManualService = (serviceName) => {
   toggleFieldError(adminManualServiceSelect, false);
   toggleManualChoiceShellError(adminManualServiceShell, false);
   renderAdminManualServiceCards();
+  setAdminManualServicePanelState(false);
   return true;
 };
 
@@ -869,6 +901,7 @@ const closeManualForm = () => {
   toggleManualChoiceShellError(adminManualServiceShell, false);
   toggleManualChoiceShellError(adminManualScheduleShell, false);
   renderAdminManualServiceCards();
+  setAdminManualServicePanelState(false);
   renderAdminManualScheduleGrid();
   setFeedbackMessage(adminManualFeedback, "");
 };
@@ -893,6 +926,7 @@ const openManualForm = () => {
   }
 
   renderAdminManualServiceCards();
+  setAdminManualServicePanelState(false);
   renderAdminManualScheduleGrid();
   setAdminManualScheduleHelper(defaultAdminManualScheduleHelper);
 };
@@ -1398,6 +1432,13 @@ if (adminManualForm && adminManualFeedback) {
     });
   }
 
+  if (adminManualServiceToggle) {
+    adminManualServiceToggle.addEventListener("click", () => {
+      const isExpanded = adminManualServiceToggle.getAttribute("aria-expanded") === "true";
+      setAdminManualServicePanelState(!isExpanded);
+    });
+  }
+
   if (adminManualServiceGrid) {
     adminManualServiceGrid.addEventListener("click", (event) => {
       const serviceButton = event.target.closest("[data-admin-manual-service]");
@@ -1458,6 +1499,7 @@ if (adminManualForm && adminManualFeedback) {
 
   attachRequiredFieldValidation(manualRequiredFields);
   renderAdminManualServiceCards();
+  setAdminManualServicePanelState(false);
   renderAdminManualScheduleGrid();
 
   adminManualForm.addEventListener("submit", async (event) => {
@@ -1543,6 +1585,23 @@ if (adminManualForm && adminManualFeedback) {
     }
   });
 }
+
+document.addEventListener("click", (event) => {
+  if (
+    !adminManualServiceShell ||
+    !adminManualServiceToggle ||
+    !adminManualServicePanel ||
+    adminManualServicePanel.hidden
+  ) {
+    return;
+  }
+
+  const clickedInsideServiceShell = event.target.closest("[data-admin-manual-service-shell]");
+
+  if (!clickedInsideServiceShell) {
+    setAdminManualServicePanelState(false);
+  }
+});
 
 if (adminBarberForm && adminBarberFeedback) {
   const barberRequiredFields = [...adminBarberForm.querySelectorAll('[name="nome"][required]')];

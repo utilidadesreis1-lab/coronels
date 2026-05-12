@@ -351,7 +351,19 @@
                                 </select>
                               </label>
 
-                              <div class="admin-manual-service-grid" data-admin-manual-service-grid></div>
+                              <button
+                                class="admin-manual-service-toggle"
+                                type="button"
+                                data-admin-manual-service-toggle
+                                aria-expanded="false"
+                              >
+                                <span class="admin-manual-service-toggle-label">Serviço</span>
+                                <strong data-admin-manual-service-summary>Selecione um serviço</strong>
+                              </button>
+
+                              <div class="admin-manual-service-panel" data-admin-manual-service-panel hidden>
+                                <div class="admin-manual-service-grid" data-admin-manual-service-grid></div>
+                              </div>
                             </div>
 
                             <label class="field">
