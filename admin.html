@@ -299,124 +299,128 @@
                       </div>
 
                       <div class="admin-manual-layout">
-                        <section class="admin-manual-section admin-manual-section--client">
-                          <div class="admin-manual-section-head">
-                            <span>01</span>
-                            <div>
-                              <h4>Dados do cliente</h4>
-                              <p>Preencha as informações básicas para identificar o atendimento.</p>
-                            </div>
-                          </div>
-
-                          <div class="admin-manual-grid">
-                            <label class="field">
-                              <span>Nome do cliente</span>
-                              <input type="text" name="nome" placeholder="Nome do cliente" required>
-                            </label>
-
-                            <label class="field">
-                              <span>Telefone</span>
-                              <input type="tel" name="telefone" placeholder="(63) 99124-0071" required>
-                            </label>
-                          </div>
-                        </section>
-
-                        <section class="admin-manual-section">
-                          <div class="admin-manual-section-head">
-                            <span>02</span>
-                            <div>
-                              <h4>Atendimento</h4>
-                              <p>Escolha o serviço e o profissional que receberá o cliente.</p>
-                            </div>
-                          </div>
-
-                          <div class="admin-manual-grid">
-                            <div class="admin-manual-choice-shell admin-manual-choice-shell--service" data-admin-manual-service-shell>
-                              <label class="field admin-native-field">
-                                <span>Serviço</span>
-                                <select name="servico" data-admin-manual-service-select required>
-                                  <option value="" selected disabled>Selecione um serviço</option>
-                                  <option value="Corte">Corte</option>
-                                  <option value="Barba">Barba</option>
-                                  <option value="Sobrancelha">Sobrancelha</option>
-                                  <option value="Selagem">Selagem</option>
-                                  <option value="Botox">Botox</option>
-                                  <option value="Progressiva">Progressiva</option>
-                                  <option value="Relaxamento">Relaxamento</option>
-                                  <option value="Perfil do cabelo">Perfil do cabelo</option>
-                                  <option value="Luzes">Luzes</option>
-                                  <option value="Platinado">Platinado</option>
-                                  <option value="Corte com visagismo">Corte com visagismo</option>
-                                  <option value="Barba com visagismo">Barba com visagismo</option>
-                                </select>
-                              </label>
-
-                              <button
-                                class="admin-manual-service-toggle"
-                                type="button"
-                                data-admin-manual-service-toggle
-                                aria-expanded="false"
-                              >
-                                <span class="admin-manual-service-toggle-label">Serviço</span>
-                                <strong data-admin-manual-service-summary>Selecione um serviço</strong>
-                              </button>
-
-                              <div class="admin-manual-service-panel" data-admin-manual-service-panel hidden>
-                                <div class="admin-manual-service-grid" data-admin-manual-service-grid></div>
+                        <div class="admin-manual-column admin-manual-column--left">
+                          <section class="admin-manual-section admin-manual-section--client">
+                            <div class="admin-manual-section-head">
+                              <span>01</span>
+                              <div>
+                                <h4>Dados do cliente</h4>
+                                <p>Preencha as informações básicas para identificar o atendimento.</p>
                               </div>
                             </div>
 
-                            <label class="field">
-                              <span>Profissional / barbeiro</span>
-                              <select name="barbeiro" data-admin-manual-barber-select required>
-                                <option value="" selected disabled>Selecione um barbeiro</option>
-                              </select>
-                            </label>
-                          </div>
-                        </section>
-
-                        <section class="admin-manual-section">
-                          <div class="admin-manual-section-head">
-                            <span>03</span>
-                            <div>
-                              <h4>Data e horário</h4>
-                              <p>Defina quando o cliente será atendido na agenda da barbearia.</p>
-                            </div>
-                          </div>
-
-                          <div class="admin-manual-grid">
-                            <label class="field">
-                              <span>Data</span>
-                              <input type="date" name="data" required>
-                            </label>
-
-                            <div class="admin-manual-choice-shell admin-manual-choice-shell--schedule field-schedule" data-admin-manual-schedule-shell>
-                              <label class="field admin-native-field">
-                                <span>Horário</span>
-                                <select name="horario" data-admin-manual-time-select required>
-                                  <option value="" selected disabled>Escolha o horário</option>
-                                  <option value="09:00">09:00</option>
-                                  <option value="10:00">10:00</option>
-                                  <option value="11:00">11:00</option>
-                                  <option value="12:00">12:00</option>
-                                  <option value="13:00">13:00</option>
-                                  <option value="14:00">14:00</option>
-                                  <option value="15:00">15:00</option>
-                                  <option value="16:00">16:00</option>
-                                  <option value="17:00">17:00</option>
-                                  <option value="18:00">18:00</option>
-                                  <option value="19:00">19:00</option>
-                                  <option value="20:00">20:00</option>
-                                </select>
+                            <div class="admin-manual-grid">
+                              <label class="field">
+                                <span>Nome do cliente</span>
+                                <input type="text" name="nome" placeholder="Nome do cliente" required>
                               </label>
 
-                              <p class="admin-manual-schedule-helper" data-admin-manual-schedule-helper>
-                                Escolha o profissional e a data para ver os horários.
-                              </p>
-                              <div class="admin-manual-schedule-grid" data-admin-manual-schedule-grid></div>
+                              <label class="field">
+                                <span>Telefone</span>
+                                <input type="tel" name="telefone" placeholder="(63) 99124-0071" required>
+                              </label>
                             </div>
-                          </div>
-                        </section>
+                          </section>
+
+                          <section class="admin-manual-section admin-manual-section--schedule-block">
+                            <div class="admin-manual-section-head">
+                              <span>03</span>
+                              <div>
+                                <h4>Data e horário</h4>
+                                <p>Defina quando o cliente será atendido na agenda da barbearia.</p>
+                              </div>
+                            </div>
+
+                            <div class="admin-manual-grid">
+                              <label class="field">
+                                <span>Data</span>
+                                <input type="date" name="data" required>
+                              </label>
+
+                              <div class="admin-manual-choice-shell admin-manual-choice-shell--schedule field-schedule" data-admin-manual-schedule-shell>
+                                <label class="field admin-native-field">
+                                  <span>Horário</span>
+                                  <select name="horario" data-admin-manual-time-select required>
+                                    <option value="" selected disabled>Escolha o horário</option>
+                                    <option value="09:00">09:00</option>
+                                    <option value="10:00">10:00</option>
+                                    <option value="11:00">11:00</option>
+                                    <option value="12:00">12:00</option>
+                                    <option value="13:00">13:00</option>
+                                    <option value="14:00">14:00</option>
+                                    <option value="15:00">15:00</option>
+                                    <option value="16:00">16:00</option>
+                                    <option value="17:00">17:00</option>
+                                    <option value="18:00">18:00</option>
+                                    <option value="19:00">19:00</option>
+                                    <option value="20:00">20:00</option>
+                                  </select>
+                                </label>
+
+                                <p class="admin-manual-schedule-helper" data-admin-manual-schedule-helper>
+                                  Escolha o profissional e a data para ver os horários.
+                                </p>
+                                <div class="admin-manual-schedule-grid" data-admin-manual-schedule-grid></div>
+                              </div>
+                            </div>
+                          </section>
+                        </div>
+
+                        <div class="admin-manual-column admin-manual-column--right">
+                          <section class="admin-manual-section admin-manual-section--service-block">
+                            <div class="admin-manual-section-head">
+                              <span>02</span>
+                              <div>
+                                <h4>Atendimento</h4>
+                                <p>Escolha o serviço e o profissional que receberá o cliente.</p>
+                              </div>
+                            </div>
+
+                            <div class="admin-manual-grid">
+                              <div class="admin-manual-choice-shell admin-manual-choice-shell--service" data-admin-manual-service-shell>
+                                <label class="field admin-native-field">
+                                  <span>Serviço</span>
+                                  <select name="servico" data-admin-manual-service-select required>
+                                    <option value="" selected disabled>Selecione um serviço</option>
+                                    <option value="Corte">Corte</option>
+                                    <option value="Barba">Barba</option>
+                                    <option value="Sobrancelha">Sobrancelha</option>
+                                    <option value="Selagem">Selagem</option>
+                                    <option value="Botox">Botox</option>
+                                    <option value="Progressiva">Progressiva</option>
+                                    <option value="Relaxamento">Relaxamento</option>
+                                    <option value="Perfil do cabelo">Perfil do cabelo</option>
+                                    <option value="Luzes">Luzes</option>
+                                    <option value="Platinado">Platinado</option>
+                                    <option value="Corte com visagismo">Corte com visagismo</option>
+                                    <option value="Barba com visagismo">Barba com visagismo</option>
+                                  </select>
+                                </label>
+
+                                <button
+                                  class="admin-manual-service-toggle"
+                                  type="button"
+                                  data-admin-manual-service-toggle
+                                  aria-expanded="false"
+                                >
+                                  <span class="admin-manual-service-toggle-label">Serviço</span>
+                                  <strong data-admin-manual-service-summary>Selecione um serviço</strong>
+                                </button>
+
+                                <div class="admin-manual-service-panel" data-admin-manual-service-panel hidden>
+                                  <div class="admin-manual-service-grid" data-admin-manual-service-grid></div>
+                                </div>
+                              </div>
+
+                              <label class="field">
+                                <span>Profissional / barbeiro</span>
+                                <select name="barbeiro" data-admin-manual-barber-select required>
+                                  <option value="" selected disabled>Selecione um barbeiro</option>
+                                </select>
+                              </label>
+                            </div>
+                          </section>
+                        </div>
 
                         <section class="admin-manual-section admin-manual-section--notes">
                           <div class="admin-manual-section-head">

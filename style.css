@@ -3181,6 +3181,14 @@ body.experience-adjust-active .about-gallery-card img {
   grid-auto-rows: auto;
 }
 
+.admin-manual-column {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  align-self: start;
+  min-width: 0;
+}
+
 .admin-manual-choice-shell {
   display: flex;
   flex-direction: column;
@@ -3222,6 +3230,10 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-manual-section--notes {
   grid-column: 1 / -1;
+}
+
+.admin-manual-section--notes {
+  align-self: start;
 }
 
 .admin-manual-section-head {
@@ -5284,6 +5296,27 @@ body.experience-adjust-active .about-gallery-card img {
 
   .admin-manual-layout {
     grid-template-columns: 1fr;
+  }
+
+  .admin-manual-column {
+    display: contents;
+    gap: 1rem;
+  }
+
+  .admin-manual-section--client {
+    order: 1;
+  }
+
+  .admin-manual-section--service-block {
+    order: 2;
+  }
+
+  .admin-manual-section--schedule-block {
+    order: 3;
+  }
+
+  .admin-manual-section--notes {
+    order: 4;
   }
 
   .admin-dashboard-grid {
