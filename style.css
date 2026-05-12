@@ -3728,11 +3728,11 @@ body.experience-adjust-active .about-gallery-card img {
     --hero-brand-symbol-offset-x: -140px;
     --hero-brand-symbol-offset-y: -16px;
     --hero-brand-accent-size: 106px;
-    --hero-brand-accent-offset-x: 15px;
+    --hero-brand-accent-offset-x: 0px;
     --hero-brand-accent-offset-y: -12px;
     --hero-brand-accent-letter-spacing: 0.016em;
     --hero-brand-base-size: 25px;
-    --hero-brand-base-offset-x: 76px;
+    --hero-brand-base-offset-x: 0px;
     --hero-brand-base-offset-y: 40px;
     --hero-brand-base-letter-spacing: 0.044em;
   }
@@ -3944,6 +3944,10 @@ body.experience-adjust-active .about-gallery-card img {
     transform:
       translate(var(--hero-brand-offset-x, 0px), var(--hero-brand-offset-y, 0px))
       scale(1);
+  }
+
+  .hero-brand-text {
+    text-align: center;
   }
 
   .hero-content {
@@ -4344,11 +4348,11 @@ body.experience-adjust-active .about-gallery-card img {
     --hero-brand-symbol-offset-x: -120px;
     --hero-brand-symbol-offset-y: -12px;
     --hero-brand-accent-size: 90px;
-    --hero-brand-accent-offset-x: 10px;
+    --hero-brand-accent-offset-x: 0px;
     --hero-brand-accent-offset-y: -10px;
     --hero-brand-accent-letter-spacing: 0.012em;
     --hero-brand-base-size: 20px;
-    --hero-brand-base-offset-x: 64px;
+    --hero-brand-base-offset-x: 0px;
     --hero-brand-base-offset-y: 34px;
     --hero-brand-base-letter-spacing: 0.036em;
   }
@@ -4398,9 +4402,9 @@ body.experience-adjust-active .about-gallery-card img {
     --hero-brand-symbol-size: 140px;
     --hero-brand-symbol-offset-x: -114px;
     --hero-brand-accent-size: 84px;
-    --hero-brand-accent-offset-x: 7px;
+    --hero-brand-accent-offset-x: 0px;
     --hero-brand-base-size: 19px;
-    --hero-brand-base-offset-x: 58px;
+    --hero-brand-base-offset-x: 0px;
     --hero-brand-base-offset-y: 31px;
   }
 
