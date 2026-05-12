@@ -2903,7 +2903,8 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-container {
-  width: min(92vw, 1400px);
+  width: min(98vw, 1760px);
+  max-width: none;
 }
 
 .admin-header .header-inner {
@@ -2915,7 +2916,7 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-main {
-  padding-top: calc(var(--header-height) + 2.2rem);
+  padding-top: calc(var(--header-height) + 1.7rem);
 }
 
 .admin-heading {
@@ -2959,6 +2960,11 @@ body.experience-adjust-active .about-gallery-card img {
   background:
     linear-gradient(135deg, rgba(255, 255, 255, 0.08), rgba(255, 255, 255, 0.02)),
     rgba(255, 255, 255, 0.03);
+}
+
+.admin-login[hidden],
+.admin-page.is-admin-authenticated .admin-login {
+  display: none !important;
 }
 
 .admin-login-intro h3 {
@@ -3476,23 +3482,25 @@ body.experience-adjust-active .about-gallery-card img {
     rgba(12, 13, 14, 0.82);
   box-shadow: 0 34px 90px rgba(0, 0, 0, 0.32);
   overflow: hidden;
+  width: 100%;
 }
 
 .admin-shell {
   display: grid;
-  grid-template-columns: 280px minmax(0, 1fr);
-  min-height: min(78vh, 1080px);
+  grid-template-columns: 292px minmax(0, 1fr);
+  min-height: calc(100vh - var(--header-height) - 5.5rem);
 }
 
 .admin-sidebar {
   display: flex;
   flex-direction: column;
   gap: 1.4rem;
-  padding: 1.5rem;
+  padding: 1.55rem;
   border-right: 1px solid rgba(255, 255, 255, 0.08);
   background:
     radial-gradient(circle at top left, rgba(212, 176, 92, 0.18), transparent 32%),
-    linear-gradient(180deg, rgba(15, 16, 17, 0.98), rgba(8, 8, 9, 0.98));
+    linear-gradient(180deg, rgba(15, 16, 17, 0.99), rgba(8, 8, 9, 0.99));
+  box-shadow: inset -1px 0 0 rgba(255, 255, 255, 0.03);
 }
 
 .admin-sidebar-brand {
@@ -3535,7 +3543,7 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-nav-link {
   width: 100%;
-  padding: 0.92rem 1rem;
+  padding: 0.96rem 1rem;
   border: 1px solid transparent;
   border-radius: 18px;
   background: transparent;
@@ -3562,9 +3570,9 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-nav-link.is-active {
   color: #f5e8c9;
-  border-color: rgba(212, 176, 92, 0.22);
+  border-color: rgba(212, 176, 92, 0.3);
   background:
-    linear-gradient(135deg, rgba(212, 176, 92, 0.18), rgba(212, 176, 92, 0.06)),
+    linear-gradient(135deg, rgba(212, 176, 92, 0.22), rgba(212, 176, 92, 0.07)),
     rgba(255, 255, 255, 0.04);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.05),
@@ -3581,7 +3589,8 @@ body.experience-adjust-active .about-gallery-card img {
   display: flex;
   flex-direction: column;
   gap: 1.35rem;
-  padding: 1.5rem;
+  min-width: 0;
+  padding: 1.55rem 1.7rem;
 }
 
 .admin-workspace-top {
@@ -3589,7 +3598,7 @@ body.experience-adjust-active .about-gallery-card img {
   align-items: start;
   justify-content: space-between;
   gap: 1.2rem;
-  padding-bottom: 1.25rem;
+  padding-bottom: 1.35rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 }
 
@@ -3627,13 +3636,13 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-overview-grid {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
+  grid-template-columns: repeat(4, minmax(220px, 1fr));
   gap: 1rem;
 }
 
 .admin-overview-card,
 .admin-dashboard-panel {
-  padding: 1.3rem 1.35rem;
+  padding: 1.4rem 1.45rem;
   border: 1px solid rgba(255, 255, 255, 0.08);
   border-radius: 24px;
   background:
@@ -3670,7 +3679,7 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-dashboard-grid {
   display: grid;
-  grid-template-columns: minmax(0, 1.05fr) minmax(0, 0.95fr);
+  grid-template-columns: minmax(0, 1.18fr) minmax(0, 0.82fr);
   gap: 1rem;
 }
 
@@ -4795,7 +4804,7 @@ body.experience-adjust-active .about-gallery-card img {
 
 @media (max-width: 1180px) {
   .admin-shell {
-    grid-template-columns: 240px minmax(0, 1fr);
+    grid-template-columns: 248px minmax(0, 1fr);
   }
 
   .admin-overview-grid,
@@ -4820,6 +4829,7 @@ body.experience-adjust-active .about-gallery-card img {
 
   .admin-shell {
     grid-template-columns: 1fr;
+    min-height: auto;
   }
 
   .admin-sidebar {
