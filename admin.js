@@ -26,9 +26,16 @@ const adminToggleManualButton = document.querySelector("[data-admin-toggle-manua
 const adminManualForm = document.querySelector("[data-admin-manual-form]");
 const adminManualFeedback = document.querySelector("[data-admin-manual-feedback]");
 const adminCloseManualButton = document.querySelector("[data-admin-close-manual]");
+const adminManualServiceSelect = document.querySelector("[data-admin-manual-service-select]");
 const adminManualBarberSelect = document.querySelector(
   "[data-admin-manual-barber-select]"
 );
+const adminManualTimeSelect = document.querySelector("[data-admin-manual-time-select]");
+const adminManualServiceGrid = document.querySelector("[data-admin-manual-service-grid]");
+const adminManualServiceShell = document.querySelector("[data-admin-manual-service-shell]");
+const adminManualScheduleGrid = document.querySelector("[data-admin-manual-schedule-grid]");
+const adminManualScheduleShell = document.querySelector("[data-admin-manual-schedule-shell]");
+const adminManualScheduleHelper = document.querySelector("[data-admin-manual-schedule-helper]");
 const adminBarberForm = document.querySelector("[data-admin-barber-form]");
 const adminBarberFeedback = document.querySelector("[data-admin-barber-feedback]");
 const adminBarbersList = document.querySelector("[data-admin-barbers-list]");
@@ -68,6 +75,60 @@ const defaultBarbers = [
   { id: "olivan", nome: "Olivan", fotoUrl: "", ativo: true },
 ];
 const defaultAdminEmptyMessage = "Nenhum agendamento salvo até o momento.";
+const defaultAdminManualScheduleHelper =
+  "Escolha o profissional e a data para ver os horários.";
+const adminServiceMeta = {
+  Corte: {
+    price: "R$ 40",
+    description: "Acabamento alinhado para manter o visual masculino sempre em dia.",
+  },
+  Barba: {
+    price: "R$ 30",
+    description: "Desenho e finalização com presença e precisão.",
+  },
+  Sobrancelha: {
+    price: "R$ 15",
+    description: "Detalhe rápido para reforçar expressão e limpeza.",
+  },
+  Selagem: {
+    price: "R$ 35",
+    description: "Controle de fios com acabamento disciplinado e elegante.",
+  },
+  Botox: {
+    price: "R$ 50",
+    description: "Tratamento capilar para reduzir volume e melhorar o toque.",
+  },
+  Progressiva: {
+    price: "R$ 80",
+    description: "Alinhamento intenso para um visual mais polido.",
+  },
+  Relaxamento: {
+    price: "R$ 50",
+    description: "Controle de textura com caimento mais natural.",
+  },
+  "Perfil do cabelo": {
+    price: "R$ 20",
+    description: "Contorno e precisão para um acabamento limpo.",
+  },
+  Luzes: {
+    price: "R$ 120",
+    description: "Iluminação estratégica para destacar o visual.",
+  },
+  Platinado: {
+    price: "R$ 150",
+    description: "Coloração de alto impacto com acabamento premium.",
+  },
+  "Corte com visagismo": {
+    price: "R$ 600",
+    description:
+      "Análise personalizada de rosto, estilo e imagem para um visual exclusivo.",
+  },
+  "Barba com visagismo": {
+    price: "R$ 100",
+    description:
+      "Desenho de barba personalizado com proporção facial e acabamento premium.",
+  },
+};
 
 const sanitizePhoneDigits = (value) => String(value || "").replace(/\D/g, "");
 
@@ -108,6 +169,8 @@ let unsubscribeBarbers = null;
 let isSeedingDefaultBarbers = false;
 let lastAppointmentConflict = false;
 let activeAdminTab = "dashboard";
+let manualScheduleOccupiedSlots = new Set();
+let unsubscribeManualSchedule = null;
 
 const normalizeBarber = (barber) => {
   if (!barber || typeof barber !== "object") {
@@ -216,6 +279,14 @@ const clearFormErrors = (form) => {
     .forEach((field) => field.classList.remove("is-invalid"));
 };
 
+const toggleManualChoiceShellError = (shell, isInvalid) => {
+  if (!shell) {
+    return;
+  }
+
+  shell.classList.toggle("is-invalid", isInvalid);
+};
+
 const setFeedbackMessage = (element, message, isSuccess = false) => {
   if (!element) {
     return;
@@ -223,6 +294,234 @@ const setFeedbackMessage = (element, message, isSuccess = false) => {
 
   element.textContent = message;
   element.classList.toggle("is-success", isSuccess);
+};
+
+const getAdminManualScheduleSlots = () =>
+  adminManualTimeSelect
+    ? [...adminManualTimeSelect.options].map((option) => option.value).filter(Boolean)
+    : [];
+
+const setAdminManualScheduleHelper = (message) => {
+  if (!adminManualScheduleHelper) {
+    return;
+  }
+
+  adminManualScheduleHelper.textContent = message;
+};
+
+const renderAdminManualServiceCards = () => {
+  if (!adminManualServiceGrid || !adminManualServiceSelect) {
+    return;
+  }
+
+  const selectedService = String(adminManualServiceSelect.value || "").trim();
+
+  adminManualServiceGrid.innerHTML = [...adminManualServiceSelect.options]
+    .filter((option) => option.value)
+    .map((option) => {
+      const serviceName = option.value;
+      const details = adminServiceMeta[serviceName] || {
+        price: "",
+        description: "Atendimento premium da Coronel's Barbearia.",
+      };
+      const isSelected = selectedService === serviceName;
+
+      return `
+        <button
+          class="admin-manual-service-card ${isSelected ? "is-selected" : ""}"
+          type="button"
+          data-admin-manual-service="${escapeHtml(serviceName)}"
+          aria-pressed="${isSelected ? "true" : "false"}"
+        >
+          <div class="admin-manual-service-card-top">
+            <strong>${escapeHtml(serviceName)}</strong>
+            <span>${escapeHtml(details.price || "")}</span>
+          </div>
+          <p>${escapeHtml(details.description || "Atendimento premium da Coronel's Barbearia.")}</p>
+        </button>
+      `;
+    })
+    .join("");
+};
+
+const selectAdminManualService = (serviceName) => {
+  if (!adminManualServiceSelect) {
+    return false;
+  }
+
+  const normalizedService = String(serviceName || "").trim();
+
+  if (!normalizedService) {
+    return false;
+  }
+
+  const hasOption = [...adminManualServiceSelect.options].some(
+    (option) => option.value === normalizedService
+  );
+
+  if (!hasOption) {
+    return false;
+  }
+
+  adminManualServiceSelect.value = normalizedService;
+  toggleFieldError(adminManualServiceSelect, false);
+  toggleManualChoiceShellError(adminManualServiceShell, false);
+  renderAdminManualServiceCards();
+  return true;
+};
+
+const clearSelectedAdminManualTime = () => {
+  if (!adminManualTimeSelect) {
+    return;
+  }
+
+  adminManualTimeSelect.value = "";
+  toggleFieldError(adminManualTimeSelect, false);
+  toggleManualChoiceShellError(adminManualScheduleShell, false);
+};
+
+const renderAdminManualScheduleGrid = () => {
+  if (!adminManualScheduleGrid || !adminManualTimeSelect) {
+    return;
+  }
+
+  const selectedTime = String(adminManualTimeSelect.value || "").trim();
+  const slots = getAdminManualScheduleSlots();
+  const hasContext =
+    Boolean(String(adminManualBarberSelect?.value || "").trim()) &&
+    Boolean(String(adminManualForm?.querySelector('input[name="data"]')?.value || "").trim());
+
+  if (!hasContext) {
+    adminManualScheduleGrid.innerHTML = "";
+    setAdminManualScheduleHelper(defaultAdminManualScheduleHelper);
+    return;
+  }
+
+  adminManualScheduleGrid.innerHTML = slots
+    .map((time) => {
+      const isOccupied = manualScheduleOccupiedSlots.has(time);
+      const isSelected = selectedTime === time && !isOccupied;
+      const statusLabel = isOccupied ? "Ocupado" : isSelected ? "Selecionado" : "Livre";
+
+      return `
+        <button
+          class="schedule-slot ${isOccupied ? "is-occupied" : "is-available"} ${isSelected ? "is-selected" : ""}"
+          type="button"
+          data-admin-manual-time="${escapeHtml(time)}"
+          ${isOccupied ? "disabled" : ""}
+          aria-pressed="${isSelected ? "true" : "false"}"
+        >
+          <strong>${escapeHtml(time)}</strong>
+          <span>${escapeHtml(statusLabel)}</span>
+        </button>
+      `;
+    })
+    .join("");
+
+  setAdminManualScheduleHelper(
+    manualScheduleOccupiedSlots.size
+      ? "Horários livres e ocupados atualizados em tempo real."
+      : "Todos os horários mostrados abaixo estão livres no momento."
+  );
+};
+
+const stopManualScheduleSubscription = () => {
+  if (typeof unsubscribeManualSchedule === "function") {
+    unsubscribeManualSchedule();
+    unsubscribeManualSchedule = null;
+  }
+};
+
+const subscribeManualScheduleAvailability = (barbeiro, data) => {
+  stopManualScheduleSubscription();
+  manualScheduleOccupiedSlots = new Set();
+
+  if (!barbeiro || !data) {
+    renderAdminManualScheduleGrid();
+    return;
+  }
+
+  if (!hasFirebaseConfig) {
+    renderAdminManualScheduleGrid();
+    setAdminManualScheduleHelper("Os horários online não estão disponíveis agora.");
+    return;
+  }
+
+  const scheduleQuery = query(
+    getAppointmentsCollection(),
+    where("barbeiro", "==", barbeiro),
+    where("data", "==", data)
+  );
+
+  unsubscribeManualSchedule = onSnapshot(
+    scheduleQuery,
+    (snapshot) => {
+      manualScheduleOccupiedSlots = new Set(
+        snapshot.docs
+          .map((appointmentDoc) => appointmentDoc.data())
+          .filter(
+            (appointment) =>
+              String(appointment.status || "pendente").trim().toLowerCase() !== "cancelado"
+          )
+          .map((appointment) => String(appointment.horario || "").trim())
+          .filter(Boolean)
+      );
+
+      if (
+        adminManualTimeSelect?.value &&
+        manualScheduleOccupiedSlots.has(adminManualTimeSelect.value)
+      ) {
+        clearSelectedAdminManualTime();
+        setFeedbackMessage(
+          adminManualFeedback,
+          "O horário selecionado ficou indisponível. Escolha outro horário."
+        );
+      }
+
+      renderAdminManualScheduleGrid();
+    },
+    () => {
+      manualScheduleOccupiedSlots = new Set();
+      renderAdminManualScheduleGrid();
+      setAdminManualScheduleHelper("Não foi possível atualizar os horários agora.");
+    }
+  );
+};
+
+const syncAdminManualScheduleContext = () => {
+  const selectedBarber = String(adminManualBarberSelect?.value || "").trim();
+  const selectedDate = String(
+    adminManualForm?.querySelector('input[name="data"]')?.value || ""
+  ).trim();
+
+  clearSelectedAdminManualTime();
+  subscribeManualScheduleAvailability(selectedBarber, selectedDate);
+};
+
+const selectAdminManualTime = (time) => {
+  if (!adminManualTimeSelect) {
+    return false;
+  }
+
+  const normalizedTime = String(time || "").trim();
+
+  if (!normalizedTime || manualScheduleOccupiedSlots.has(normalizedTime)) {
+    return false;
+  }
+
+  const hasOption = [...adminManualTimeSelect.options].some(
+    (option) => option.value === normalizedTime
+  );
+
+  if (!hasOption) {
+    return false;
+  }
+
+  adminManualTimeSelect.value = normalizedTime;
+  toggleFieldError(adminManualTimeSelect, false);
+  toggleManualChoiceShellError(adminManualScheduleShell, false);
+  renderAdminManualScheduleGrid();
+  return true;
 };
 
 const attachRequiredFieldValidation = (fields) => {
@@ -557,6 +856,8 @@ const closeManualForm = () => {
     return;
   }
 
+  stopManualScheduleSubscription();
+  manualScheduleOccupiedSlots = new Set();
   adminManualForm.hidden = true;
   adminManualForm.reset();
   clearFormErrors(adminManualForm);
@@ -565,6 +866,10 @@ const closeManualForm = () => {
     getAvailableBarbers(),
     "Selecione um barbeiro"
   );
+  toggleManualChoiceShellError(adminManualServiceShell, false);
+  toggleManualChoiceShellError(adminManualScheduleShell, false);
+  renderAdminManualServiceCards();
+  renderAdminManualScheduleGrid();
   setFeedbackMessage(adminManualFeedback, "");
 };
 
@@ -586,6 +891,10 @@ const openManualForm = () => {
   if (manualDateField) {
     manualDateField.min = getTodayDateValue();
   }
+
+  renderAdminManualServiceCards();
+  renderAdminManualScheduleGrid();
+  setAdminManualScheduleHelper(defaultAdminManualScheduleHelper);
 };
 
 const renderAdminSummary = (appointments) => {
@@ -1082,7 +1391,74 @@ if (adminManualForm && adminManualFeedback) {
     });
   }
 
+  if (adminManualServiceSelect) {
+    adminManualServiceSelect.addEventListener("change", () => {
+      toggleManualChoiceShellError(adminManualServiceShell, false);
+      renderAdminManualServiceCards();
+    });
+  }
+
+  if (adminManualServiceGrid) {
+    adminManualServiceGrid.addEventListener("click", (event) => {
+      const serviceButton = event.target.closest("[data-admin-manual-service]");
+
+      if (!serviceButton) {
+        return;
+      }
+
+      const selectedService = String(
+        serviceButton.getAttribute("data-admin-manual-service") || ""
+      ).trim();
+
+      if (!selectedService) {
+        return;
+      }
+
+      selectAdminManualService(selectedService);
+    });
+  }
+
+  if (adminManualBarberSelect) {
+    adminManualBarberSelect.addEventListener("change", () => {
+      toggleFieldError(adminManualBarberSelect, false);
+      syncAdminManualScheduleContext();
+    });
+  }
+
+  if (manualDateField) {
+    manualDateField.addEventListener("change", syncAdminManualScheduleContext);
+  }
+
+  if (adminManualTimeSelect) {
+    adminManualTimeSelect.addEventListener("change", () => {
+      toggleManualChoiceShellError(adminManualScheduleShell, false);
+      renderAdminManualScheduleGrid();
+    });
+  }
+
+  if (adminManualScheduleGrid) {
+    adminManualScheduleGrid.addEventListener("click", (event) => {
+      const timeButton = event.target.closest("[data-admin-manual-time]");
+
+      if (!timeButton || timeButton.disabled) {
+        return;
+      }
+
+      const selectedTime = String(
+        timeButton.getAttribute("data-admin-manual-time") || ""
+      ).trim();
+
+      if (!selectedTime) {
+        return;
+      }
+
+      selectAdminManualTime(selectedTime);
+    });
+  }
+
   attachRequiredFieldValidation(manualRequiredFields);
+  renderAdminManualServiceCards();
+  renderAdminManualScheduleGrid();
 
   adminManualForm.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -1097,6 +1473,15 @@ if (adminManualForm && adminManualFeedback) {
         hasError = true;
       }
     });
+
+    toggleManualChoiceShellError(
+      adminManualServiceShell,
+      !String(adminManualServiceSelect?.value || "").trim()
+    );
+    toggleManualChoiceShellError(
+      adminManualScheduleShell,
+      !String(adminManualTimeSelect?.value || "").trim()
+    );
 
     if (hasError) {
       setFeedbackMessage(

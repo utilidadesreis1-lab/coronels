@@ -331,24 +331,28 @@
                           </div>
 
                           <div class="admin-manual-grid">
-                            <label class="field">
-                              <span>Serviço</span>
-                              <select name="servico" required>
-                                <option value="" selected disabled>Selecione um serviço</option>
-                                <option value="Corte">Corte</option>
-                                <option value="Barba">Barba</option>
-                                <option value="Sobrancelha">Sobrancelha</option>
-                                <option value="Selagem">Selagem</option>
-                                <option value="Botox">Botox</option>
-                                <option value="Progressiva">Progressiva</option>
-                                <option value="Relaxamento">Relaxamento</option>
-                                <option value="Perfil do cabelo">Perfil do cabelo</option>
-                                <option value="Luzes">Luzes</option>
-                                <option value="Platinado">Platinado</option>
-                                <option value="Corte com visagismo">Corte com visagismo</option>
-                                <option value="Barba com visagismo">Barba com visagismo</option>
-                              </select>
-                            </label>
+                            <div class="admin-manual-choice-shell admin-manual-choice-shell--service" data-admin-manual-service-shell>
+                              <label class="field admin-native-field">
+                                <span>Serviço</span>
+                                <select name="servico" data-admin-manual-service-select required>
+                                  <option value="" selected disabled>Selecione um serviço</option>
+                                  <option value="Corte">Corte</option>
+                                  <option value="Barba">Barba</option>
+                                  <option value="Sobrancelha">Sobrancelha</option>
+                                  <option value="Selagem">Selagem</option>
+                                  <option value="Botox">Botox</option>
+                                  <option value="Progressiva">Progressiva</option>
+                                  <option value="Relaxamento">Relaxamento</option>
+                                  <option value="Perfil do cabelo">Perfil do cabelo</option>
+                                  <option value="Luzes">Luzes</option>
+                                  <option value="Platinado">Platinado</option>
+                                  <option value="Corte com visagismo">Corte com visagismo</option>
+                                  <option value="Barba com visagismo">Barba com visagismo</option>
+                                </select>
+                              </label>
+
+                              <div class="admin-manual-service-grid" data-admin-manual-service-grid></div>
+                            </div>
 
                             <label class="field">
                               <span>Profissional / barbeiro</span>
@@ -374,24 +378,31 @@
                               <input type="date" name="data" required>
                             </label>
 
-                            <label class="field">
-                              <span>Horário</span>
-                              <select name="horario" required>
-                                <option value="" selected disabled>Escolha o horário</option>
-                                <option value="09:00">09:00</option>
-                                <option value="10:00">10:00</option>
-                                <option value="11:00">11:00</option>
-                                <option value="12:00">12:00</option>
-                                <option value="13:00">13:00</option>
-                                <option value="14:00">14:00</option>
-                                <option value="15:00">15:00</option>
-                                <option value="16:00">16:00</option>
-                                <option value="17:00">17:00</option>
-                                <option value="18:00">18:00</option>
-                                <option value="19:00">19:00</option>
-                                <option value="20:00">20:00</option>
-                              </select>
-                            </label>
+                            <div class="admin-manual-choice-shell admin-manual-choice-shell--schedule field-schedule" data-admin-manual-schedule-shell>
+                              <label class="field admin-native-field">
+                                <span>Horário</span>
+                                <select name="horario" data-admin-manual-time-select required>
+                                  <option value="" selected disabled>Escolha o horário</option>
+                                  <option value="09:00">09:00</option>
+                                  <option value="10:00">10:00</option>
+                                  <option value="11:00">11:00</option>
+                                  <option value="12:00">12:00</option>
+                                  <option value="13:00">13:00</option>
+                                  <option value="14:00">14:00</option>
+                                  <option value="15:00">15:00</option>
+                                  <option value="16:00">16:00</option>
+                                  <option value="17:00">17:00</option>
+                                  <option value="18:00">18:00</option>
+                                  <option value="19:00">19:00</option>
+                                  <option value="20:00">20:00</option>
+                                </select>
+                              </label>
+
+                              <p class="admin-manual-schedule-helper" data-admin-manual-schedule-helper>
+                                Escolha o profissional e a data para ver os horários.
+                              </p>
+                              <div class="admin-manual-schedule-grid" data-admin-manual-schedule-grid></div>
+                            </div>
                           </div>
                         </section>
 

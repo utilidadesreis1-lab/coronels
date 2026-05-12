@@ -3179,6 +3179,20 @@ body.experience-adjust-active .about-gallery-card img {
   gap: 1rem;
 }
 
+.admin-manual-choice-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 0.95rem;
+}
+
+.admin-manual-choice-shell--schedule {
+  grid-column: 1 / -1;
+}
+
+.admin-native-field {
+  display: none;
+}
+
 .admin-manual-section {
   display: flex;
   flex-direction: column;
@@ -3237,10 +3251,217 @@ body.experience-adjust-active .about-gallery-card img {
   gap: 1rem;
 }
 
+.admin-manual-service-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.85rem;
+}
+
+.admin-manual-service-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  min-height: 138px;
+  padding: 1rem 1.05rem;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 18px;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02)),
+    rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  text-align: left;
+  cursor: pointer;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease,
+    color 0.25s ease;
+}
+
+.admin-manual-service-card:hover,
+.admin-manual-service-card:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(212, 176, 92, 0.24);
+  background:
+    linear-gradient(180deg, rgba(212, 176, 92, 0.12), rgba(255, 255, 255, 0.025)),
+    rgba(255, 255, 255, 0.035);
+  box-shadow: 0 16px 32px rgba(0, 0, 0, 0.16);
+}
+
+.admin-manual-service-card-top {
+  display: flex;
+  align-items: start;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.admin-manual-service-card-top strong {
+  font-size: 1rem;
+  line-height: 1.35;
+}
+
+.admin-manual-service-card-top span {
+  flex-shrink: 0;
+  padding: 0.42rem 0.68rem;
+  border-radius: 999px;
+  border: 1px solid rgba(212, 176, 92, 0.16);
+  background: rgba(212, 176, 92, 0.1);
+  color: #f5e8c9;
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.admin-manual-service-card p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.92rem;
+  line-height: 1.65;
+}
+
+.admin-manual-service-card.is-selected {
+  border-color: rgba(212, 176, 92, 0.4);
+  background:
+    linear-gradient(180deg, rgba(212, 176, 92, 0.18), rgba(255, 255, 255, 0.025)),
+    rgba(255, 255, 255, 0.04);
+  box-shadow:
+    0 18px 36px rgba(0, 0, 0, 0.18),
+    0 0 0 1px rgba(245, 232, 201, 0.08),
+    inset 0 1px 0 rgba(255, 255, 255, 0.06);
+}
+
+.admin-manual-service-card.is-selected strong,
+.admin-manual-service-card.is-selected p,
+.admin-manual-service-card.is-selected span {
+  color: #fbf5e7;
+}
+
+.admin-manual-schedule-helper {
+  margin: 0;
+  padding: 0.95rem 1rem;
+  border-radius: 16px;
+  border: 1px dashed rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.025);
+  color: var(--muted);
+  line-height: 1.65;
+}
+
+.admin-manual-schedule-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(108px, 1fr));
+  gap: 0.8rem;
+}
+
+.admin-manual-schedule-grid .schedule-slot {
+  min-height: 82px;
+  padding: 0.9rem 0.85rem;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.03);
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    transform 0.25s ease,
+    border-color 0.25s ease,
+    background-color 0.25s ease,
+    box-shadow 0.25s ease,
+    color 0.25s ease,
+    opacity 0.25s ease;
+}
+
+.admin-manual-schedule-grid .schedule-slot strong,
+.admin-manual-schedule-grid .schedule-slot span {
+  display: block;
+}
+
+.admin-manual-schedule-grid .schedule-slot strong {
+  margin-bottom: 0.32rem;
+  font-size: 1rem;
+  font-weight: 800;
+}
+
+.admin-manual-schedule-grid .schedule-slot span {
+  font-size: 0.78rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin-manual-schedule-grid .schedule-slot.is-available {
+  border-color: rgba(88, 178, 122, 0.22);
+  background:
+    linear-gradient(180deg, rgba(88, 178, 122, 0.12), rgba(255, 255, 255, 0.018)),
+    rgba(255, 255, 255, 0.03);
+}
+
+.admin-manual-schedule-grid .schedule-slot.is-available strong,
+.admin-manual-schedule-grid .schedule-slot.is-available span {
+  color: #9cd7ac;
+}
+
+.admin-manual-schedule-grid .schedule-slot.is-available:hover,
+.admin-manual-schedule-grid .schedule-slot.is-available:focus-visible {
+  transform: translateY(-2px);
+  border-color: rgba(88, 178, 122, 0.34);
+  box-shadow: 0 14px 30px rgba(0, 0, 0, 0.16);
+}
+
+.admin-manual-schedule-grid .schedule-slot.is-selected {
+  border-color: rgba(212, 176, 92, 0.44);
+  background:
+    linear-gradient(180deg, rgba(212, 176, 92, 0.2), rgba(255, 255, 255, 0.028)),
+    rgba(255, 255, 255, 0.04);
+  box-shadow:
+    0 16px 32px rgba(0, 0, 0, 0.16),
+    0 0 0 1px rgba(245, 232, 201, 0.08);
+}
+
+.admin-manual-schedule-grid .schedule-slot.is-selected strong,
+.admin-manual-schedule-grid .schedule-slot.is-selected span {
+  color: #fbf5e7;
+}
+
+.admin-manual-schedule-grid .schedule-slot.is-occupied {
+  border-color: rgba(171, 87, 87, 0.26);
+  background:
+    linear-gradient(180deg, rgba(171, 87, 87, 0.14), rgba(255, 255, 255, 0.018)),
+    rgba(255, 255, 255, 0.02);
+  opacity: 0.82;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.admin-manual-schedule-grid .schedule-slot.is-occupied strong,
+.admin-manual-schedule-grid .schedule-slot.is-occupied span {
+  color: #dca3a3;
+}
+
+.admin-manual-schedule-grid .schedule-slot.is-occupied:hover,
+.admin-manual-schedule-grid .schedule-slot.is-occupied:focus-visible {
+  transform: none;
+}
+
+.admin-manual-choice-shell.is-invalid {
+  padding: 0.95rem;
+  border-radius: 18px;
+  border: 1px solid rgba(214, 103, 103, 0.3);
+  background: rgba(214, 103, 103, 0.06);
+}
+
 .admin-manual-form textarea {
   width: 100%;
   min-height: 120px;
   resize: vertical;
+  border: 1px solid rgba(212, 176, 92, 0.18);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.015)),
+    rgba(11, 11, 12, 0.86);
+  color: #f4f1eb;
+}
+
+.admin-manual-form textarea::placeholder {
+  color: rgba(244, 241, 235, 0.42);
 }
 
 .admin-manual-actions {
