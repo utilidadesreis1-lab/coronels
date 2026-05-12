@@ -20,6 +20,7 @@ const header = document.querySelector(".site-header");
 const menuToggle = document.querySelector(".menu-toggle");
 const nav = document.querySelector(".site-nav");
 const navLinks = document.querySelectorAll(".site-nav a");
+const headerBrandLink = document.querySelector(".site-header .brand");
 const whatsappLinks = document.querySelectorAll("[data-whatsapp-link]");
 const revealItems = document.querySelectorAll(".reveal");
 const bookingForm = document.querySelector("[data-booking-form]");
@@ -234,6 +235,18 @@ if (menuToggle && nav) {
 
   navLinks.forEach((link) => {
     link.addEventListener("click", closeMenu);
+  });
+}
+
+if (headerBrandLink) {
+  headerBrandLink.addEventListener("click", (event) => {
+    event.preventDefault();
+    closeMenu();
+
+    const baseUrl = `${window.location.pathname}${window.location.search}`;
+    const nextUrl = `${baseUrl}#inicio`;
+    window.history.replaceState(null, "", nextUrl);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   });
 }
 
