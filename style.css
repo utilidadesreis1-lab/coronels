@@ -3253,6 +3253,7 @@ body.experience-adjust-active .about-gallery-card img {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 1rem;
+  align-items: start;
 }
 
 .admin-manual-service-grid {
