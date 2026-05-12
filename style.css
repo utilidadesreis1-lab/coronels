@@ -3200,6 +3200,10 @@ body.experience-adjust-active .about-gallery-card img {
   grid-column: 1 / -1;
 }
 
+.admin-manual-section--service-block .admin-manual-grid {
+  gap: 1.15rem;
+}
+
 .admin-manual-choice-shell--schedule {
   grid-column: 1 / -1;
 }
@@ -3290,6 +3294,27 @@ body.experience-adjust-active .about-gallery-card img {
   color: rgba(244, 241, 235, 0.72);
 }
 
+.admin-manual-subhead {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.admin-manual-subhead::after {
+  content: "";
+  flex: 1 1 auto;
+  height: 1px;
+  background: linear-gradient(90deg, rgba(212, 176, 92, 0.22), rgba(212, 176, 92, 0));
+}
+
+.admin-manual-subhead span {
+  color: rgba(244, 241, 235, 0.64);
+  font-size: 0.73rem;
+  font-weight: 800;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+
 .admin-manual-section input,
 .admin-manual-section select,
 .admin-manual-section textarea {
@@ -3308,7 +3333,7 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-manual-service-toggle {
-  width: 100%;
+  width: min(100%, 34rem);
   min-height: 56px;
   padding: 1rem 1.05rem;
   display: flex;
@@ -3471,8 +3496,8 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-manual-barber-card {
-  min-height: 188px;
-  padding: 0.95rem 0.9rem;
+  min-height: 166px;
+  padding: 0.88rem 0.82rem;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -3507,11 +3532,12 @@ body.experience-adjust-active .about-gallery-card img {
   width: 100%;
   display: flex;
   justify-content: center;
+  margin-bottom: 0.1rem;
 }
 
 .admin-manual-barber-avatar {
-  width: 82px;
-  height: 82px;
+  width: 72px;
+  height: 72px;
   position: relative;
   display: inline-flex;
   align-items: center;
@@ -3547,7 +3573,7 @@ body.experience-adjust-active .about-gallery-card img {
   align-items: center;
   justify-content: center;
   color: rgba(244, 241, 235, 0.92);
-  font-size: 1.8rem;
+  font-size: 1.55rem;
   font-weight: 800;
   letter-spacing: 0.02em;
   transition: opacity 0.25s ease, color 0.25s ease;
@@ -3562,15 +3588,15 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-manual-barber-card strong {
-  font-size: 1rem;
+  font-size: 0.96rem;
   font-weight: 800;
   line-height: 1.2;
 }
 
 .admin-manual-barber-card span {
   color: var(--muted);
-  font-size: 0.82rem;
-  line-height: 1.45;
+  font-size: 0.76rem;
+  line-height: 1.35;
 }
 
 .admin-manual-barber-card.is-selected {
