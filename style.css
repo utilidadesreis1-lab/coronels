@@ -3713,12 +3713,26 @@ body.experience-adjust-active .about-gallery-card img {
 @media (max-width: 640px) {
   html,
   body {
-    overflow-x: clip;
+    overflow-x: hidden;
   }
 
   :root {
     --site-wallpaper-size: 560px auto;
     --site-wallpaper-overlay: rgba(5, 5, 5, 0.58);
+    --hero-brand-width: 320px;
+    --hero-brand-height: 172px;
+    --hero-brand-scale: 0.48;
+    --hero-brand-offset-x: 0px;
+    --hero-brand-offset-y: -10px;
+    --hero-brand-symbol-size: 160px;
+    --hero-brand-symbol-offset-x: -164px;
+    --hero-brand-symbol-offset-y: -18px;
+    --hero-brand-accent-size: 98px;
+    --hero-brand-accent-offset-x: 34px;
+    --hero-brand-accent-offset-y: -16px;
+    --hero-brand-base-size: 24px;
+    --hero-brand-base-offset-x: 118px;
+    --hero-brand-base-offset-y: 34px;
   }
 
   .container {
@@ -3734,32 +3748,32 @@ body.experience-adjust-active .about-gallery-card img {
   }
 
   .header-inner {
-    min-height: 56px;
-    gap: 0.45rem;
-    padding-inline: 0.45rem;
+    min-height: 54px;
+    gap: 0.35rem;
+    padding-inline: 0.35rem;
   }
 
   .brand-text {
-    font-size: 0.8rem;
+    font-size: 0.76rem;
     line-height: 1.05;
   }
 
   .brand {
     width: auto;
     height: auto;
-    max-width: calc(100% - 8.8rem);
-    gap: 0.35rem;
+    max-width: calc(100% - 8.2rem);
+    gap: 0.28rem;
   }
 
   .brand-mark {
-    width: 2.45rem;
-    height: 2.45rem;
+    width: 2.2rem;
+    height: 2.2rem;
   }
 
   .header-cta {
-    min-height: 38px;
-    padding: 0.62rem 0.78rem;
-    font-size: 0.74rem;
+    min-height: 36px;
+    padding: 0.56rem 0.68rem;
+    font-size: 0.68rem;
   }
 
   .menu-toggle {
@@ -3895,27 +3909,33 @@ body.experience-adjust-active .about-gallery-card img {
   .hero-actions {
     flex-direction: column;
     gap: 0.85rem;
-    margin-top: 1.8rem;
+    margin-top: 1.45rem;
   }
 
   .hero-brand-block {
-    width: min(100%, 330px);
-    height: 190px;
+    width: min(92vw, 320px);
+    max-width: 92vw;
+    height: 172px;
+    margin-inline: auto;
+    overflow: hidden;
     transform:
       translate(var(--hero-brand-offset-x, 0px), var(--hero-brand-offset-y, 0px))
-      scale(calc(var(--hero-brand-scale, 1) * 0.66));
+      scale(1);
   }
 
   .hero-content {
-    padding-top: calc(var(--header-height) + 2rem);
-    padding-bottom: 3rem;
+    width: 100%;
+    max-width: 100%;
+    padding-top: calc(var(--header-height) + 1.45rem);
+    padding-bottom: 2.6rem;
+    overflow: hidden;
   }
 
   .hero-copy {
-    max-width: 21rem;
-    margin-top: 1rem;
-    font-size: 0.98rem;
-    line-height: 1.7;
+    max-width: min(92vw, 20rem);
+    margin-top: 0.8rem;
+    font-size: 0.94rem;
+    line-height: 1.62;
   }
 
   .hero-actions .button,
@@ -4200,17 +4220,17 @@ body.experience-adjust-active .about-gallery-card img {
   }
 
   .brand {
-    max-width: calc(100% - 7.8rem);
+    max-width: calc(100% - 7.2rem);
   }
 
   .brand-text {
-    font-size: 0.74rem;
+    font-size: 0.68rem;
   }
 
   .header-cta {
-    min-height: 36px;
-    padding: 0.58rem 0.72rem;
-    font-size: 0.7rem;
+    min-height: 34px;
+    padding: 0.5rem 0.62rem;
+    font-size: 0.64rem;
   }
 
   .environment-carousel-viewport {
@@ -4255,16 +4275,17 @@ body.experience-adjust-active .about-gallery-card img {
   }
 
   .hero-brand-block {
-    width: min(100%, 300px);
-    height: 170px;
+    width: min(92vw, 286px);
+    max-width: 92vw;
+    height: 156px;
     transform:
       translate(var(--hero-brand-offset-x, 0px), var(--hero-brand-offset-y, 0px))
-      scale(calc(var(--hero-brand-scale, 1) * 0.62));
+      scale(1);
   }
 
   .hero-copy {
-    max-width: 18rem;
-    font-size: 0.94rem;
+    max-width: min(92vw, 17.2rem);
+    font-size: 0.9rem;
   }
 
   .booking-date-chips {
@@ -4273,21 +4294,68 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 @media (max-width: 390px) {
+  :root {
+    --hero-brand-width: 276px;
+    --hero-brand-height: 146px;
+    --hero-brand-scale: 0.43;
+    --hero-brand-offset-x: 0px;
+    --hero-brand-offset-y: -6px;
+    --hero-brand-symbol-size: 136px;
+    --hero-brand-symbol-offset-x: -138px;
+    --hero-brand-symbol-offset-y: -14px;
+    --hero-brand-accent-size: 82px;
+    --hero-brand-accent-offset-x: 27px;
+    --hero-brand-accent-offset-y: -14px;
+    --hero-brand-base-size: 20px;
+    --hero-brand-base-offset-x: 98px;
+    --hero-brand-base-offset-y: 28px;
+  }
+
   .brand-text {
-    font-size: 0.7rem;
+    font-size: 0.64rem;
   }
 
   .header-cta {
-    padding: 0.55rem 0.66rem;
-    font-size: 0.68rem;
+    padding: 0.46rem 0.56rem;
+    font-size: 0.6rem;
   }
 
   .hero-brand-block {
-    width: min(100%, 280px);
-    height: 160px;
+    width: min(92vw, 258px);
+    max-width: 92vw;
+    height: 146px;
     transform:
       translate(var(--hero-brand-offset-x, 0px), var(--hero-brand-offset-y, 0px))
-      scale(calc(var(--hero-brand-scale, 1) * 0.58));
+      scale(1);
+  }
+
+  .hero-content {
+    padding-top: calc(var(--header-height) + 1.2rem);
+  }
+
+  .hero-copy {
+    max-width: min(92vw, 15.75rem);
+    font-size: 0.88rem;
+    line-height: 1.56;
+  }
+}
+
+@media (max-width: 340px) {
+  :root {
+    --hero-brand-width: 248px;
+    --hero-brand-height: 136px;
+    --hero-brand-symbol-size: 124px;
+    --hero-brand-symbol-offset-x: -126px;
+    --hero-brand-accent-size: 74px;
+    --hero-brand-accent-offset-x: 22px;
+    --hero-brand-base-size: 18px;
+    --hero-brand-base-offset-x: 88px;
+    --hero-brand-base-offset-y: 26px;
+  }
+
+  .hero-brand-block {
+    width: min(92vw, 244px);
+    height: 136px;
   }
 }
 
