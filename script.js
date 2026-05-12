@@ -37,8 +37,11 @@ const bookingServicePanel = document.querySelector("[data-booking-service-panel]
 const bookingServiceSummary = document.querySelector("[data-booking-service-summary]");
 const serviceCardSelectButtons = document.querySelectorAll("[data-service-card-select]");
 const environmentCarousel = document.querySelector("[data-environment-carousel]");
+const bookingDraftStorageKey = "coronels_agendamento_rascunho";
 
 let serviceSelectionToastTimeoutId = 0;
+let onScheduleGridRendered = null;
+let syncBookingDraftState = null;
 
 const defaultBarbers = [
   { id: "guerra", nome: "Guerra", fotoUrl: "assets/barbeiros/guerra.jfif", ativo: true },
@@ -132,6 +135,56 @@ const formatPhone = (value) => {
 };
 
 const hasValidPhoneDigits = (value) => getLocalPhoneDigits(value).length === 11;
+
+const readBookingDraft = () => {
+  try {
+    const rawDraft = window.localStorage.getItem(bookingDraftStorageKey);
+
+    if (!rawDraft) {
+      return null;
+    }
+
+    const parsedDraft = JSON.parse(rawDraft);
+
+    if (!parsedDraft || typeof parsedDraft !== "object") {
+      window.localStorage.removeItem(bookingDraftStorageKey);
+      return null;
+    }
+
+    return {
+      nome: String(parsedDraft.nome || "").trim(),
+      telefone: String(parsedDraft.telefone || "").trim(),
+      servico: String(parsedDraft.servico || "").trim(),
+      barbeiro: String(parsedDraft.barbeiro || "").trim(),
+      data: String(parsedDraft.data || "").trim(),
+      horario: String(parsedDraft.horario || "").trim(),
+    };
+  } catch {
+    try {
+      window.localStorage.removeItem(bookingDraftStorageKey);
+    } catch {
+      // Ignora falhas de armazenamento local.
+    }
+
+    return null;
+  }
+};
+
+const writeBookingDraft = (draft) => {
+  try {
+    window.localStorage.setItem(bookingDraftStorageKey, JSON.stringify(draft));
+  } catch {
+    // Ignora falhas de armazenamento local.
+  }
+};
+
+const clearBookingDraft = () => {
+  try {
+    window.localStorage.removeItem(bookingDraftStorageKey);
+  } catch {
+    // Ignora falhas de armazenamento local.
+  }
+};
 
 let scheduleUnsubscribe = null;
 let barbersUnsubscribe = null;
@@ -426,6 +479,7 @@ const syncPublicBarbers = () => {
     clearSelectedScheduleTime();
   }
 
+  syncBookingDraftState?.();
   subscribeScheduleAvailability(
     currentBarber,
     String(bookingDateField?.value || "").trim()
@@ -866,6 +920,8 @@ const renderScheduleGrid = () => {
       ? "Horários livres e ocupados atualizados em tempo real."
       : "Todos os horários mostrados abaixo estão livres no momento."
   );
+
+  onScheduleGridRendered?.();
 };
 
 const stopScheduleSubscription = () => {
@@ -925,6 +981,7 @@ const subscribeScheduleAvailability = (barbeiro, data) => {
         formFeedback.textContent =
           "O horário selecionado ficou indisponível. Escolha outro horário.";
         formFeedback.classList.remove("is-success");
+        syncBookingDraftState?.();
       }
 
       renderScheduleGrid();
@@ -1004,8 +1061,80 @@ setServiceAccordionState(false);
 
 if (bookingForm && formFeedback) {
   const requiredFields = [...bookingForm.querySelectorAll("[required]")];
+  const bookingNameField = bookingForm.querySelector('input[name="nome"]');
   const bookingDateField = bookingForm.querySelector('input[name="data"]');
   const bookingPhoneField = bookingForm.querySelector('input[name="telefone"]');
+  let pendingDraftScheduleTime = "";
+  let isApplyingBookingDraft = false;
+
+  const getBookingDraftPayload = () => ({
+    nome: String(bookingNameField?.value || "").trim(),
+    telefone: String(bookingPhoneField?.value || "").trim(),
+    servico: String(publicServiceSelect?.value || "").trim(),
+    barbeiro: String(publicBarberSelect?.value || "").trim(),
+    data: String(bookingDateField?.value || "").trim(),
+    horario: String(bookingTimeSelect?.value || "").trim(),
+  });
+
+  const persistBookingDraft = () => {
+    if (isApplyingBookingDraft) {
+      return;
+    }
+
+    const draftPayload = getBookingDraftPayload();
+    const hasAnyValue = Object.values(draftPayload).some(Boolean);
+
+    if (!hasAnyValue) {
+      clearBookingDraft();
+      return;
+    }
+
+    writeBookingDraft(draftPayload);
+  };
+
+  syncBookingDraftState = persistBookingDraft;
+
+  const tryRestoreDraftScheduleTime = () => {
+    if (!pendingDraftScheduleTime || !bookingTimeSelect) {
+      return;
+    }
+
+    const draftTime = String(pendingDraftScheduleTime || "").trim();
+
+    if (!draftTime) {
+      pendingDraftScheduleTime = "";
+      return;
+    }
+
+    const availableSlots = getScheduleSlots();
+
+    if (!availableSlots.includes(draftTime) || occupiedScheduleSlots.has(draftTime)) {
+      pendingDraftScheduleTime = "";
+
+      if (bookingTimeSelect.value === draftTime) {
+        clearSelectedScheduleTime();
+      }
+
+      persistBookingDraft();
+      return;
+    }
+
+    if (bookingTimeSelect.value !== draftTime) {
+      isApplyingBookingDraft = true;
+      bookingTimeSelect.value = draftTime;
+      toggleFieldError(bookingTimeSelect, false);
+      isApplyingBookingDraft = false;
+      pendingDraftScheduleTime = "";
+      renderScheduleGrid();
+      persistBookingDraft();
+      return;
+    }
+
+    pendingDraftScheduleTime = "";
+  };
+
+  onScheduleGridRendered = tryRestoreDraftScheduleTime;
+
   const handleScheduleContextChange = () => {
     clearSelectedScheduleTime();
     renderDateChips();
@@ -1014,6 +1143,7 @@ if (bookingForm && formFeedback) {
       String(publicBarberSelect?.value || "").trim(),
       String(bookingDateField?.value || "").trim()
     );
+    persistBookingDraft();
   };
 
   if (bookingDateField) {
@@ -1027,6 +1157,7 @@ if (bookingForm && formFeedback) {
     bookingPhoneField.setAttribute("maxlength", "15");
     bookingPhoneField.addEventListener("input", () => {
       bookingPhoneField.value = formatPhone(bookingPhoneField.value);
+      persistBookingDraft();
     });
   }
 
@@ -1040,6 +1171,7 @@ if (bookingForm && formFeedback) {
       renderServiceCards();
       updateServiceSummary();
       updateServiceCardSelectionState();
+      persistBookingDraft();
     });
   }
 
@@ -1173,6 +1305,7 @@ if (bookingForm && formFeedback) {
       formFeedback.textContent = "";
       formFeedback.classList.remove("is-success");
       renderScheduleGrid();
+      persistBookingDraft();
     });
   }
 
@@ -1181,14 +1314,72 @@ if (bookingForm && formFeedback) {
       if (field.value.trim()) {
         toggleFieldError(field, false);
       }
+
+      persistBookingDraft();
     });
 
     field.addEventListener("change", () => {
       if (field.value.trim()) {
         toggleFieldError(field, false);
       }
+
+      persistBookingDraft();
     });
   });
+
+  const restoreBookingDraft = () => {
+    const savedDraft = readBookingDraft();
+
+    if (!savedDraft) {
+      return;
+    }
+
+    isApplyingBookingDraft = true;
+
+    try {
+      if (bookingNameField && savedDraft.nome) {
+        bookingNameField.value = savedDraft.nome;
+        toggleFieldError(bookingNameField, false);
+      }
+
+      if (bookingPhoneField && savedDraft.telefone) {
+        bookingPhoneField.value = formatPhone(savedDraft.telefone);
+        toggleFieldError(bookingPhoneField, false);
+      }
+
+      if (savedDraft.servico) {
+        selectBookingService(savedDraft.servico);
+      }
+
+      if (
+        publicBarberSelect &&
+        savedDraft.barbeiro &&
+        [...publicBarberSelect.options].some((option) => option.value === savedDraft.barbeiro)
+      ) {
+        publicBarberSelect.value = savedDraft.barbeiro;
+        toggleFieldError(publicBarberSelect, false);
+      }
+
+      if (bookingDateField && savedDraft.data) {
+        bookingDateField.value = savedDraft.data;
+        toggleFieldError(bookingDateField, false);
+      }
+
+      pendingDraftScheduleTime = savedDraft.horario;
+      renderDateChips();
+      renderBarberCards();
+      subscribeScheduleAvailability(
+        String(publicBarberSelect?.value || "").trim(),
+        String(bookingDateField?.value || "").trim()
+      );
+    } finally {
+      isApplyingBookingDraft = false;
+    }
+
+    persistBookingDraft();
+  };
+
+  restoreBookingDraft();
 
   bookingForm.addEventListener("submit", async (event) => {
     event.preventDefault();
@@ -1255,6 +1446,8 @@ if (bookingForm && formFeedback) {
       formFeedback.classList.add("is-success");
 
       window.open(buildWhatsAppUrl(appointmentMessage), "_blank", "noopener");
+      clearBookingDraft();
+      pendingDraftScheduleTime = "";
       bookingForm.reset();
       populateBarberSelect(
         publicBarberSelect,
@@ -1265,6 +1458,7 @@ if (bookingForm && formFeedback) {
         publicServiceSelect.value = "";
         renderServiceCards();
         updateServiceSummary();
+        updateServiceCardSelectionState();
       }
       renderDateChips();
       renderBarberCards();
