@@ -3188,6 +3188,7 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-manual-choice-shell--service {
   position: relative;
+  z-index: 6;
 }
 
 .admin-manual-choice-shell--schedule {
@@ -3316,6 +3317,10 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-manual-service-panel {
+  position: absolute;
+  top: calc(100% + 0.7rem);
+  left: 0;
+  right: 0;
   width: 100%;
   padding: 0.95rem;
   border-radius: 20px;
@@ -3325,8 +3330,9 @@ body.experience-adjust-active .about-gallery-card img {
     rgba(10, 10, 11, 0.96);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    0 18px 36px rgba(0, 0, 0, 0.18);
+    0 26px 48px rgba(0, 0, 0, 0.24);
   overflow: hidden;
+  z-index: 30;
 }
 
 .admin-manual-service-card {
