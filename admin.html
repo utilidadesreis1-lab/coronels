@@ -288,66 +288,131 @@
                     </p>
 
                     <form class="admin-manual-form" data-admin-manual-form hidden novalidate>
-                      <div class="admin-manual-grid">
-                        <label class="field">
-                          <span>Nome</span>
-                          <input type="text" name="nome" placeholder="Nome do cliente" required>
-                        </label>
+                      <div class="admin-manual-head">
+                        <div>
+                          <p class="eyebrow">Atendimento interno</p>
+                          <h3>Novo agendamento manual</h3>
+                        </div>
+                        <p class="admin-manual-copy">
+                          Cadastre um atendimento diretamente pelo painel.
+                        </p>
+                      </div>
 
-                        <label class="field">
-                          <span>Telefone</span>
-                          <input type="tel" name="telefone" placeholder="(63) 99124-0071" required>
-                        </label>
+                      <div class="admin-manual-layout">
+                        <section class="admin-manual-section">
+                          <div class="admin-manual-section-head">
+                            <span>01</span>
+                            <div>
+                              <h4>Dados do cliente</h4>
+                              <p>Preencha as informações básicas para identificar o atendimento.</p>
+                            </div>
+                          </div>
 
-                        <label class="field">
-                          <span>Serviço</span>
-                          <select name="servico" required>
-                            <option value="" selected disabled>Selecione um serviço</option>
-                            <option value="Corte">Corte</option>
-                            <option value="Barba">Barba</option>
-                            <option value="Sobrancelha">Sobrancelha</option>
-                            <option value="Selagem">Selagem</option>
-                            <option value="Botox">Botox</option>
-                            <option value="Progressiva">Progressiva</option>
-                            <option value="Relaxamento">Relaxamento</option>
-                            <option value="Perfil do cabelo">Perfil do cabelo</option>
-                            <option value="Luzes">Luzes</option>
-                            <option value="Platinado">Platinado</option>
-                            <option value="Corte com visagismo">Corte com visagismo</option>
-                            <option value="Barba com visagismo">Barba com visagismo</option>
-                          </select>
-                        </label>
+                          <div class="admin-manual-grid">
+                            <label class="field">
+                              <span>Nome do cliente</span>
+                              <input type="text" name="nome" placeholder="Nome do cliente" required>
+                            </label>
 
-                        <label class="field">
-                          <span>Barbeiro</span>
-                          <select name="barbeiro" data-admin-manual-barber-select required>
-                            <option value="" selected disabled>Selecione um barbeiro</option>
-                          </select>
-                        </label>
+                            <label class="field">
+                              <span>Telefone</span>
+                              <input type="tel" name="telefone" placeholder="(63) 99124-0071" required>
+                            </label>
+                          </div>
+                        </section>
 
-                        <label class="field">
-                          <span>Data</span>
-                          <input type="date" name="data" required>
-                        </label>
+                        <section class="admin-manual-section">
+                          <div class="admin-manual-section-head">
+                            <span>02</span>
+                            <div>
+                              <h4>Atendimento</h4>
+                              <p>Escolha o serviço e o profissional que receberá o cliente.</p>
+                            </div>
+                          </div>
 
-                        <label class="field">
-                          <span>Horário</span>
-                          <select name="horario" required>
-                            <option value="" selected disabled>Escolha o horário</option>
-                            <option value="09:00">09:00</option>
-                            <option value="10:00">10:00</option>
-                            <option value="11:00">11:00</option>
-                            <option value="12:00">12:00</option>
-                            <option value="13:00">13:00</option>
-                            <option value="14:00">14:00</option>
-                            <option value="15:00">15:00</option>
-                            <option value="16:00">16:00</option>
-                            <option value="17:00">17:00</option>
-                            <option value="18:00">18:00</option>
-                            <option value="19:00">19:00</option>
-                            <option value="20:00">20:00</option>
-                          </select>
-                        </label>
+                          <div class="admin-manual-grid">
+                            <label class="field">
+                              <span>Serviço</span>
+                              <select name="servico" required>
+                                <option value="" selected disabled>Selecione um serviço</option>
+                                <option value="Corte">Corte</option>
+                                <option value="Barba">Barba</option>
+                                <option value="Sobrancelha">Sobrancelha</option>
+                                <option value="Selagem">Selagem</option>
+                                <option value="Botox">Botox</option>
+                                <option value="Progressiva">Progressiva</option>
+                                <option value="Relaxamento">Relaxamento</option>
+                                <option value="Perfil do cabelo">Perfil do cabelo</option>
+                                <option value="Luzes">Luzes</option>
+                                <option value="Platinado">Platinado</option>
+                                <option value="Corte com visagismo">Corte com visagismo</option>
+                                <option value="Barba com visagismo">Barba com visagismo</option>
+                              </select>
+                            </label>
+
+                            <label class="field">
+                              <span>Profissional / barbeiro</span>
+                              <select name="barbeiro" data-admin-manual-barber-select required>
+                                <option value="" selected disabled>Selecione um barbeiro</option>
+                              </select>
+                            </label>
+                          </div>
+                        </section>
+
+                        <section class="admin-manual-section">
+                          <div class="admin-manual-section-head">
+                            <span>03</span>
+                            <div>
+                              <h4>Data e horário</h4>
+                              <p>Defina quando o cliente será atendido na agenda da barbearia.</p>
+                            </div>
+                          </div>
+
+                          <div class="admin-manual-grid">
+                            <label class="field">
+                              <span>Data</span>
+                              <input type="date" name="data" required>
+                            </label>
+
+                            <label class="field">
+                              <span>Horário</span>
+                              <select name="horario" required>
+                                <option value="" selected disabled>Escolha o horário</option>
+                                <option value="09:00">09:00</option>
+                                <option value="10:00">10:00</option>
+                                <option value="11:00">11:00</option>
+                                <option value="12:00">12:00</option>
+                                <option value="13:00">13:00</option>
+                                <option value="14:00">14:00</option>
+                                <option value="15:00">15:00</option>
+                                <option value="16:00">16:00</option>
+                                <option value="17:00">17:00</option>
+                                <option value="18:00">18:00</option>
+                                <option value="19:00">19:00</option>
+                                <option value="20:00">20:00</option>
+                              </select>
+                            </label>
+                          </div>
+                        </section>
+
+                        <section class="admin-manual-section admin-manual-section--notes">
+                          <div class="admin-manual-section-head">
+                            <span>04</span>
+                            <div>
+                              <h4>Observações</h4>
+                              <p>Campo opcional de apoio visual para organização interna do atendimento.</p>
+                            </div>
+                          </div>
+
+                          <label class="field">
+                            <span>Anotação interna</span>
+                            <textarea
+                              name="observacaoVisual"
+                              rows="4"
+                              placeholder="Ex.: cliente pediu atenção especial no acabamento."
+                            ></textarea>
+                          </label>
+                        </section>
                       </div>
 
                       <p class="admin-feedback" data-admin-manual-feedback aria-live="polite"></p>
@@ -355,7 +420,7 @@
                       <div class="admin-manual-actions">
                         <button class="button button-gold" type="submit">Salvar agendamento</button>
                         <button class="button button-ghost" type="button" data-admin-close-manual>
-                          Fechar
+                          Cancelar
                         </button>
                       </div>
                     </form>
