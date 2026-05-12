@@ -93,182 +93,466 @@
           </form>
 
           <div class="admin-content" data-admin-content hidden>
-            <div class="admin-toolbar">
-              <p class="admin-session">Painel administrativo liberado.</p>
-              <div class="admin-toolbar-actions">
-                <button class="button button-gold" type="button" data-admin-toggle-manual>
-                  Novo agendamento manual
-                </button>
-                <button class="button button-ghost" type="button" data-admin-logout>
-                  Sair
-                </button>
-              </div>
-            </div>
-
-            <p class="admin-demo-notice">
-              Sistema online: os agendamentos agora ficam salvos em banco de dados e podem ser acessados de qualquer celular ou computador autorizado.
-            </p>
-
-            <form class="admin-manual-form" data-admin-manual-form hidden novalidate>
-              <div class="admin-manual-grid">
-                <label class="field">
-                  <span>Nome</span>
-                  <input type="text" name="nome" placeholder="Nome do cliente" required>
-                </label>
-
-                <label class="field">
-                  <span>Telefone</span>
-                  <input type="tel" name="telefone" placeholder="(63) 99124-0071" required>
-                </label>
-
-                <label class="field">
-                  <span>Serviço</span>
-                  <select name="servico" required>
-                    <option value="" selected disabled>Selecione um serviço</option>
-                    <option value="Corte">Corte</option>
-                    <option value="Barba">Barba</option>
-                    <option value="Sobrancelha">Sobrancelha</option>
-                    <option value="Selagem">Selagem</option>
-                    <option value="Botox">Botox</option>
-                    <option value="Progressiva">Progressiva</option>
-                    <option value="Relaxamento">Relaxamento</option>
-                    <option value="Perfil do cabelo">Perfil do cabelo</option>
-                    <option value="Luzes">Luzes</option>
-                    <option value="Platinado">Platinado</option>
-                    <option value="Corte com visagismo">Corte com visagismo</option>
-                    <option value="Barba com visagismo">Barba com visagismo</option>
-                  </select>
-                </label>
-
-                <label class="field">
-                  <span>Barbeiro</span>
-                  <select name="barbeiro" data-admin-manual-barber-select required>
-                    <option value="" selected disabled>Selecione um barbeiro</option>
-                  </select>
-                </label>
-
-                <label class="field">
-                  <span>Data</span>
-                  <input type="date" name="data" required>
-                </label>
-
-                <label class="field">
-                  <span>Horário</span>
-                  <select name="horario" required>
-                    <option value="" selected disabled>Escolha o horário</option>
-                    <option value="09:00">09:00</option>
-                    <option value="10:00">10:00</option>
-                    <option value="11:00">11:00</option>
-                    <option value="12:00">12:00</option>
-                    <option value="13:00">13:00</option>
-                    <option value="14:00">14:00</option>
-                    <option value="15:00">15:00</option>
-                    <option value="16:00">16:00</option>
-                    <option value="17:00">17:00</option>
-                    <option value="18:00">18:00</option>
-                    <option value="19:00">19:00</option>
-                    <option value="20:00">20:00</option>
-                  </select>
-                </label>
-              </div>
-
-              <p class="admin-feedback" data-admin-manual-feedback aria-live="polite"></p>
-
-              <div class="admin-manual-actions">
-                <button class="button button-gold" type="submit">Salvar agendamento</button>
-                <button class="button button-ghost" type="button" data-admin-close-manual>
-                  Fechar
-                </button>
-              </div>
-            </form>
-
-            <section class="admin-subsection" aria-labelledby="admin-barbers-title">
-              <div class="admin-subsection-head">
-                <div>
-                  <p class="eyebrow">Barbeiros</p>
-                  <h3 id="admin-barbers-title">Equipe da barbearia</h3>
+            <div class="admin-shell">
+              <aside class="admin-sidebar">
+                <div class="admin-sidebar-brand">
+                  <span class="admin-sidebar-kicker">Sistema interno</span>
+                  <strong>Coronel's Barbearia</strong>
+                  <p>Operação, agenda e equipe em um só lugar.</p>
                 </div>
-                <p class="admin-subsection-intro">
-                  Cadastre barbeiros para usar no agendamento manual e no formulário público.
-                </p>
-              </div>
 
-              <div class="admin-barbers-layout">
-                <form class="admin-barbers-form" data-admin-barber-form novalidate>
-                  <div class="admin-manual-grid">
-                    <label class="field">
-                      <span>Nome</span>
-                      <input type="text" name="nome" placeholder="Nome do barbeiro" required>
-                    </label>
+                <nav class="admin-sidebar-nav" aria-label="Seções do painel">
+                  <button
+                    class="admin-nav-link is-active"
+                    type="button"
+                    data-admin-tab-trigger="dashboard"
+                    data-admin-tab-title="Dashboard"
+                    data-admin-tab-copy="Visão geral rápida da operação, próximos atendimentos e status do dia."
+                  >
+                    Dashboard
+                  </button>
+                  <button
+                    class="admin-nav-link"
+                    type="button"
+                    data-admin-tab-trigger="agenda"
+                    data-admin-tab-title="Agenda"
+                    data-admin-tab-copy="Agendamentos em cards, filtros rápidos e abertura de atendimento manual."
+                  >
+                    Agenda
+                  </button>
+                  <button
+                    class="admin-nav-link"
+                    type="button"
+                    data-admin-tab-trigger="comandas"
+                    data-admin-tab-title="Comandas"
+                    data-admin-tab-copy="Tabela operacional para acompanhar cliente, serviço, barbeiro e horário."
+                  >
+                    Comandas
+                  </button>
+                  <button
+                    class="admin-nav-link"
+                    type="button"
+                    data-admin-tab-trigger="barbeiros"
+                    data-admin-tab-title="Barbeiros"
+                    data-admin-tab-copy="Gestão inicial da equipe ativa disponível no sistema."
+                  >
+                    Barbeiros
+                  </button>
+                  <button
+                    class="admin-nav-link"
+                    type="button"
+                    data-admin-tab-trigger="servicos"
+                    data-admin-tab-title="Serviços"
+                    data-admin-tab-copy="Catálogo visual dos serviços atuais da Coronel's Barbearia."
+                  >
+                    Serviços
+                  </button>
+                  <button
+                    class="admin-nav-link"
+                    type="button"
+                    data-admin-tab-trigger="horarios"
+                    data-admin-tab-title="Horários"
+                    data-admin-tab-copy="Faixas operacionais e visão base da disponibilidade configurada."
+                  >
+                    Horários
+                  </button>
+                  <button
+                    class="admin-nav-link"
+                    type="button"
+                    data-admin-tab-trigger="configuracoes"
+                    data-admin-tab-title="Configurações"
+                    data-admin-tab-copy="Área provisória para dados da barbearia e ajustes futuros do sistema."
+                  >
+                    Configurações
+                  </button>
+                </nav>
 
-                    <label class="field">
-                      <span>URL da foto</span>
-                      <input
-                        type="url"
-                        name="fotoUrl"
-                        placeholder="assets/barbeiros/caio.png"
-                      >
-                    </label>
+                <div class="admin-sidebar-footer">
+                  <p class="admin-session">Painel administrativo liberado.</p>
+                </div>
+              </aside>
+
+              <div class="admin-workspace">
+                <div class="admin-workspace-top">
+                  <div class="admin-workspace-heading">
+                    <p class="eyebrow" data-admin-current-kicker>Painel interno</p>
+                    <h3 data-admin-current-title>Dashboard</h3>
+                    <p class="admin-workspace-copy" data-admin-current-copy>
+                      Visão geral rápida da operação, próximos atendimentos e status do dia.
+                    </p>
                   </div>
 
-                  <p class="admin-feedback" data-admin-barber-feedback aria-live="polite"></p>
-
-                  <div class="admin-manual-actions">
-                    <button class="button button-gold" type="submit">Salvar barbeiro</button>
+                  <div class="admin-toolbar-actions admin-workspace-actions">
+                    <button class="button button-gold" type="button" data-admin-toggle-manual>
+                      Novo agendamento manual
+                    </button>
+                    <button class="button button-ghost" type="button" data-admin-logout>
+                      Sair
+                    </button>
                   </div>
-                </form>
+                </div>
 
-                <div class="admin-barbers-list" data-admin-barbers-list></div>
+                <div class="admin-panels">
+                  <section class="admin-view is-active" data-admin-view="dashboard">
+                    <div class="admin-overview-grid">
+                      <article class="admin-overview-card">
+                        <span>Agendamentos hoje</span>
+                        <strong data-admin-today>0</strong>
+                        <p>Visão rápida do movimento confirmado para o dia atual.</p>
+                      </article>
+
+                      <article class="admin-overview-card">
+                        <span>Próximos atendimentos</span>
+                        <strong data-admin-upcoming-count>0</strong>
+                        <p>Atendimentos mais próximos da fila operacional.</p>
+                      </article>
+
+                      <article class="admin-overview-card">
+                        <span>Horários ocupados</span>
+                        <strong data-admin-busy-slots>0</strong>
+                        <p>Slots já comprometidos dentro da agenda ativa.</p>
+                      </article>
+
+                      <article class="admin-overview-card">
+                        <span>Barbeiros ativos</span>
+                        <strong data-admin-active-barbers>0</strong>
+                        <p>Equipe habilitada para atendimento no sistema.</p>
+                      </article>
+                    </div>
+
+                    <div class="admin-summary">
+                      <article class="admin-summary-card">
+                        <span>Total de agendamentos</span>
+                        <strong data-admin-total>0</strong>
+                      </article>
+
+                      <article class="admin-summary-card">
+                        <span>Pendentes</span>
+                        <strong data-admin-pending>0</strong>
+                      </article>
+
+                      <article class="admin-summary-card">
+                        <span>Concluídos</span>
+                        <strong data-admin-completed>0</strong>
+                      </article>
+
+                      <article class="admin-summary-card">
+                        <span>Cancelados</span>
+                        <strong data-admin-cancelled>0</strong>
+                      </article>
+                    </div>
+
+                    <div class="admin-dashboard-grid">
+                      <article class="admin-dashboard-panel">
+                        <div class="admin-subsection-head">
+                          <div>
+                            <p class="eyebrow">Hoje</p>
+                            <h3>Próximos atendimentos</h3>
+                          </div>
+                          <p class="admin-subsection-intro">
+                            Resumo rápido dos próximos clientes para a operação acompanhar com mais clareza.
+                          </p>
+                        </div>
+
+                        <div class="admin-upcoming-list" data-admin-upcoming-list></div>
+                      </article>
+
+                      <article class="admin-dashboard-panel">
+                        <div class="admin-subsection-head">
+                          <div>
+                            <p class="eyebrow">Sistema</p>
+                            <h3>Painel conectado</h3>
+                          </div>
+                          <p class="admin-subsection-intro">
+                            O painel continua usando a mesma lógica atual de login, leitura e atualização dos agendamentos.
+                          </p>
+                        </div>
+
+                        <div class="admin-dashboard-notes">
+                          <div class="admin-note-card">
+                            <strong>Agenda online</strong>
+                            <p>Os dados recebidos continuam vindo do Firebase e permanecem disponíveis para o painel atual.</p>
+                          </div>
+                          <div class="admin-note-card">
+                            <strong>Equipe ativa</strong>
+                            <p>Os barbeiros cadastrados continuam abastecendo o agendamento manual e a visão da operação.</p>
+                          </div>
+                        </div>
+                      </article>
+                    </div>
+                  </section>
+
+                  <section class="admin-view" data-admin-view="agenda" hidden>
+                    <p class="admin-demo-notice">
+                      Sistema online: os agendamentos agora ficam salvos em banco de dados e podem ser acessados de qualquer celular ou computador autorizado.
+                    </p>
+
+                    <form class="admin-manual-form" data-admin-manual-form hidden novalidate>
+                      <div class="admin-manual-grid">
+                        <label class="field">
+                          <span>Nome</span>
+                          <input type="text" name="nome" placeholder="Nome do cliente" required>
+                        </label>
+
+                        <label class="field">
+                          <span>Telefone</span>
+                          <input type="tel" name="telefone" placeholder="(63) 99124-0071" required>
+                        </label>
+
+                        <label class="field">
+                          <span>Serviço</span>
+                          <select name="servico" required>
+                            <option value="" selected disabled>Selecione um serviço</option>
+                            <option value="Corte">Corte</option>
+                            <option value="Barba">Barba</option>
+                            <option value="Sobrancelha">Sobrancelha</option>
+                            <option value="Selagem">Selagem</option>
+                            <option value="Botox">Botox</option>
+                            <option value="Progressiva">Progressiva</option>
+                            <option value="Relaxamento">Relaxamento</option>
+                            <option value="Perfil do cabelo">Perfil do cabelo</option>
+                            <option value="Luzes">Luzes</option>
+                            <option value="Platinado">Platinado</option>
+                            <option value="Corte com visagismo">Corte com visagismo</option>
+                            <option value="Barba com visagismo">Barba com visagismo</option>
+                          </select>
+                        </label>
+
+                        <label class="field">
+                          <span>Barbeiro</span>
+                          <select name="barbeiro" data-admin-manual-barber-select required>
+                            <option value="" selected disabled>Selecione um barbeiro</option>
+                          </select>
+                        </label>
+
+                        <label class="field">
+                          <span>Data</span>
+                          <input type="date" name="data" required>
+                        </label>
+
+                        <label class="field">
+                          <span>Horário</span>
+                          <select name="horario" required>
+                            <option value="" selected disabled>Escolha o horário</option>
+                            <option value="09:00">09:00</option>
+                            <option value="10:00">10:00</option>
+                            <option value="11:00">11:00</option>
+                            <option value="12:00">12:00</option>
+                            <option value="13:00">13:00</option>
+                            <option value="14:00">14:00</option>
+                            <option value="15:00">15:00</option>
+                            <option value="16:00">16:00</option>
+                            <option value="17:00">17:00</option>
+                            <option value="18:00">18:00</option>
+                            <option value="19:00">19:00</option>
+                            <option value="20:00">20:00</option>
+                          </select>
+                        </label>
+                      </div>
+
+                      <p class="admin-feedback" data-admin-manual-feedback aria-live="polite"></p>
+
+                      <div class="admin-manual-actions">
+                        <button class="button button-gold" type="submit">Salvar agendamento</button>
+                        <button class="button button-ghost" type="button" data-admin-close-manual>
+                          Fechar
+                        </button>
+                      </div>
+                    </form>
+
+                    <div class="admin-filters">
+                      <label class="field">
+                        <span>Status</span>
+                        <select data-admin-status-filter>
+                          <option value="all">Todos</option>
+                          <option value="pendente">Pendentes</option>
+                          <option value="concluido">Concluídos</option>
+                          <option value="cancelado">Cancelados</option>
+                        </select>
+                      </label>
+
+                      <label class="field">
+                        <span>Data</span>
+                        <input type="date" data-admin-date-filter>
+                      </label>
+
+                      <button class="button button-ghost" type="button" data-admin-clear-filters>
+                        Limpar filtros
+                      </button>
+                    </div>
+
+                    <p class="admin-empty" data-admin-empty>
+                      Nenhum agendamento salvo até o momento.
+                    </p>
+                    <div class="admin-list" data-admin-list></div>
+                  </section>
+
+                  <section class="admin-view" data-admin-view="comandas" hidden>
+                    <article class="admin-dashboard-panel">
+                      <div class="admin-subsection-head">
+                        <div>
+                          <p class="eyebrow">Operação</p>
+                          <h3>Comandas do dia</h3>
+                        </div>
+                        <p class="admin-subsection-intro">
+                          Estrutura visual em tabela para acompanhar cliente, barbeiro, serviço e horário.
+                        </p>
+                      </div>
+
+                      <div class="admin-table-shell">
+                        <table class="admin-table">
+                          <thead>
+                            <tr>
+                              <th>Cliente</th>
+                              <th>Telefone</th>
+                              <th>Serviço</th>
+                              <th>Barbeiro</th>
+                              <th>Data</th>
+                              <th>Horário</th>
+                              <th>Ações</th>
+                            </tr>
+                          </thead>
+                          <tbody data-admin-table-body></tbody>
+                        </table>
+                      </div>
+                    </article>
+                  </section>
+
+                  <section class="admin-view" data-admin-view="barbeiros" hidden>
+                    <section class="admin-subsection" aria-labelledby="admin-barbers-title">
+                      <div class="admin-subsection-head">
+                        <div>
+                          <p class="eyebrow">Barbeiros</p>
+                          <h3 id="admin-barbers-title">Equipe da barbearia</h3>
+                        </div>
+                        <p class="admin-subsection-intro">
+                          Cadastre barbeiros para usar no agendamento manual e no formulário público.
+                        </p>
+                      </div>
+
+                      <div class="admin-barbers-layout">
+                        <form class="admin-barbers-form" data-admin-barber-form novalidate>
+                          <div class="admin-manual-grid">
+                            <label class="field">
+                              <span>Nome</span>
+                              <input type="text" name="nome" placeholder="Nome do barbeiro" required>
+                            </label>
+
+                            <label class="field">
+                              <span>URL da foto</span>
+                              <input
+                                type="url"
+                                name="fotoUrl"
+                                placeholder="assets/barbeiros/caio.png"
+                              >
+                            </label>
+                          </div>
+
+                          <p class="admin-feedback" data-admin-barber-feedback aria-live="polite"></p>
+
+                          <div class="admin-manual-actions">
+                            <button class="button button-gold" type="submit">Salvar barbeiro</button>
+                          </div>
+                        </form>
+
+                        <div class="admin-barbers-list" data-admin-barbers-list></div>
+                      </div>
+                    </section>
+                  </section>
+
+                  <section class="admin-view" data-admin-view="servicos" hidden>
+                    <article class="admin-dashboard-panel">
+                      <div class="admin-subsection-head">
+                        <div>
+                          <p class="eyebrow">Catálogo</p>
+                          <h3>Serviços cadastrados</h3>
+                        </div>
+                        <p class="admin-subsection-intro">
+                          Área visual inicial para consultar rapidamente os serviços ativos da operação.
+                        </p>
+                      </div>
+
+                      <div class="admin-preview-grid">
+                        <article class="admin-preview-card"><strong>Corte</strong><span>R$ 40</span></article>
+                        <article class="admin-preview-card"><strong>Barba</strong><span>R$ 40</span></article>
+                        <article class="admin-preview-card"><strong>Sobrancelha</strong><span>R$ 20</span></article>
+                        <article class="admin-preview-card"><strong>Selagem</strong><span>R$ 100</span></article>
+                        <article class="admin-preview-card"><strong>Botox</strong><span>R$ 100</span></article>
+                        <article class="admin-preview-card"><strong>Progressiva</strong><span>R$ 100</span></article>
+                        <article class="admin-preview-card"><strong>Relaxamento</strong><span>R$ 50</span></article>
+                        <article class="admin-preview-card"><strong>Perfil do cabelo</strong><span>R$ 20</span></article>
+                        <article class="admin-preview-card"><strong>Luzes</strong><span>R$ 120</span></article>
+                        <article class="admin-preview-card"><strong>Platinado</strong><span>R$ 150</span></article>
+                        <article class="admin-preview-card"><strong>Corte com visagismo</strong><span>R$ 600</span></article>
+                        <article class="admin-preview-card"><strong>Barba com visagismo</strong><span>R$ 100</span></article>
+                      </div>
+                    </article>
+                  </section>
+
+                  <section class="admin-view" data-admin-view="horarios" hidden>
+                    <article class="admin-dashboard-panel">
+                      <div class="admin-subsection-head">
+                        <div>
+                          <p class="eyebrow">Base operacional</p>
+                          <h3>Horários disponíveis</h3>
+                        </div>
+                        <p class="admin-subsection-intro">
+                          Painel visual inicial para a faixa de atendimento usada hoje no sistema.
+                        </p>
+                      </div>
+
+                      <div class="admin-slots-grid">
+                        <span class="admin-slot-chip">09:00</span>
+                        <span class="admin-slot-chip">10:00</span>
+                        <span class="admin-slot-chip">11:00</span>
+                        <span class="admin-slot-chip">12:00</span>
+                        <span class="admin-slot-chip">13:00</span>
+                        <span class="admin-slot-chip">14:00</span>
+                        <span class="admin-slot-chip">15:00</span>
+                        <span class="admin-slot-chip">16:00</span>
+                        <span class="admin-slot-chip">17:00</span>
+                        <span class="admin-slot-chip">18:00</span>
+                        <span class="admin-slot-chip">19:00</span>
+                        <span class="admin-slot-chip">20:00</span>
+                      </div>
+                    </article>
+                  </section>
+
+                  <section class="admin-view" data-admin-view="configuracoes" hidden>
+                    <article class="admin-dashboard-panel">
+                      <div class="admin-subsection-head">
+                        <div>
+                          <p class="eyebrow">Estrutura</p>
+                          <h3>Configurações da barbearia</h3>
+                        </div>
+                        <p class="admin-subsection-intro">
+                          Área provisória para centralizar informações da operação sem alterar integrações ativas.
+                        </p>
+                      </div>
+
+                      <div class="admin-config-grid">
+                        <article class="admin-preview-card">
+                          <strong>Canal principal</strong>
+                          <p>WhatsApp do atendimento mantido pela lógica atual do sistema.</p>
+                        </article>
+                        <article class="admin-preview-card">
+                          <strong>Instagram</strong>
+                          <p>Espaço preparado para centralizar a comunicação visual da Coronel's.</p>
+                        </article>
+                        <article class="admin-preview-card">
+                          <strong>Localização</strong>
+                          <p>Área pronta para receber endereço e links operacionais quando necessário.</p>
+                        </article>
+                        <article class="admin-preview-card">
+                          <strong>Integração</strong>
+                          <p>Firebase e estrutura atual continuam preservados nesta primeira fase do painel.</p>
+                        </article>
+                      </div>
+                    </article>
+                  </section>
+                </div>
               </div>
-            </section>
-
-            <div class="admin-summary">
-              <article class="admin-summary-card">
-                <span>Total de agendamentos</span>
-                <strong data-admin-total>0</strong>
-              </article>
-
-              <article class="admin-summary-card">
-                <span>Pendentes</span>
-                <strong data-admin-pending>0</strong>
-              </article>
-
-              <article class="admin-summary-card">
-                <span>Concluídos</span>
-                <strong data-admin-completed>0</strong>
-              </article>
-
-              <article class="admin-summary-card">
-                <span>Cancelados</span>
-                <strong data-admin-cancelled>0</strong>
-              </article>
             </div>
-
-            <div class="admin-filters">
-              <label class="field">
-                <span>Status</span>
-                <select data-admin-status-filter>
-                  <option value="all">Todos</option>
-                  <option value="pendente">Pendentes</option>
-                  <option value="concluido">Concluídos</option>
-                  <option value="cancelado">Cancelados</option>
-                </select>
-              </label>
-
-              <label class="field">
-                <span>Data</span>
-                <input type="date" data-admin-date-filter>
-              </label>
-
-              <button class="button button-ghost" type="button" data-admin-clear-filters>
-                Limpar filtros
-              </button>
-            </div>
-
-            <p class="admin-empty" data-admin-empty>
-              Nenhum agendamento salvo até o momento.
-            </p>
-            <div class="admin-list" data-admin-list></div>
           </div>
         </div>
       </div>

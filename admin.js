@@ -38,6 +38,16 @@ const adminClearFiltersButton = document.querySelector("[data-admin-clear-filter
 const adminList = document.querySelector("[data-admin-list]");
 const adminEmpty = document.querySelector("[data-admin-empty]");
 const adminLogoutButton = document.querySelector("[data-admin-logout]");
+const adminTabTriggers = document.querySelectorAll("[data-admin-tab-trigger]");
+const adminViews = document.querySelectorAll("[data-admin-view]");
+const adminCurrentTitle = document.querySelector("[data-admin-current-title]");
+const adminCurrentCopy = document.querySelector("[data-admin-current-copy]");
+const adminUpcomingList = document.querySelector("[data-admin-upcoming-list]");
+const adminToday = document.querySelector("[data-admin-today]");
+const adminUpcomingCount = document.querySelector("[data-admin-upcoming-count]");
+const adminBusySlots = document.querySelector("[data-admin-busy-slots]");
+const adminActiveBarbers = document.querySelector("[data-admin-active-barbers]");
+const adminTableBody = document.querySelector("[data-admin-table-body]");
 
 const adminAuthStorageKey = "coronelsBarbeariaAdminLoggedIn";
 const adminCredentials = {
@@ -92,6 +102,7 @@ let barbersState = defaultBarbers.map((barber) => ({ ...barber }));
 let unsubscribeBarbers = null;
 let isSeedingDefaultBarbers = false;
 let lastAppointmentConflict = false;
+let activeAdminTab = "dashboard";
 
 const normalizeBarber = (barber) => {
   if (!barber || typeof barber !== "object") {
@@ -360,6 +371,8 @@ const renderBarbers = () => {
       `
     )
     .join("");
+
+  renderAdminDashboardOverview();
 };
 
 const seedDefaultBarbers = async () => {
@@ -459,6 +472,7 @@ const deleteBarber = async (barberId) => {
 
 const updateAdminVisibility = () => {
   const isLoggedIn = isAdminLoggedIn();
+  document.body.classList.toggle("is-admin-authenticated", isLoggedIn);
 
   if (adminLoginForm) {
     adminLoginForm.hidden = isLoggedIn;
@@ -467,6 +481,40 @@ const updateAdminVisibility = () => {
   if (adminContent) {
     adminContent.hidden = !isLoggedIn;
   }
+};
+
+const setActiveAdminTab = (tabId) => {
+  const nextTabId =
+    tabId && [...adminViews].some((view) => view.getAttribute("data-admin-view") === tabId)
+      ? tabId
+      : "dashboard";
+
+  activeAdminTab = nextTabId;
+
+  adminTabTriggers.forEach((trigger) => {
+    const isActive = trigger.getAttribute("data-admin-tab-trigger") === nextTabId;
+    trigger.classList.toggle("is-active", isActive);
+    trigger.setAttribute("aria-pressed", String(isActive));
+
+    if (isActive) {
+      if (adminCurrentTitle) {
+        adminCurrentTitle.textContent =
+          trigger.getAttribute("data-admin-tab-title") || "Dashboard";
+      }
+
+      if (adminCurrentCopy) {
+        adminCurrentCopy.textContent =
+          trigger.getAttribute("data-admin-tab-copy") ||
+          "Visão geral rápida da operação, próximos atendimentos e status do dia.";
+      }
+    }
+  });
+
+  adminViews.forEach((view) => {
+    const isActive = view.getAttribute("data-admin-view") === nextTabId;
+    view.hidden = !isActive;
+    view.classList.toggle("is-active", isActive);
+  });
 };
 
 const closeManualForm = () => {
@@ -490,6 +538,7 @@ const openManualForm = () => {
     return;
   }
 
+  setActiveAdminTab("agenda");
   adminManualForm.hidden = false;
   populateBarberSelect(
     adminManualBarberSelect,
@@ -521,6 +570,77 @@ const renderAdminSummary = (appointments) => {
   );
 };
 
+const getAppointmentTimestamp = (appointment) => {
+  const date = String(appointment?.data || "").trim();
+  const time = String(appointment?.horario || "").trim();
+
+  if (!date || !time) {
+    return Number.POSITIVE_INFINITY;
+  }
+
+  return new Date(`${date}T${time}:00`).getTime();
+};
+
+const renderAdminDashboardOverview = () => {
+  const activeAppointments = appointmentsState.filter(
+    (appointment) => normalizeStatusClass(appointment.status || "pendente") !== "cancelado"
+  );
+  const sortedUpcomingAppointments = [...activeAppointments].sort(
+    (firstAppointment, secondAppointment) =>
+      getAppointmentTimestamp(firstAppointment) - getAppointmentTimestamp(secondAppointment)
+  );
+  const todayValue = getTodayDateValue();
+  const todayAppointments = activeAppointments.filter(
+    (appointment) => String(appointment.data || "").trim() === todayValue
+  );
+
+  if (adminToday) {
+    adminToday.textContent = String(todayAppointments.length);
+  }
+
+  if (adminUpcomingCount) {
+    adminUpcomingCount.textContent = String(sortedUpcomingAppointments.length);
+  }
+
+  if (adminBusySlots) {
+    adminBusySlots.textContent = String(activeAppointments.length);
+  }
+
+  if (adminActiveBarbers) {
+    adminActiveBarbers.textContent = String(getAvailableBarbers().length);
+  }
+
+  if (!adminUpcomingList) {
+    return;
+  }
+
+  const nextAppointments = sortedUpcomingAppointments.slice(0, 4);
+
+  if (!nextAppointments.length) {
+    adminUpcomingList.innerHTML =
+      '<p class="admin-empty-copy">Nenhum atendimento ativo para exibir agora.</p>';
+    return;
+  }
+
+  adminUpcomingList.innerHTML = nextAppointments
+    .map(
+      (appointment) => `
+        <article class="admin-upcoming-item">
+          <div>
+            <strong>${escapeHtml(appointment.nome || "Cliente")}</strong>
+            <span>${escapeHtml(appointment.servico || "-")} com ${escapeHtml(
+              appointment.barbeiro || "-"
+            )}</span>
+          </div>
+          <small>${escapeHtml(formatDate(appointment.data || "-"))} • ${escapeHtml(
+            appointment.horario || "-"
+          )}</small>
+        </article>
+      `
+    )
+    .join("");
+};
+
 const getFilteredAppointments = (appointments) => {
   const selectedStatus = adminStatusFilter?.value || "all";
   const selectedDate = adminDateFilter?.value || "";
@@ -549,6 +669,7 @@ const renderAppointments = () => {
   }
 
   renderAdminSummary(appointmentsState);
+  renderAdminDashboardOverview();
   const filteredAppointments = getFilteredAppointments(appointmentsState);
 
   adminEmpty.hidden = filteredAppointments.length > 0;
@@ -627,6 +748,51 @@ const renderAppointments = () => {
             </button>
           </div>
         </article>
+      `
+    )
+    .join("");
+
+  if (!adminTableBody) {
+    return;
+  }
+
+  if (!filteredAppointments.length) {
+    adminTableBody.innerHTML =
+      '<tr><td colspan="7" class="admin-table-empty">Nenhuma comanda encontrada com os filtros atuais.</td></tr>';
+    return;
+  }
+
+  adminTableBody.innerHTML = filteredAppointments
+    .map(
+      (appointment) => `
+        <tr>
+          <td>${escapeHtml(appointment.nome || "-")}</td>
+          <td>${escapeHtml(appointment.telefone || "-")}</td>
+          <td>${escapeHtml(appointment.servico || "-")}</td>
+          <td>${escapeHtml(appointment.barbeiro || "-")}</td>
+          <td>${escapeHtml(formatDate(String(appointment.data || "-")))}</td>
+          <td>${escapeHtml(appointment.horario || "-")}</td>
+          <td>
+            <div class="admin-table-actions">
+              <button
+                class="admin-action action-whatsapp"
+                type="button"
+                data-admin-action="whatsapp"
+                data-admin-id="${escapeHtml(appointment.id)}"
+              >
+                WhatsApp
+              </button>
+              <button
+                class="admin-action action-complete"
+                type="button"
+                data-admin-action="complete"
+                data-admin-id="${escapeHtml(appointment.id)}"
+              >
+                Concluir
+              </button>
+            </div>
+          </td>
+        </tr>
       `
     )
     .join("");
@@ -1005,54 +1171,60 @@ if (adminClearFiltersButton) {
   });
 }
 
-if (adminList) {
-  adminList.addEventListener("click", async (event) => {
-    const actionButton = event.target.closest("[data-admin-action]");
+const handleAdminActionClick = async (event) => {
+  const actionButton = event.target.closest("[data-admin-action]");
 
-    if (!actionButton) {
+  if (!actionButton) {
+    return;
+  }
+
+  const action = actionButton.getAttribute("data-admin-action");
+  const appointmentId = String(
+    actionButton.getAttribute("data-admin-id") || ""
+  ).trim();
+  const appointment = appointmentsState.find(
+    (savedAppointment) => savedAppointment.id === appointmentId
+  );
+
+  if (!appointment) {
+    return;
+  }
+
+  if (action === "whatsapp") {
+    const whatsappUrl = buildAdminWhatsappUrl(appointment.telefone);
+
+    if (!whatsappUrl) {
       return;
     }
 
-    const action = actionButton.getAttribute("data-admin-action");
-    const appointmentId = String(
-      actionButton.getAttribute("data-admin-id") || ""
-    ).trim();
-    const appointment = appointmentsState.find(
-      (savedAppointment) => savedAppointment.id === appointmentId
+    window.open(whatsappUrl, "_blank", "noopener");
+    return;
+  }
+
+  try {
+    if (action === "delete") {
+      await deleteAppointment(appointmentId);
+    } else if (action === "complete") {
+      await updateAppointmentStatus(appointmentId, "concluído");
+    } else if (action === "cancel") {
+      await updateAppointmentStatus(appointmentId, "cancelado");
+    }
+  } catch (error) {
+    setFeedbackMessage(
+      adminFeedback,
+      getFirebaseErrorMessage(
+        "Não foi possível atualizar este agendamento agora. Tente novamente."
+      )
     );
+  }
+};
 
-    if (!appointment) {
-      return;
-    }
+if (adminList) {
+  adminList.addEventListener("click", handleAdminActionClick);
+}
 
-    if (action === "whatsapp") {
-      const whatsappUrl = buildAdminWhatsappUrl(appointment.telefone);
-
-      if (!whatsappUrl) {
-        return;
-      }
-
-      window.open(whatsappUrl, "_blank", "noopener");
-      return;
-    }
-
-    try {
-      if (action === "delete") {
-        await deleteAppointment(appointmentId);
-      } else if (action === "complete") {
-        await updateAppointmentStatus(appointmentId, "concluído");
-      } else if (action === "cancel") {
-        await updateAppointmentStatus(appointmentId, "cancelado");
-      }
-    } catch (error) {
-      setFeedbackMessage(
-        adminFeedback,
-        getFirebaseErrorMessage(
-          "Não foi possível atualizar este agendamento agora. Tente novamente."
-        )
-      );
-    }
-  });
+if (adminTableBody) {
+  adminTableBody.addEventListener("click", handleAdminActionClick);
 }
 
 if (adminBarbersList) {
@@ -1083,6 +1255,13 @@ if (adminBarbersList) {
 
 updateAdminVisibility();
 renderBarbers();
+setActiveAdminTab(activeAdminTab);
+
+adminTabTriggers.forEach((trigger) => {
+  trigger.addEventListener("click", () => {
+    setActiveAdminTab(trigger.getAttribute("data-admin-tab-trigger") || "dashboard");
+  });
+});
 
 if (isAdminLoggedIn()) {
   subscribeBarbers();
