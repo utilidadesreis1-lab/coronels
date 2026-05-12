@@ -360,31 +360,93 @@
                       </div>
                     </form>
 
-                    <div class="admin-filters">
-                      <label class="field">
-                        <span>Status</span>
-                        <select data-admin-status-filter>
-                          <option value="all">Todos</option>
-                          <option value="pendente">Pendentes</option>
-                          <option value="concluido">Concluídos</option>
-                          <option value="cancelado">Cancelados</option>
-                        </select>
-                      </label>
+                    <article class="admin-dashboard-panel admin-operations-shell">
+                      <div class="admin-subsection-head admin-operations-head">
+                        <div>
+                          <p class="eyebrow">Operação diária</p>
+                          <h3>Comandas / Agenda</h3>
+                        </div>
+                        <p class="admin-subsection-intro">
+                          Visualize, filtre e acompanhe os agendamentos recebidos pelo site.
+                        </p>
+                      </div>
 
-                      <label class="field">
-                        <span>Data</span>
-                        <input type="date" data-admin-date-filter>
-                      </label>
+                      <form class="admin-filters admin-ops-filters" data-admin-filters-form>
+                        <label class="field">
+                          <span>Data inicial</span>
+                          <input type="date" data-admin-date-start-filter>
+                        </label>
 
-                      <button class="button button-ghost" type="button" data-admin-clear-filters>
-                        Limpar filtros
-                      </button>
-                    </div>
+                        <label class="field">
+                          <span>Data final</span>
+                          <input type="date" data-admin-date-end-filter>
+                        </label>
 
-                    <p class="admin-empty" data-admin-empty>
-                      Nenhum agendamento salvo até o momento.
-                    </p>
-                    <div class="admin-list" data-admin-list></div>
+                        <label class="field">
+                          <span>Profissional</span>
+                          <select data-admin-barber-filter>
+                            <option value="all" selected>Todos os profissionais</option>
+                          </select>
+                        </label>
+
+                        <label class="field">
+                          <span>Pesquisar cliente ou telefone</span>
+                          <input
+                            type="search"
+                            data-admin-search-filter
+                            placeholder="Ex.: João ou (63) 99124-0071"
+                          >
+                        </label>
+
+                        <label class="field">
+                          <span>Status</span>
+                          <select data-admin-status-filter>
+                            <option value="all">Todos</option>
+                            <option value="pendente">Pendentes</option>
+                            <option value="concluido">Concluídos</option>
+                            <option value="cancelado">Cancelados</option>
+                          </select>
+                        </label>
+
+                        <div class="admin-filter-actions">
+                          <button class="button button-ghost" type="button" data-admin-filter-today>
+                            Hoje
+                          </button>
+                          <button class="button button-gold" type="submit">
+                            Filtrar
+                          </button>
+                          <button class="button button-ghost" type="button" data-admin-clear-filters>
+                            Limpar filtros
+                          </button>
+                        </div>
+                      </form>
+
+                      <div class="admin-table-shell admin-table-shell--appointments">
+                        <table class="admin-table">
+                          <thead>
+                            <tr>
+                              <th>Cliente</th>
+                              <th>Telefone</th>
+                              <th>Serviço</th>
+                              <th>Profissional</th>
+                              <th>Data</th>
+                              <th>Horário</th>
+                              <th>Status</th>
+                              <th>Ações</th>
+                            </tr>
+                          </thead>
+                          <tbody data-admin-table-body></tbody>
+                        </table>
+                      </div>
+
+                      <div class="admin-ops-meta">
+                        <p class="admin-empty" data-admin-empty>
+                          Nenhum agendamento salvo até o momento.
+                        </p>
+                      </div>
+
+                      <div class="admin-list" data-admin-list></div>
+                    </article>
                   </section>
 
                   <section class="admin-view" data-admin-view="comandas" hidden>
@@ -399,22 +461,9 @@
                         </p>
                       </div>
 
-                      <div class="admin-table-shell">
-                        <table class="admin-table">
-                          <thead>
-                            <tr>
-                              <th>Cliente</th>
-                              <th>Telefone</th>
-                              <th>Serviço</th>
-                              <th>Barbeiro</th>
-                              <th>Data</th>
-                              <th>Horário</th>
-                              <th>Ações</th>
-                            </tr>
-                          </thead>
-                          <tbody data-admin-table-body></tbody>
-                        </table>
-                      </div>
+                      <p class="admin-empty-copy">
+                        Esta aba usa a mesma base operacional da Agenda para evitar duplicação de lógica nesta primeira etapa.
+                      </p>
                     </article>
                   </section>
 

@@ -32,8 +32,13 @@ const adminManualBarberSelect = document.querySelector(
 const adminBarberForm = document.querySelector("[data-admin-barber-form]");
 const adminBarberFeedback = document.querySelector("[data-admin-barber-feedback]");
 const adminBarbersList = document.querySelector("[data-admin-barbers-list]");
+const adminFiltersForm = document.querySelector("[data-admin-filters-form]");
 const adminStatusFilter = document.querySelector("[data-admin-status-filter]");
-const adminDateFilter = document.querySelector("[data-admin-date-filter]");
+const adminDateStartFilter = document.querySelector("[data-admin-date-start-filter]");
+const adminDateEndFilter = document.querySelector("[data-admin-date-end-filter]");
+const adminBarberFilter = document.querySelector("[data-admin-barber-filter]");
+const adminSearchFilter = document.querySelector("[data-admin-search-filter]");
+const adminFilterTodayButton = document.querySelector("[data-admin-filter-today]");
 const adminClearFiltersButton = document.querySelector("[data-admin-clear-filters]");
 const adminList = document.querySelector("[data-admin-list]");
 const adminEmpty = document.querySelector("[data-admin-empty]");
@@ -319,6 +324,32 @@ const populateBarberSelect = (select, barbers, placeholder) => {
   select.value = "";
 };
 
+const populateBarberFilter = () => {
+  if (!adminBarberFilter) {
+    return;
+  }
+
+  const currentValue = adminBarberFilter.value || "all";
+  const availableBarbers = getAvailableBarbers();
+  adminBarberFilter.innerHTML = "";
+
+  const allOption = document.createElement("option");
+  allOption.value = "all";
+  allOption.textContent = "Todos os profissionais";
+  adminBarberFilter.append(allOption);
+
+  availableBarbers.forEach((barber) => {
+    const option = document.createElement("option");
+    option.value = barber.nome;
+    option.textContent = barber.nome;
+    adminBarberFilter.append(option);
+  });
+
+  adminBarberFilter.value = availableBarbers.some((barber) => barber.nome === currentValue)
+    ? currentValue
+    : "all";
+};
+
 const renderBarbers = () => {
   const availableBarbers = getAvailableBarbers();
   populateBarberSelect(
@@ -326,6 +357,7 @@ const renderBarbers = () => {
     availableBarbers,
     "Selecione um barbeiro"
   );
+  populateBarberFilter();
 
   if (!adminBarbersList) {
     return;
@@ -484,15 +516,18 @@ const updateAdminVisibility = () => {
 };
 
 const setActiveAdminTab = (tabId) => {
+  const requestedTabId = tabId || "dashboard";
   const nextTabId =
-    tabId && [...adminViews].some((view) => view.getAttribute("data-admin-view") === tabId)
-      ? tabId
-      : "dashboard";
+    requestedTabId === "comandas"
+      ? "agenda"
+      : requestedTabId && [...adminViews].some((view) => view.getAttribute("data-admin-view") === requestedTabId)
+        ? requestedTabId
+        : "dashboard";
 
-  activeAdminTab = nextTabId;
+  activeAdminTab = requestedTabId;
 
   adminTabTriggers.forEach((trigger) => {
-    const isActive = trigger.getAttribute("data-admin-tab-trigger") === nextTabId;
+    const isActive = trigger.getAttribute("data-admin-tab-trigger") === requestedTabId;
     trigger.classList.toggle("is-active", isActive);
     trigger.setAttribute("aria-pressed", String(isActive));
 
@@ -643,15 +678,37 @@ const renderAdminDashboardOverview = () => {
 
 const getFilteredAppointments = (appointments) => {
   const selectedStatus = adminStatusFilter?.value || "all";
-  const selectedDate = adminDateFilter?.value || "";
+  const selectedStartDate = adminDateStartFilter?.value || "";
+  const selectedEndDate = adminDateEndFilter?.value || "";
+  const selectedBarber = adminBarberFilter?.value || "all";
+  const searchTerm = String(adminSearchFilter?.value || "")
+    .trim()
+    .toLocaleLowerCase("pt-BR");
 
   return appointments.filter((appointment) => {
     const matchesStatus =
       selectedStatus === "all" ||
       normalizeStatusClass(appointment.status || "") === selectedStatus;
-    const matchesDate = !selectedDate || appointment.data === selectedDate;
+    const appointmentDate = String(appointment.data || "").trim();
+    const matchesStartDate = !selectedStartDate || appointmentDate >= selectedStartDate;
+    const matchesEndDate = !selectedEndDate || appointmentDate <= selectedEndDate;
+    const matchesBarber =
+      selectedBarber === "all" || String(appointment.barbeiro || "").trim() === selectedBarber;
+    const searchableContent = [
+      String(appointment.nome || ""),
+      String(appointment.telefone || ""),
+    ]
+      .join(" ")
+      .toLocaleLowerCase("pt-BR");
+    const matchesSearch = !searchTerm || searchableContent.includes(searchTerm);
 
-    return matchesStatus && matchesDate;
+    return (
+      matchesStatus &&
+      matchesStartDate &&
+      matchesEndDate &&
+      matchesBarber &&
+      matchesSearch
+    );
   });
 };
 
@@ -663,6 +720,15 @@ const updateAdminEmptyState = (message = defaultAdminEmptyMessage) => {
   adminEmpty.textContent = message;
 };
 
+const hasActiveAppointmentFilters = () =>
+  Boolean(
+    (adminStatusFilter && adminStatusFilter.value !== "all") ||
+      (adminDateStartFilter && adminDateStartFilter.value) ||
+      (adminDateEndFilter && adminDateEndFilter.value) ||
+      (adminBarberFilter && adminBarberFilter.value !== "all") ||
+      (adminSearchFilter && adminSearchFilter.value.trim())
+  );
+
 const renderAppointments = () => {
   if (!adminList || !adminEmpty) {
     return;
@@ -671,7 +737,11 @@ const renderAppointments = () => {
   renderAdminSummary(appointmentsState);
   renderAdminDashboardOverview();
   const filteredAppointments = getFilteredAppointments(appointmentsState);
+  const emptyMessage = hasActiveAppointmentFilters()
+    ? "Nenhum agendamento encontrado para os filtros selecionados."
+    : defaultAdminEmptyMessage;
 
+  updateAdminEmptyState(emptyMessage);
   adminEmpty.hidden = filteredAppointments.length > 0;
   adminList.innerHTML = filteredAppointments
     .map(
@@ -758,7 +828,7 @@ const renderAppointments = () => {
 
   if (!filteredAppointments.length) {
     adminTableBody.innerHTML =
-      '<tr><td colspan="7" class="admin-table-empty">Nenhuma comanda encontrada com os filtros atuais.</td></tr>';
+      '<tr><td colspan="8" class="admin-table-empty">Nenhum agendamento encontrado para os filtros selecionados.</td></tr>';
     return;
   }
 
@@ -773,25 +843,38 @@ const renderAppointments = () => {
           <td>${escapeHtml(formatDate(String(appointment.data || "-")))}</td>
           <td>${escapeHtml(appointment.horario || "-")}</td>
           <td>
+            <span class="admin-status status-${normalizeStatusClass(
+              appointment.status || "pendente"
+            )}">${escapeHtml(appointment.status || "pendente")}</span>
+          </td>
+          <td>
             <div class="admin-table-actions">
               <button
                 class="admin-action action-whatsapp"
                 type="button"
                 data-admin-action="whatsapp"
                 data-admin-id="${escapeHtml(appointment.id)}"
-              >
-                WhatsApp
-              </button>
-              <button
-                class="admin-action action-complete"
+                >
+                  WhatsApp
+                </button>
+                <button
+                  class="admin-action action-complete"
                 type="button"
                 data-admin-action="complete"
                 data-admin-id="${escapeHtml(appointment.id)}"
-              >
-                Concluir
-              </button>
-            </div>
-          </td>
+                >
+                  Concluir
+                </button>
+                <button
+                  class="admin-action action-cancel"
+                  type="button"
+                  data-admin-action="cancel"
+                  data-admin-id="${escapeHtml(appointment.id)}"
+                >
+                  Cancelar
+                </button>
+              </div>
+            </td>
         </tr>
       `
     )
@@ -1153,8 +1236,43 @@ if (adminStatusFilter) {
   adminStatusFilter.addEventListener("change", renderAppointments);
 }
 
-if (adminDateFilter) {
-  adminDateFilter.addEventListener("change", renderAppointments);
+if (adminDateStartFilter) {
+  adminDateStartFilter.addEventListener("change", renderAppointments);
+}
+
+if (adminDateEndFilter) {
+  adminDateEndFilter.addEventListener("change", renderAppointments);
+}
+
+if (adminBarberFilter) {
+  adminBarberFilter.addEventListener("change", renderAppointments);
+}
+
+if (adminSearchFilter) {
+  adminSearchFilter.addEventListener("input", renderAppointments);
+}
+
+if (adminFiltersForm) {
+  adminFiltersForm.addEventListener("submit", (event) => {
+    event.preventDefault();
+    renderAppointments();
+  });
+}
+
+if (adminFilterTodayButton) {
+  adminFilterTodayButton.addEventListener("click", () => {
+    const todayValue = getTodayDateValue();
+
+    if (adminDateStartFilter) {
+      adminDateStartFilter.value = todayValue;
+    }
+
+    if (adminDateEndFilter) {
+      adminDateEndFilter.value = todayValue;
+    }
+
+    renderAppointments();
+  });
 }
 
 if (adminClearFiltersButton) {
@@ -1163,8 +1281,20 @@ if (adminClearFiltersButton) {
       adminStatusFilter.value = "all";
     }
 
-    if (adminDateFilter) {
-      adminDateFilter.value = "";
+    if (adminDateStartFilter) {
+      adminDateStartFilter.value = "";
+    }
+
+    if (adminDateEndFilter) {
+      adminDateEndFilter.value = "";
+    }
+
+    if (adminBarberFilter) {
+      adminBarberFilter.value = "all";
+    }
+
+    if (adminSearchFilter) {
+      adminSearchFilter.value = "";
     }
 
     renderAppointments();
