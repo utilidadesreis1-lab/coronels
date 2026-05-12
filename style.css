@@ -2005,8 +2005,9 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .schedule-slot.is-selected span {
-  color: rgba(86, 63, 19, 0.88);
+  color: rgba(255, 247, 229, 0.96);
   font-weight: 800;
+  text-shadow: 0 1px 0 rgba(96, 69, 18, 0.18);
 }
 
 .schedule-slot.is-selected strong {
@@ -2031,9 +2032,10 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .schedule-slot.is-occupied span {
-  color: #efb8b8;
-  font-weight: 800;
+  color: #f4c3c3;
+  font-weight: 900;
   letter-spacing: 0.15em;
+  text-shadow: 0 1px 0 rgba(78, 28, 28, 0.18);
 }
 
 .schedule-slot.is-occupied strong {
