@@ -3719,22 +3719,22 @@ body.experience-adjust-active .about-gallery-card img {
   :root {
     --site-wallpaper-size: 560px auto;
     --site-wallpaper-overlay: rgba(5, 5, 5, 0.58);
-    --hero-brand-width: 356px;
-    --hero-brand-height: 194px;
+    --hero-brand-width: 348px;
+    --hero-brand-height: 190px;
     --hero-brand-scale: 1;
     --hero-brand-offset-x: 0px;
     --hero-brand-offset-y: 0px;
-    --hero-brand-symbol-size: 180px;
-    --hero-brand-symbol-offset-x: -144px;
+    --hero-brand-symbol-size: 176px;
+    --hero-brand-symbol-offset-x: -140px;
     --hero-brand-symbol-offset-y: -16px;
-    --hero-brand-accent-size: 110px;
-    --hero-brand-accent-offset-x: 18px;
+    --hero-brand-accent-size: 106px;
+    --hero-brand-accent-offset-x: 15px;
     --hero-brand-accent-offset-y: -12px;
     --hero-brand-accent-letter-spacing: 0.016em;
-    --hero-brand-base-size: 27px;
-    --hero-brand-base-offset-x: 84px;
-    --hero-brand-base-offset-y: 42px;
-    --hero-brand-base-letter-spacing: 0.05em;
+    --hero-brand-base-size: 25px;
+    --hero-brand-base-offset-x: 76px;
+    --hero-brand-base-offset-y: 40px;
+    --hero-brand-base-letter-spacing: 0.044em;
   }
 
   .container {
@@ -3930,12 +3930,11 @@ body.experience-adjust-active .about-gallery-card img {
   }
 
   .hero-brand-block {
-    width: min(94vw, 314px);
+    width: min(92vw, 304px);
     max-width: 94vw;
-    height: 194px;
+    height: 190px;
     margin-inline: auto;
     margin-top: 0.5rem;
-    overflow: hidden;
     transform:
       translate(var(--hero-brand-offset-x, 0px), var(--hero-brand-offset-y, 0px))
       scale(1);
@@ -4306,9 +4305,9 @@ body.experience-adjust-active .about-gallery-card img {
   }
 
   .hero-brand-block {
-    width: min(94vw, 304px);
+    width: min(92vw, 294px);
     max-width: 94vw;
-    height: 180px;
+    height: 174px;
     transform:
       translate(var(--hero-brand-offset-x, 0px), var(--hero-brand-offset-y, 0px))
       scale(1);
@@ -4330,22 +4329,22 @@ body.experience-adjust-active .about-gallery-card img {
 
 @media (max-width: 390px) {
   :root {
-    --hero-brand-width: 310px;
-    --hero-brand-height: 172px;
+    --hero-brand-width: 296px;
+    --hero-brand-height: 166px;
     --hero-brand-scale: 1;
     --hero-brand-offset-x: 0px;
     --hero-brand-offset-y: 1px;
-    --hero-brand-symbol-size: 154px;
-    --hero-brand-symbol-offset-x: -124px;
+    --hero-brand-symbol-size: 148px;
+    --hero-brand-symbol-offset-x: -120px;
     --hero-brand-symbol-offset-y: -12px;
-    --hero-brand-accent-size: 95px;
-    --hero-brand-accent-offset-x: 14px;
+    --hero-brand-accent-size: 90px;
+    --hero-brand-accent-offset-x: 10px;
     --hero-brand-accent-offset-y: -10px;
     --hero-brand-accent-letter-spacing: 0.012em;
-    --hero-brand-base-size: 22px;
-    --hero-brand-base-offset-x: 72px;
-    --hero-brand-base-offset-y: 36px;
-    --hero-brand-base-letter-spacing: 0.042em;
+    --hero-brand-base-size: 20px;
+    --hero-brand-base-offset-x: 64px;
+    --hero-brand-base-offset-y: 34px;
+    --hero-brand-base-letter-spacing: 0.036em;
   }
 
   .brand-text {
@@ -4365,9 +4364,9 @@ body.experience-adjust-active .about-gallery-card img {
   }
 
   .hero-brand-block {
-    width: min(94vw, 292px);
+    width: min(92vw, 276px);
     max-width: 94vw;
-    height: 172px;
+    height: 166px;
     transform:
       translate(var(--hero-brand-offset-x, 0px), var(--hero-brand-offset-y, 0px))
       scale(1);
@@ -4388,20 +4387,20 @@ body.experience-adjust-active .about-gallery-card img {
 
 @media (max-width: 340px) {
   :root {
-    --hero-brand-width: 294px;
-    --hero-brand-height: 164px;
-    --hero-brand-symbol-size: 146px;
-    --hero-brand-symbol-offset-x: -118px;
-    --hero-brand-accent-size: 88px;
-    --hero-brand-accent-offset-x: 10px;
-    --hero-brand-base-size: 20px;
-    --hero-brand-base-offset-x: 64px;
-    --hero-brand-base-offset-y: 32px;
+    --hero-brand-width: 282px;
+    --hero-brand-height: 158px;
+    --hero-brand-symbol-size: 140px;
+    --hero-brand-symbol-offset-x: -114px;
+    --hero-brand-accent-size: 84px;
+    --hero-brand-accent-offset-x: 7px;
+    --hero-brand-base-size: 19px;
+    --hero-brand-base-offset-x: 58px;
+    --hero-brand-base-offset-y: 31px;
   }
 
   .hero-brand-block {
-    width: min(94vw, 282px);
-    height: 164px;
+    width: min(92vw, 264px);
+    height: 158px;
   }
 
   .brand {
