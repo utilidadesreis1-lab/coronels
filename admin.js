@@ -1288,7 +1288,7 @@ const renderAdminDashboardBarberAgenda = () => {
           const isOccupied = Boolean(occupiedAppointment);
           const isNext = Boolean(barberNextSlot) && barberNextSlot === time;
           const compactSummary = isOccupied
-            ? `Ocupado | ${escapeHtml(occupiedAppointment.nome || "Cliente")} | ${escapeHtml(
+            ? `${escapeHtml(occupiedAppointment.nome || "Cliente")} | ${escapeHtml(
                 occupiedAppointment.servico || "Serviço"
               )}`
             : "Livre";
@@ -1315,7 +1315,13 @@ const renderAdminDashboardBarberAgenda = () => {
               <p>${escapeHtml(formatDate(todayValue))}</p>
             </div>
             <span class="admin-barber-agenda-meta">
-              ${barberAppointments.length ? `${barberAppointments.length} ocupados` : "Agenda livre"}
+              ${
+                barberAppointments.length
+                  ? barberAppointments.length === 1
+                    ? "1 ocupado"
+                    : `${barberAppointments.length} ocupados`
+                  : "Agenda livre"
+              }
             </span>
           </div>
           <div class="admin-barber-agenda-slots">
