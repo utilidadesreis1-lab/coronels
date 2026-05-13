@@ -1405,8 +1405,12 @@ const renderAdminDashboardOverview = () => {
         <div class="admin-upcoming-table-body">
           ${nextAppointments
             .map(
-              (appointment, index) => `
-                <article class="admin-upcoming-row ${index === 0 ? "is-next" : ""}">
+              (appointment, index) => {
+                const statusClass = normalizeStatusClass(appointment.status || "pendente");
+                const isHighlightedNext = index === 0 && statusClass !== "concluido";
+
+                return `
+                <article class="admin-upcoming-row ${isHighlightedNext ? "is-next" : ""} status-${statusClass}">
                   <div class="admin-upcoming-cell admin-upcoming-cell--time">
                     <div class="admin-upcoming-time-top">
                       <strong>${escapeHtml(appointment.horario || "-")}</strong>
@@ -1423,14 +1427,15 @@ const renderAdminDashboardOverview = () => {
                   </div>
                   <div class="admin-upcoming-cell admin-upcoming-cell--status">
                     <div class="admin-upcoming-status-stack">
-                      ${index === 0 ? '<span class="admin-upcoming-badge">Próximo</span>' : ""}
-                      <span class="admin-status status-${normalizeStatusClass(
+                      ${isHighlightedNext ? '<span class="admin-upcoming-badge">Próximo</span>' : ""}
+                      <span class="admin-status status-${statusClass}">${escapeHtml(
                         appointment.status || "pendente"
-                      )}">${escapeHtml(appointment.status || "pendente")}</span>
+                      )}</span>
                     </div>
                   </div>
                 </article>
-              `
+              `;
+              }
             )
             .join("")}
         </div>

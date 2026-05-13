@@ -4499,6 +4499,28 @@ body.experience-adjust-active .about-gallery-card img {
     rgba(255, 255, 255, 0.028);
 }
 
+.admin-upcoming-row.status-concluido {
+  border-color: rgba(112, 201, 153, 0.22) !important;
+  background:
+    radial-gradient(circle at top right, rgba(112, 201, 153, 0.1), transparent 36%),
+    linear-gradient(180deg, rgba(112, 201, 153, 0.06), rgba(255, 255, 255, 0.02)),
+    rgba(255, 255, 255, 0.028) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 10px 24px rgba(37, 92, 63, 0.14) !important;
+}
+
+.admin-upcoming-row.status-concluido.is-next {
+  border-color: rgba(112, 201, 153, 0.26) !important;
+  background:
+    radial-gradient(circle at top right, rgba(112, 201, 153, 0.12), transparent 36%),
+    linear-gradient(180deg, rgba(112, 201, 153, 0.075), rgba(255, 255, 255, 0.02)),
+    rgba(255, 255, 255, 0.028) !important;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 12px 28px rgba(37, 92, 63, 0.16) !important;
+}
+
 .admin-upcoming-cell {
   min-width: 0;
 }
@@ -4538,6 +4560,12 @@ body.experience-adjust-active .about-gallery-card img {
   text-transform: uppercase;
   white-space: nowrap;
   transform: translateY(-1px);
+}
+
+.admin-upcoming-row.status-concluido .admin-upcoming-badge {
+  border-color: rgba(112, 201, 153, 0.24) !important;
+  background: rgba(112, 201, 153, 0.14) !important;
+  color: #dff6e9 !important;
 }
 
 .admin-upcoming-cell--client strong,
