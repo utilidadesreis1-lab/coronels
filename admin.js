@@ -1270,28 +1270,54 @@ const renderAdminDashboardOverview = () => {
     return;
   }
 
-  adminUpcomingList.innerHTML = nextAppointments
-    .map(
-      (appointment, index) => `
-        <article class="admin-upcoming-item ${index === 0 ? "is-next" : ""}">
-          <div class="admin-upcoming-time">
-            ${index === 0 ? '<span class="admin-upcoming-badge">Próximo</span>' : ""}
-            <strong>${escapeHtml(appointment.horario || "-")}</strong>
-          </div>
-          <div class="admin-upcoming-main">
-            <strong>${escapeHtml(appointment.nome || "Cliente")}</strong>
-            <span>${escapeHtml(appointment.servico || "-")}</span>
-          </div>
-          <div class="admin-upcoming-meta">
-            <span class="admin-upcoming-barber">${escapeHtml(appointment.barbeiro || "-")}</span>
-            <span class="admin-status status-${normalizeStatusClass(
-              appointment.status || "pendente"
-            )}">${escapeHtml(appointment.status || "pendente")}</span>
-          </div>
-        </article>
-      `
-    )
-    .join("");
+  const hasMoreUpcomingAppointments = sortedUpcomingAppointments.length > nextAppointments.length;
+
+  adminUpcomingList.innerHTML = `
+    <div class="admin-upcoming-table-shell">
+      <div class="admin-upcoming-table">
+        <div class="admin-upcoming-table-head">
+          <span>Hora</span>
+          <span>Cliente</span>
+          <span>Serviço</span>
+          <span>Barbeiro</span>
+          <span>Status</span>
+        </div>
+        <div class="admin-upcoming-table-body">
+          ${nextAppointments
+            .map(
+              (appointment, index) => `
+                <article class="admin-upcoming-row ${index === 0 ? "is-next" : ""}">
+                  <div class="admin-upcoming-cell admin-upcoming-cell--time">
+                    <strong>${escapeHtml(appointment.horario || "-")}</strong>
+                    ${index === 0 ? '<span class="admin-upcoming-badge">Próximo</span>' : ""}
+                  </div>
+                  <div class="admin-upcoming-cell admin-upcoming-cell--client">
+                    <strong>${escapeHtml(appointment.nome || "Cliente")}</strong>
+                  </div>
+                  <div class="admin-upcoming-cell admin-upcoming-cell--service">
+                    <span>${escapeHtml(appointment.servico || "-")}</span>
+                  </div>
+                  <div class="admin-upcoming-cell admin-upcoming-cell--barber">
+                    <span>${escapeHtml(appointment.barbeiro || "-")}</span>
+                  </div>
+                  <div class="admin-upcoming-cell admin-upcoming-cell--status">
+                    <span class="admin-status status-${normalizeStatusClass(
+                      appointment.status || "pendente"
+                    )}">${escapeHtml(appointment.status || "pendente")}</span>
+                  </div>
+                </article>
+              `
+            )
+            .join("")}
+        </div>
+      </div>
+      ${
+        hasMoreUpcomingAppointments
+          ? '<p class="admin-upcoming-note">Veja todos na agenda completa.</p>'
+          : ""
+      }
+    </div>
+  `;
 };
 
 const getFilteredAppointments = (appointments) => {
