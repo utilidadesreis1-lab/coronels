@@ -1288,8 +1288,10 @@ const renderAdminDashboardOverview = () => {
               (appointment, index) => `
                 <article class="admin-upcoming-row ${index === 0 ? "is-next" : ""}">
                   <div class="admin-upcoming-cell admin-upcoming-cell--time">
-                    <strong>${escapeHtml(appointment.horario || "-")}</strong>
-                    ${index === 0 ? '<span class="admin-upcoming-badge">Próximo</span>' : ""}
+                    <div class="admin-upcoming-time-top">
+                      <strong>${escapeHtml(appointment.horario || "-")}</strong>
+                      ${index === 0 ? '<span class="admin-upcoming-badge">Próximo</span>' : ""}
+                    </div>
                   </div>
                   <div class="admin-upcoming-cell admin-upcoming-cell--client">
                     <strong>${escapeHtml(appointment.nome || "Cliente")}</strong>
