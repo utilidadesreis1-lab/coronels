@@ -71,6 +71,7 @@ const adminUpcomingCount = document.querySelector("[data-admin-upcoming-count]")
 const adminBusySlots = document.querySelector("[data-admin-busy-slots]");
 const adminActiveBarbers = document.querySelector("[data-admin-active-barbers]");
 const adminTableBody = document.querySelector("[data-admin-table-body]");
+const adminBarberAgendaGrid = document.querySelector("[data-admin-barber-agenda-grid]");
 
 const adminAuthStorageKey = "coronelsBarbeariaAdminLoggedIn";
 const adminCredentials = {
@@ -1218,6 +1219,91 @@ const renderAdminSummary = (appointments) => {
   );
 };
 
+const renderAdminDashboardBarberAgenda = () => {
+  if (!adminBarberAgendaGrid) {
+    return;
+  }
+
+  const todayValue = getTodayDateValue();
+  const slots = getAdminManualScheduleSlots();
+  const availableBarbers = getAvailableBarbers();
+  const todayAppointments = appointmentsState
+    .filter(
+      (appointment) =>
+        String(appointment.data || "").trim() === todayValue &&
+        normalizeStatusClass(appointment.status || "pendente") !== "cancelado"
+    )
+    .sort(
+      (firstAppointment, secondAppointment) =>
+        getAppointmentTimestamp(firstAppointment) - getAppointmentTimestamp(secondAppointment)
+    );
+
+  adminBarberAgendaGrid.innerHTML = availableBarbers
+    .map((barber) => {
+      const barberAppointments = todayAppointments.filter(
+        (appointment) => String(appointment.barbeiro || "").trim() === barber.nome
+      );
+      const barberNextSlot = barberAppointments.length
+        ? String(barberAppointments[0].horario || "").trim()
+        : "";
+
+      const scheduleRows = slots
+        .map((time) => {
+          const occupiedAppointment = barberAppointments.find(
+            (appointment) => String(appointment.horario || "").trim() === time
+          );
+          const isOccupied = Boolean(occupiedAppointment);
+          const isNext = Boolean(barberNextSlot) && barberNextSlot === time;
+          const statusLabel = isOccupied ? "Ocupado" : "Livre";
+          const serviceLabel = isOccupied
+            ? escapeHtml(occupiedAppointment.servico || "Serviço")
+            : "Livre";
+          const clientLabel = isOccupied
+            ? `Cliente: ${escapeHtml(occupiedAppointment.nome || "Cliente")}`
+            : "Livre";
+
+          return `
+            <article class="admin-barber-slot ${isOccupied ? "is-occupied" : "is-free"} ${isNext ? "is-next" : ""}">
+              <div class="admin-barber-slot-time">
+                <strong>${escapeHtml(time)}</strong>
+                ${isNext ? '<span class="admin-barber-slot-badge">Próximo</span>' : ""}
+              </div>
+              <div class="admin-barber-slot-content">
+                <span class="admin-barber-slot-status">${statusLabel}</span>
+                ${
+                  isOccupied
+                    ? `
+                      <span class="admin-barber-slot-client">${clientLabel}</span>
+                      <span class="admin-barber-slot-service">Serviço: ${serviceLabel}</span>
+                    `
+                    : '<span class="admin-barber-slot-free-copy">Livre</span>'
+                }
+              </div>
+            </article>
+          `;
+        })
+        .join("");
+
+      return `
+        <article class="admin-barber-agenda-card">
+          <div class="admin-barber-agenda-head">
+            <div>
+              <h4>${escapeHtml(barber.nome)}</h4>
+              <p>${escapeHtml(formatDate(todayValue))}</p>
+            </div>
+            <span class="admin-barber-agenda-meta">
+              ${barberAppointments.length ? `${barberAppointments.length} ocupados` : "Agenda livre"}
+            </span>
+          </div>
+          <div class="admin-barber-agenda-slots">
+            ${scheduleRows || '<p class="admin-empty-copy">Nenhum horário disponível hoje.</p>'}
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+};
+
 const getAppointmentTimestamp = (appointment) => {
   const date = String(appointment?.data || "").trim();
   const time = String(appointment?.horario || "").trim();
@@ -1257,6 +1343,8 @@ const renderAdminDashboardOverview = () => {
   if (adminActiveBarbers) {
     adminActiveBarbers.textContent = String(getAvailableBarbers().length);
   }
+
+  renderAdminDashboardBarberAgenda();
 
   if (!adminUpcomingList) {
     return;
