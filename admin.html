@@ -116,7 +116,7 @@
                     type="button"
                     data-admin-tab-trigger="agenda"
                     data-admin-tab-title="Agenda"
-                    data-admin-tab-copy="Agendamentos em cards, filtros rápidos e abertura de atendimento manual."
+                    data-admin-tab-copy="Visualize, filtre e acompanhe os atendimentos registrados."
                   >
                     Agenda
                   </button>
@@ -515,14 +515,14 @@
                       </div>
                     </form>
 
-                    <article class="admin-dashboard-panel admin-operations-shell">
+                    <article class="admin-dashboard-panel admin-operations-shell admin-agenda-shell">
                       <div class="admin-subsection-head admin-operations-head">
                         <div>
                           <p class="eyebrow">Operação diária</p>
-                          <h3>Comandas / Agenda</h3>
+                          <h3>Agenda</h3>
                         </div>
                         <p class="admin-subsection-intro">
-                          Visualize, filtre e acompanhe os agendamentos recebidos pelo site.
+                          Visualize, filtre e acompanhe os atendimentos registrados.
                         </p>
                       </div>
 
@@ -576,16 +576,44 @@
                         </div>
                       </form>
 
-                      <div class="admin-table-shell admin-table-shell--appointments">
+                      <section class="admin-agenda-professionals">
+                        <div class="admin-subsection-head admin-agenda-professionals-head">
+                          <div>
+                            <p class="eyebrow">Agenda operacional</p>
+                            <h3>Agenda do dia por profissional</h3>
+                          </div>
+                          <p class="admin-subsection-intro" data-admin-agenda-day-note>
+                            Veja os horários livres e ocupados de cada profissional no dia selecionado.
+                          </p>
+                        </div>
+
+                        <div class="admin-agenda-barber-grid" data-admin-agenda-barber-grid></div>
+                      </section>
+
+                      <section class="admin-agenda-table-section">
+                        <div class="admin-subsection-head admin-agenda-table-head">
+                          <div>
+                            <p class="eyebrow">Tabela completa</p>
+                            <h3>Atendimentos filtrados</h3>
+                          </div>
+                          <p class="admin-subsection-intro">
+                            Lista detalhada para acompanhar cliente, serviço, horário e ações disponíveis.
+                          </p>
+                        </div>
+
+                      <div
+                        class="admin-table-shell admin-table-shell--appointments"
+                        data-admin-agenda-table-shell
+                      >
                         <table class="admin-table">
                           <thead>
                             <tr>
+                              <th>Hora</th>
                               <th>Cliente</th>
                               <th>Telefone</th>
                               <th>Serviço</th>
                               <th>Profissional</th>
                               <th>Data</th>
-                              <th>Horário</th>
                               <th>Status</th>
                               <th>Ações</th>
                             </tr>
@@ -593,6 +621,7 @@
                           <tbody data-admin-table-body></tbody>
                         </table>
                       </div>
+                      </section>
 
                       <div class="admin-ops-meta">
                         <p class="admin-empty" data-admin-empty>
@@ -600,7 +629,7 @@
                         </p>
                       </div>
 
-                      <div class="admin-list" data-admin-list></div>
+                      <div class="admin-list" data-admin-list hidden></div>
                     </article>
                   </section>
 

@@ -73,6 +73,9 @@ const adminBusySlots = document.querySelector("[data-admin-busy-slots]");
 const adminActiveBarbers = document.querySelector("[data-admin-active-barbers]");
 const adminTableBody = document.querySelector("[data-admin-table-body]");
 const adminBarberAgendaGrid = document.querySelector("[data-admin-barber-agenda-grid]");
+const adminAgendaBarberGrid = document.querySelector("[data-admin-agenda-barber-grid]");
+const adminAgendaDayNote = document.querySelector("[data-admin-agenda-day-note]");
+const adminAgendaTableShell = document.querySelector("[data-admin-agenda-table-shell]");
 
 const adminAuthStorageKey = "coronelsBarbeariaAdminLoggedIn";
 const adminCredentials = {
@@ -1376,6 +1379,157 @@ const getAppointmentTimestamp = (appointment) => {
   return new Date(`${date}T${time}:00`).getTime();
 };
 
+const formatAdminStatusLabel = (status) => {
+  const statusClass = normalizeStatusClass(status || "pendente");
+
+  switch (statusClass) {
+    case "concluido":
+      return "Concluído";
+    case "cancelado":
+      return "Cancelado";
+    case "confirmado":
+      return "Confirmado";
+    case "livre":
+      return "Livre";
+    default:
+      return "Pendente";
+  }
+};
+
+const getAgendaReferenceDateValue = () =>
+  adminDateStartFilter?.value || adminDateEndFilter?.value || getTodayDateValue();
+
+const renderAdminAgendaBarberOverview = () => {
+  if (!adminAgendaBarberGrid) {
+    return;
+  }
+
+  const referenceDate = getAgendaReferenceDateValue();
+  const selectedBarber = adminBarberFilter?.value || "all";
+  const slots = getAdminManualScheduleSlots();
+  const visibleBarbers = getAvailableBarbers().filter(
+    (barber) => selectedBarber === "all" || barber.nome === selectedBarber
+  );
+  const selectedDateAppointments = appointmentsState
+    .filter(
+      (appointment) => normalizeComparableDateValue(appointment.data || "") === referenceDate
+    )
+    .sort(
+      (firstAppointment, secondAppointment) =>
+        getAppointmentTimestamp(firstAppointment) - getAppointmentTimestamp(secondAppointment)
+    );
+
+  if (adminAgendaDayNote) {
+    adminAgendaDayNote.textContent = `Veja os horários livres e ocupados de cada profissional em ${formatDate(
+      referenceDate
+    )}.`;
+  }
+
+  adminAgendaBarberGrid.innerHTML = visibleBarbers
+    .map((barber) => {
+      const barberAppointments = selectedDateAppointments.filter(
+        (appointment) => String(appointment.barbeiro || "").trim() === barber.nome
+      );
+      const occupiedCount = barberAppointments.filter(
+        (appointment) => normalizeStatusClass(appointment.status || "pendente") !== "cancelado"
+      ).length;
+
+      const scheduleRows = slots
+        .map((time) => {
+          const slotAppointment = barberAppointments.find(
+            (appointment) => String(appointment.horario || "").trim() === time
+          );
+
+          if (!slotAppointment) {
+            return `
+              <article class="admin-agenda-slot is-livre">
+                <div class="admin-agenda-slot-time">
+                  <strong>${escapeHtml(time)}</strong>
+                </div>
+                <div class="admin-agenda-slot-body">
+                  <strong class="admin-agenda-slot-main">Livre</strong>
+                </div>
+                <span class="admin-status status-livre">Livre</span>
+              </article>
+            `;
+          }
+
+          const statusClass = normalizeStatusClass(slotAppointment.status || "pendente");
+          const clientName = escapeHtml(slotAppointment.nome || "Cliente");
+          const serviceName = escapeHtml(slotAppointment.servico || "Serviço");
+          const phoneText = String(slotAppointment.telefone || "").trim();
+
+          return `
+            <article class="admin-agenda-slot is-${statusClass}">
+              <div class="admin-agenda-slot-time">
+                <strong>${escapeHtml(time)}</strong>
+              </div>
+              <div class="admin-agenda-slot-body">
+                <strong class="admin-agenda-slot-main">${clientName}</strong>
+                <span class="admin-agenda-slot-sub">${serviceName}</span>
+                ${
+                  phoneText
+                    ? `<span class="admin-agenda-slot-meta">${escapeHtml(phoneText)}</span>`
+                    : ""
+                }
+              </div>
+              <span class="admin-status status-${statusClass}">${escapeHtml(
+                formatAdminStatusLabel(slotAppointment.status || "pendente")
+              )}</span>
+            </article>
+          `;
+        })
+        .join("");
+
+      return `
+        <article class="admin-agenda-professional-card">
+          <div class="admin-agenda-professional-head">
+            <div>
+              <h4>${escapeHtml(barber.nome)}</h4>
+              <p>${escapeHtml(formatDate(referenceDate))}</p>
+            </div>
+            <span class="admin-agenda-professional-meta">
+              ${occupiedCount ? `${occupiedCount} agendado${occupiedCount > 1 ? "s" : ""}` : "Agenda livre"}
+            </span>
+          </div>
+          <div class="admin-agenda-slots">
+            ${scheduleRows}
+          </div>
+        </article>
+      `;
+    })
+    .join("");
+
+  lockAdminAgendaBarberScroll();
+};
+
+const lockAdminAgendaBarberScroll = () => {
+  if (!adminAgendaBarberGrid) {
+    return;
+  }
+
+  adminAgendaBarberGrid.querySelectorAll(".admin-agenda-slots").forEach((slotsContainer) => {
+    if (slotsContainer.dataset.scrollLocked === "true") {
+      return;
+    }
+
+    slotsContainer.addEventListener(
+      "wheel",
+      (event) => {
+        if (slotsContainer.scrollHeight <= slotsContainer.clientHeight) {
+          return;
+        }
+
+        event.preventDefault();
+        slotsContainer.scrollTop += event.deltaY;
+      },
+      { passive: false }
+    );
+
+    slotsContainer.dataset.scrollLocked = "true";
+  });
+};
+
 const renderAdminDashboardTable = (
   target,
   appointments,
@@ -1528,11 +1682,12 @@ const getFilteredAppointments = (appointments) => {
     .trim()
     .toLocaleLowerCase("pt-BR");
 
-  return appointments.filter((appointment) => {
+  return appointments
+    .filter((appointment) => {
     const matchesStatus =
       selectedStatus === "all" ||
       normalizeStatusClass(appointment.status || "") === selectedStatus;
-    const appointmentDate = String(appointment.data || "").trim();
+    const appointmentDate = normalizeComparableDateValue(appointment.data || "");
     const matchesStartDate = !selectedStartDate || appointmentDate >= selectedStartDate;
     const matchesEndDate = !selectedEndDate || appointmentDate <= selectedEndDate;
     const matchesBarber =
@@ -1545,14 +1700,18 @@ const getFilteredAppointments = (appointments) => {
       .toLocaleLowerCase("pt-BR");
     const matchesSearch = !searchTerm || searchableContent.includes(searchTerm);
 
-    return (
-      matchesStatus &&
-      matchesStartDate &&
-      matchesEndDate &&
-      matchesBarber &&
-      matchesSearch
+      return (
+        matchesStatus &&
+        matchesStartDate &&
+        matchesEndDate &&
+        matchesBarber &&
+        matchesSearch
+      );
+    })
+    .sort(
+      (firstAppointment, secondAppointment) =>
+        getAppointmentTimestamp(firstAppointment) - getAppointmentTimestamp(secondAppointment)
     );
-  });
 };
 
 const updateAdminEmptyState = (message = defaultAdminEmptyMessage) => {
@@ -1579,6 +1738,7 @@ const renderAppointments = () => {
 
   renderAdminSummary(appointmentsState);
   renderAdminDashboardOverview();
+  renderAdminAgendaBarberOverview();
   const filteredAppointments = getFilteredAppointments(appointmentsState);
   const emptyMessage = hasActiveAppointmentFilters()
     ? "Nenhum agendamento encontrado para os filtros selecionados."
@@ -1669,22 +1829,25 @@ const renderAppointments = () => {
     return;
   }
 
+  if (adminAgendaTableShell) {
+    adminAgendaTableShell.hidden = filteredAppointments.length === 0;
+  }
+
   if (!filteredAppointments.length) {
-    adminTableBody.innerHTML =
-      '<tr><td colspan="8" class="admin-table-empty">Nenhum agendamento encontrado para os filtros selecionados.</td></tr>';
+    adminTableBody.innerHTML = "";
     return;
   }
 
   adminTableBody.innerHTML = filteredAppointments
     .map(
       (appointment) => `
-        <tr>
+        <tr class="status-${normalizeStatusClass(appointment.status || "pendente")}">
+          <td>${escapeHtml(appointment.horario || "-")}</td>
           <td>${escapeHtml(appointment.nome || "-")}</td>
           <td>${escapeHtml(appointment.telefone || "-")}</td>
           <td>${escapeHtml(appointment.servico || "-")}</td>
           <td>${escapeHtml(appointment.barbeiro || "-")}</td>
           <td>${escapeHtml(formatDate(String(appointment.data || "-")))}</td>
-          <td>${escapeHtml(appointment.horario || "-")}</td>
           <td>
             <span class="admin-status status-${normalizeStatusClass(
               appointment.status || "pendente"
