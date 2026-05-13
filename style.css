@@ -4559,6 +4559,14 @@ body.experience-adjust-active .about-gallery-card img {
   justify-content: flex-end;
 }
 
+.admin-upcoming-status-stack {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.34rem;
+  min-width: 0;
+}
+
 .admin-upcoming-note {
   margin: 0;
   color: rgba(244, 241, 235, 0.58);

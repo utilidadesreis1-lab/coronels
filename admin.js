@@ -1410,7 +1410,6 @@ const renderAdminDashboardOverview = () => {
                   <div class="admin-upcoming-cell admin-upcoming-cell--time">
                     <div class="admin-upcoming-time-top">
                       <strong>${escapeHtml(appointment.horario || "-")}</strong>
-                      ${index === 0 ? '<span class="admin-upcoming-badge">Próximo</span>' : ""}
                     </div>
                   </div>
                   <div class="admin-upcoming-cell admin-upcoming-cell--client">
@@ -1423,9 +1422,12 @@ const renderAdminDashboardOverview = () => {
                     <span>${escapeHtml(appointment.barbeiro || "-")}</span>
                   </div>
                   <div class="admin-upcoming-cell admin-upcoming-cell--status">
-                    <span class="admin-status status-${normalizeStatusClass(
-                      appointment.status || "pendente"
-                    )}">${escapeHtml(appointment.status || "pendente")}</span>
+                    <div class="admin-upcoming-status-stack">
+                      ${index === 0 ? '<span class="admin-upcoming-badge">Próximo</span>' : ""}
+                      <span class="admin-status status-${normalizeStatusClass(
+                        appointment.status || "pendente"
+                      )}">${escapeHtml(appointment.status || "pendente")}</span>
+                    </div>
                   </div>
                 </article>
               `
