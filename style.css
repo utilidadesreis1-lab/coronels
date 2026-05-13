@@ -5065,13 +5065,14 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-table td {
-  font-size: 0.94rem;
+  font-size: 0.95rem;
   color: var(--text);
-  vertical-align: top;
+  vertical-align: middle;
+  line-height: 1.45;
 }
 
 .admin-table td .admin-status {
-  font-size: 0.72rem;
+  font-size: 0.74rem;
   letter-spacing: 0.1em;
 }
 
@@ -5093,19 +5094,20 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-table tbody tr:hover td {
-  background: rgba(255, 255, 255, 0.015);
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .admin-table-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 0.55rem;
 }
 
 .admin-table-actions .admin-action {
   min-height: 38px;
-  padding: 0.62rem 0.78rem;
-  font-size: 0.78rem;
+  padding: 0.6rem 0.74rem;
+  font-size: 0.76rem;
   border-radius: 14px;
 }
 

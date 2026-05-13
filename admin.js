@@ -1732,7 +1732,7 @@ const hasActiveAppointmentFilters = () =>
   );
 
 const renderAppointments = () => {
-  if (!adminList || !adminEmpty) {
+  if (!adminEmpty) {
     return;
   }
 
@@ -1746,84 +1746,10 @@ const renderAppointments = () => {
 
   updateAdminEmptyState(emptyMessage);
   adminEmpty.hidden = filteredAppointments.length > 0;
-  adminList.innerHTML = filteredAppointments
-    .map(
-      (appointment) => `
-        <article class="admin-card">
-          <div class="admin-card-head">
-            <h3>${escapeHtml(appointment.nome || "Cliente")}</h3>
-            <span class="admin-status status-${normalizeStatusClass(
-              appointment.status || "pendente"
-            )}">${escapeHtml(appointment.status || "pendente")}</span>
-          </div>
 
-          <div class="admin-details">
-            <div class="admin-item">
-              <span>Telefone</span>
-              <strong>${escapeHtml(appointment.telefone || "-")}</strong>
-            </div>
-            <div class="admin-item">
-              <span>Serviço</span>
-              <strong>${escapeHtml(appointment.servico || "-")}</strong>
-            </div>
-            <div class="admin-item">
-              <span>Barbeiro</span>
-              <strong>${escapeHtml(appointment.barbeiro || "-")}</strong>
-            </div>
-            <div class="admin-item">
-              <span>Data</span>
-              <strong>${escapeHtml(
-                formatDate(String(appointment.data || "-"))
-              )}</strong>
-            </div>
-            <div class="admin-item">
-              <span>Horário</span>
-              <strong>${escapeHtml(appointment.horario || "-")}</strong>
-            </div>
-            <div class="admin-item">
-              <span>Status</span>
-              <strong>${escapeHtml(appointment.status || "pendente")}</strong>
-            </div>
-          </div>
-
-          <div class="admin-actions">
-            <button
-              class="admin-action action-whatsapp"
-              type="button"
-              data-admin-action="whatsapp"
-              data-admin-id="${escapeHtml(appointment.id)}"
-            >
-              Chamar no WhatsApp
-            </button>
-            <button
-              class="admin-action action-complete"
-              type="button"
-              data-admin-action="complete"
-              data-admin-id="${escapeHtml(appointment.id)}"
-            >
-              Concluir
-            </button>
-            <button
-              class="admin-action action-cancel"
-              type="button"
-              data-admin-action="cancel"
-              data-admin-id="${escapeHtml(appointment.id)}"
-            >
-              Cancelar
-            </button>
-            <button
-              class="admin-action action-delete"
-              type="button"
-              data-admin-action="delete"
-              data-admin-id="${escapeHtml(appointment.id)}"
-            >
-              Excluir
-            </button>
-          </div>
-        </article>
-      `
-    )
-    .join("");
+  if (adminList) {
+    adminList.innerHTML = "";
+  }
 
   if (!adminTableBody) {
     return;
