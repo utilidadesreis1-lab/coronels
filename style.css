@@ -4496,7 +4496,21 @@ body.experience-adjust-active .about-gallery-card img {
 .admin-upcoming-main,
 .admin-upcoming-meta {
   display: grid;
-  gap: 0.18rem;
+  gap: 0.32rem;
+}
+
+.admin-upcoming-row {
+  display: grid;
+  gap: 0.1rem;
+}
+
+.admin-upcoming-row small {
+  color: rgba(244, 241, 235, 0.56);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  line-height: 1.2;
+  text-transform: uppercase;
 }
 
 .admin-upcoming-main strong {
@@ -4504,28 +4518,17 @@ body.experience-adjust-active .about-gallery-card img {
   font-size: 0.98rem;
 }
 
-.admin-upcoming-main span {
-  color: rgba(245, 232, 201, 0.84);
+.admin-upcoming-main span,
+.admin-upcoming-meta span {
+  color: rgba(244, 241, 235, 0.86);
   font-weight: 600;
-  line-height: 1.45;
-}
-
-.admin-upcoming-main small {
-  color: rgba(244, 241, 235, 0.62);
-  font-size: 0.78rem;
-  line-height: 1.35;
+  line-height: 1.42;
 }
 
 .admin-upcoming-meta {
   justify-items: end;
   text-align: right;
   align-content: center;
-}
-
-.admin-upcoming-meta > span:first-child {
-  color: rgba(244, 241, 235, 0.9);
-  font-weight: 700;
-  line-height: 1.3;
 }
 
 .admin-upcoming-item strong,
@@ -4786,9 +4789,9 @@ body.experience-adjust-active .about-gallery-card img {
     grid-column: 1 / -1;
     justify-items: start;
     text-align: left;
-    grid-template-columns: repeat(3, minmax(0, auto));
-    column-gap: 0.7rem;
-    align-items: center;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 0.8rem;
+    align-items: start;
   }
 
   .environment-carousel-viewport {
