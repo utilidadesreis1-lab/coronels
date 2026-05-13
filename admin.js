@@ -63,6 +63,9 @@ const adminViews = document.querySelectorAll("[data-admin-view]");
 const adminCurrentTitle = document.querySelector("[data-admin-current-title]");
 const adminCurrentCopy = document.querySelector("[data-admin-current-copy]");
 const adminUpcomingList = document.querySelector("[data-admin-upcoming-list]");
+const adminDashboardOpenAgendaButton = document.querySelector(
+  "[data-admin-dashboard-open-agenda]"
+);
 const adminToday = document.querySelector("[data-admin-today]");
 const adminUpcomingCount = document.querySelector("[data-admin-upcoming-count]");
 const adminBusySlots = document.querySelector("[data-admin-busy-slots]");
@@ -1263,23 +1266,29 @@ const renderAdminDashboardOverview = () => {
 
   if (!nextAppointments.length) {
     adminUpcomingList.innerHTML =
-      '<p class="admin-empty-copy">Nenhum atendimento ativo para exibir agora.</p>';
+      '<p class="admin-empty-copy">Nenhum atendimento próximo encontrado.</p>';
     return;
   }
 
   adminUpcomingList.innerHTML = nextAppointments
     .map(
-      (appointment) => `
-        <article class="admin-upcoming-item">
-          <div>
-            <strong>${escapeHtml(appointment.nome || "Cliente")}</strong>
-            <span>${escapeHtml(appointment.servico || "-")} com ${escapeHtml(
-              appointment.barbeiro || "-"
-            )}</span>
+      (appointment, index) => `
+        <article class="admin-upcoming-item ${index === 0 ? "is-next" : ""}">
+          <div class="admin-upcoming-time">
+            ${index === 0 ? '<span class="admin-upcoming-badge">Próximo</span>' : ""}
+            <strong>${escapeHtml(appointment.horario || "-")}</strong>
           </div>
-          <small>${escapeHtml(formatDate(appointment.data || "-"))} • ${escapeHtml(
-            appointment.horario || "-"
-          )}</small>
+          <div class="admin-upcoming-main">
+            <strong>${escapeHtml(appointment.nome || "Cliente")}</strong>
+            <span>${escapeHtml(appointment.servico || "-")}</span>
+          </div>
+          <div class="admin-upcoming-meta">
+            <span>${escapeHtml(appointment.barbeiro || "-")}</span>
+            <small>${escapeHtml(formatDate(appointment.data || "-"))}</small>
+            <span class="admin-status status-${normalizeStatusClass(
+              appointment.status || "pendente"
+            )}">${escapeHtml(appointment.status || "pendente")}</span>
+          </div>
         </article>
       `
     )
@@ -1672,6 +1681,12 @@ if (adminToggleManualButton) {
 
 if (adminCloseManualButton) {
   adminCloseManualButton.addEventListener("click", closeManualForm);
+}
+
+if (adminDashboardOpenAgendaButton) {
+  adminDashboardOpenAgendaButton.addEventListener("click", () => {
+    setActiveAdminTab("agenda");
+  });
 }
 
 if (adminManualForm && adminManualFeedback) {
