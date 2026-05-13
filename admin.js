@@ -901,6 +901,7 @@ const getAppointmentPayload = (formData, origem) => ({
   barbeiro: String(formData.get("barbeiro") || "").trim(),
   data: String(formData.get("data") || "").trim(),
   horario: String(formData.get("horario") || "").trim(),
+  formaPagamento: normalizeAdminPaymentLabel(formData.get("formaPagamento")),
   status: "pendente",
   origem,
 });
@@ -1399,6 +1400,39 @@ const formatAdminStatusLabel = (status) => {
 const getAdminServicePrice = (serviceName) =>
   adminServiceMeta[String(serviceName || "").trim()]?.price || "—";
 
+const normalizeAdminPaymentClass = (payment) => {
+  const normalizedPayment = String(payment || "")
+    .trim()
+    .toLocaleLowerCase("pt-BR");
+
+  switch (normalizedPayment) {
+    case "pix":
+      return "pix";
+    case "dinheiro":
+      return "dinheiro";
+    case "cartão":
+    case "cartao":
+      return "cartao";
+    default:
+      return "pendente";
+  }
+};
+
+const normalizeAdminPaymentLabel = (payment) => {
+  const paymentClass = normalizeAdminPaymentClass(payment);
+
+  switch (paymentClass) {
+    case "pix":
+      return "Pix";
+    case "dinheiro":
+      return "Dinheiro";
+    case "cartao":
+      return "Cartão";
+    default:
+      return "Pendente";
+  }
+};
+
 const getAgendaReferenceDateValue = () =>
   adminDateStartFilter?.value || adminDateEndFilter?.value || getTodayDateValue();
 
@@ -1776,6 +1810,11 @@ const renderAppointments = () => {
           <td>${escapeHtml(appointment.telefone || "-")}</td>
           <td>${escapeHtml(appointment.servico || "-")}</td>
           <td class="admin-table-value">${escapeHtml(getAdminServicePrice(appointment.servico))}</td>
+          <td>
+            <span class="admin-payment-badge payment-${normalizeAdminPaymentClass(
+              appointment.formaPagamento
+            )}">${escapeHtml(normalizeAdminPaymentLabel(appointment.formaPagamento))}</span>
+          </td>
           <td>${escapeHtml(appointment.barbeiro || "-")}</td>
           <td>${escapeHtml(formatDate(String(appointment.data || "-")))}</td>
           <td>

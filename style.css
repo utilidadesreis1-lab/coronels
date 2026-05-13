@@ -3286,6 +3286,10 @@ body.experience-adjust-active .about-gallery-card img {
   grid-template-columns: 1fr;
 }
 
+.admin-manual-payment-field select {
+  font-weight: 700;
+}
+
 .admin-manual-section .field {
   gap: 0.48rem;
 }
@@ -5080,6 +5084,45 @@ body.experience-adjust-active .about-gallery-card img {
   color: #e0ca9e;
   font-weight: 700;
   white-space: nowrap;
+}
+
+.admin-payment-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 34px;
+  padding: 0.48rem 0.8rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.admin-payment-badge.payment-pendente {
+  background: rgba(187, 154, 90, 0.16);
+  color: #d6bd8e;
+  border-color: rgba(187, 154, 90, 0.28);
+}
+
+.admin-payment-badge.payment-pix {
+  background: rgba(111, 181, 133, 0.16);
+  color: #9dd3ae;
+  border-color: rgba(111, 181, 133, 0.28);
+}
+
+.admin-payment-badge.payment-dinheiro {
+  background: rgba(212, 176, 92, 0.14);
+  color: #e0ca9e;
+  border-color: rgba(212, 176, 92, 0.24);
+}
+
+.admin-payment-badge.payment-cartao {
+  background: rgba(128, 149, 184, 0.16);
+  color: #bfd0eb;
+  border-color: rgba(128, 149, 184, 0.26);
 }
 
 .admin-table tbody tr:last-child td {
