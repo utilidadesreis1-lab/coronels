@@ -297,6 +297,25 @@ const formatDate = (dateValue) => {
   return `${day}/${month}/${year}`;
 };
 
+const normalizeComparableDateValue = (dateValue) => {
+  const normalizedDate = String(dateValue || "").trim();
+
+  if (!normalizedDate) {
+    return "";
+  }
+
+  if (/^\d{4}-\d{2}-\d{2}$/.test(normalizedDate)) {
+    return normalizedDate;
+  }
+
+  if (/^\d{2}\/\d{2}\/\d{4}$/.test(normalizedDate)) {
+    const [day, month, year] = normalizedDate.split("/");
+    return `${year}-${month}-${day}`;
+  }
+
+  return normalizedDate;
+};
+
 const normalizeStatusClass = (status) =>
   String(status)
     .normalize("NFD")
@@ -1230,7 +1249,7 @@ const renderAdminDashboardBarberAgenda = () => {
   const todayAppointments = appointmentsState
     .filter(
       (appointment) =>
-        String(appointment.data || "").trim() === todayValue &&
+        normalizeComparableDateValue(appointment.data) === todayValue &&
         normalizeStatusClass(appointment.status || "pendente") !== "cancelado"
     )
     .sort(
@@ -1255,11 +1274,10 @@ const renderAdminDashboardBarberAgenda = () => {
           const isOccupied = Boolean(occupiedAppointment);
           const isNext = Boolean(barberNextSlot) && barberNextSlot === time;
           const statusLabel = isOccupied ? "Ocupado" : "Livre";
-          const serviceLabel = isOccupied
-            ? escapeHtml(occupiedAppointment.servico || "Serviço")
-            : "Livre";
-          const clientLabel = isOccupied
-            ? `Cliente: ${escapeHtml(occupiedAppointment.nome || "Cliente")}`
+          const compactSummary = isOccupied
+            ? `${statusLabel} | ${escapeHtml(occupiedAppointment.nome || "Cliente")} | ${escapeHtml(
+                occupiedAppointment.servico || "Serviço"
+              )}`
             : "Livre";
 
           return `
@@ -1270,14 +1288,7 @@ const renderAdminDashboardBarberAgenda = () => {
               </div>
               <div class="admin-barber-slot-content">
                 <span class="admin-barber-slot-status">${statusLabel}</span>
-                ${
-                  isOccupied
-                    ? `
-                      <span class="admin-barber-slot-client">${clientLabel}</span>
-                      <span class="admin-barber-slot-service">Serviço: ${serviceLabel}</span>
-                    `
-                    : '<span class="admin-barber-slot-free-copy">Livre</span>'
-                }
+                <span class="admin-barber-slot-summary">${compactSummary}</span>
               </div>
             </article>
           `;
@@ -1325,7 +1336,7 @@ const renderAdminDashboardOverview = () => {
   );
   const todayValue = getTodayDateValue();
   const todayAppointments = activeAppointments.filter(
-    (appointment) => String(appointment.data || "").trim() === todayValue
+    (appointment) => normalizeComparableDateValue(appointment.data) === todayValue
   );
 
   if (adminToday) {
