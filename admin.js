@@ -64,7 +64,7 @@ const adminCurrentTitle = document.querySelector("[data-admin-current-title]");
 const adminCurrentCopy = document.querySelector("[data-admin-current-copy]");
 const adminUpcomingList = document.querySelector("[data-admin-upcoming-list]");
 const adminCompletedList = document.querySelector("[data-admin-completed-list]");
-const adminDashboardOpenAgendaButton = document.querySelector(
+const adminDashboardOpenAgendaButtons = document.querySelectorAll(
   "[data-admin-dashboard-open-agenda]"
 );
 const adminToday = document.querySelector("[data-admin-today]");
@@ -1876,9 +1876,11 @@ if (adminCloseManualButton) {
   adminCloseManualButton.addEventListener("click", closeManualForm);
 }
 
-if (adminDashboardOpenAgendaButton) {
-  adminDashboardOpenAgendaButton.addEventListener("click", () => {
-    setActiveAdminTab("agenda");
+if (adminDashboardOpenAgendaButtons.length) {
+  adminDashboardOpenAgendaButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      setActiveAdminTab("agenda");
+    });
   });
 }
 
