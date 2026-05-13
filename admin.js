@@ -1396,6 +1396,9 @@ const formatAdminStatusLabel = (status) => {
   }
 };
 
+const getAdminServicePrice = (serviceName) =>
+  adminServiceMeta[String(serviceName || "").trim()]?.price || "—";
+
 const getAgendaReferenceDateValue = () =>
   adminDateStartFilter?.value || adminDateEndFilter?.value || getTodayDateValue();
 
@@ -1772,6 +1775,7 @@ const renderAppointments = () => {
           <td>${escapeHtml(appointment.nome || "-")}</td>
           <td>${escapeHtml(appointment.telefone || "-")}</td>
           <td>${escapeHtml(appointment.servico || "-")}</td>
+          <td class="admin-table-value">${escapeHtml(getAdminServicePrice(appointment.servico))}</td>
           <td>${escapeHtml(appointment.barbeiro || "-")}</td>
           <td>${escapeHtml(formatDate(String(appointment.data || "-")))}</td>
           <td>

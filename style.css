@@ -5076,6 +5076,12 @@ body.experience-adjust-active .about-gallery-card img {
   letter-spacing: 0.1em;
 }
 
+.admin-table-value {
+  color: #e0ca9e;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
 .admin-table tbody tr:last-child td {
   border-bottom: 0;
 }
