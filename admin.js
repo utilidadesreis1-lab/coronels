@@ -1279,33 +1279,37 @@ const renderAdminDashboardOverview = () => {
             <strong>${escapeHtml(appointment.horario || "-")}</strong>
           </div>
           <div class="admin-upcoming-main">
-            <div class="admin-upcoming-row">
-              <small>Cliente:</small>
+            <div class="admin-upcoming-row admin-upcoming-row--client">
+              <small>Cliente</small>
               <strong>${escapeHtml(appointment.nome || "Cliente")}</strong>
             </div>
-            <div class="admin-upcoming-row">
-              <small>Telefone:</small>
-              <span>${escapeHtml(String(appointment.telefone || "").trim() || "-")}</span>
-            </div>
-            <div class="admin-upcoming-row">
-              <small>Serviço:</small>
-              <span>${escapeHtml(appointment.servico || "-")}</span>
+            <div class="admin-upcoming-inline">
+              <div class="admin-upcoming-row">
+                <small>Telefone</small>
+                <span>${escapeHtml(String(appointment.telefone || "").trim() || "-")}</span>
+              </div>
+              <div class="admin-upcoming-row">
+                <small>Serviço</small>
+                <span>${escapeHtml(appointment.servico || "-")}</span>
+              </div>
             </div>
           </div>
           <div class="admin-upcoming-meta">
             <div class="admin-upcoming-row">
-              <small>Barbeiro:</small>
+              <small>Barbeiro</small>
               <span>${escapeHtml(appointment.barbeiro || "-")}</span>
             </div>
-            <div class="admin-upcoming-row">
-              <small>Data:</small>
-              <span>${escapeHtml(formatDate(appointment.data || "-"))}</span>
-            </div>
-            <div class="admin-upcoming-row">
-              <small>Status:</small>
-              <span class="admin-status status-${normalizeStatusClass(
-                appointment.status || "pendente"
-              )}">${escapeHtml(appointment.status || "pendente")}</span>
+            <div class="admin-upcoming-inline admin-upcoming-inline--meta">
+              <div class="admin-upcoming-row">
+                <small>Data</small>
+                <span>${escapeHtml(formatDate(appointment.data || "-"))}</span>
+              </div>
+              <div class="admin-upcoming-row">
+                <small>Status</small>
+                <span class="admin-status status-${normalizeStatusClass(
+                  appointment.status || "pendente"
+                )}">${escapeHtml(appointment.status || "pendente")}</span>
+              </div>
             </div>
           </div>
         </article>
