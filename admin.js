@@ -63,6 +63,7 @@ const adminViews = document.querySelectorAll("[data-admin-view]");
 const adminCurrentTitle = document.querySelector("[data-admin-current-title]");
 const adminCurrentCopy = document.querySelector("[data-admin-current-copy]");
 const adminUpcomingList = document.querySelector("[data-admin-upcoming-list]");
+const adminCompletedList = document.querySelector("[data-admin-completed-list]");
 const adminDashboardOpenAgendaButton = document.querySelector(
   "[data-admin-dashboard-open-agenda]"
 );
@@ -1344,17 +1345,108 @@ const getAppointmentTimestamp = (appointment) => {
   return new Date(`${date}T${time}:00`).getTime();
 };
 
+const renderAdminDashboardTable = (
+  target,
+  appointments,
+  {
+    emptyMessage,
+    noteMessage = "",
+    variantClass = "",
+    showDate = false,
+    highlightFirstRow = false,
+  }
+) => {
+  if (!target) {
+    return;
+  }
+
+  if (!appointments.length) {
+    target.innerHTML = `<p class="admin-empty-copy">${emptyMessage}</p>`;
+    return;
+  }
+
+  const headColumns = showDate
+    ? "<span>Hora</span><span>Cliente</span><span>Serviço</span><span>Barbeiro</span><span>Data</span><span>Status</span>"
+    : "<span>Hora</span><span>Cliente</span><span>Serviço</span><span>Barbeiro</span><span>Status</span>";
+
+  target.innerHTML = `
+    <div class="admin-upcoming-table-shell ${variantClass}">
+      <div class="admin-upcoming-table">
+        <div class="admin-upcoming-table-head ${showDate ? "admin-upcoming-table-head--with-date" : ""}">
+          ${headColumns}
+        </div>
+        <div class="admin-upcoming-table-body">
+          ${appointments
+            .map((appointment, index) => {
+              const statusClass = normalizeStatusClass(appointment.status || "pendente");
+              const isHighlightedNext =
+                highlightFirstRow && index === 0 && statusClass !== "concluido";
+
+              return `
+                <article class="admin-upcoming-row ${isHighlightedNext ? "is-next" : ""} status-${statusClass} ${showDate ? "admin-upcoming-row--with-date" : ""}">
+                  <div class="admin-upcoming-cell admin-upcoming-cell--time">
+                    <div class="admin-upcoming-time-top">
+                      <strong>${escapeHtml(appointment.horario || "-")}</strong>
+                    </div>
+                  </div>
+                  <div class="admin-upcoming-cell admin-upcoming-cell--client">
+                    <strong>${escapeHtml(appointment.nome || "Cliente")}</strong>
+                  </div>
+                  <div class="admin-upcoming-cell admin-upcoming-cell--service">
+                    <span>${escapeHtml(appointment.servico || "-")}</span>
+                  </div>
+                  <div class="admin-upcoming-cell admin-upcoming-cell--barber">
+                    <span>${escapeHtml(appointment.barbeiro || "-")}</span>
+                  </div>
+                  ${
+                    showDate
+                      ? `<div class="admin-upcoming-cell admin-upcoming-cell--date">
+                           <span>${escapeHtml(formatDate(appointment.data || "-"))}</span>
+                         </div>`
+                      : ""
+                  }
+                  <div class="admin-upcoming-cell admin-upcoming-cell--status">
+                    <div class="admin-upcoming-status-stack">
+                      ${isHighlightedNext ? '<span class="admin-upcoming-badge">Próximo</span>' : ""}
+                      <span class="admin-status status-${statusClass}">${escapeHtml(
+                        appointment.status || "pendente"
+                      )}</span>
+                    </div>
+                  </div>
+                </article>
+              `;
+            })
+            .join("")}
+        </div>
+      </div>
+      ${noteMessage ? `<p class="admin-upcoming-note">${noteMessage}</p>` : ""}
+    </div>
+  `;
+};
+
 const renderAdminDashboardOverview = () => {
   const nowTimestamp = getCurrentTimestamp();
   const activeAppointments = appointmentsState.filter(
     (appointment) => normalizeStatusClass(appointment.status || "pendente") !== "cancelado"
   );
-  const sortedUpcomingAppointments = [...activeAppointments]
+  const openAppointments = activeAppointments.filter(
+    (appointment) => normalizeStatusClass(appointment.status || "pendente") !== "concluido"
+  );
+  const completedAppointments = activeAppointments.filter(
+    (appointment) => normalizeStatusClass(appointment.status || "pendente") === "concluido"
+  );
+  const sortedUpcomingAppointments = [...openAppointments]
     .filter((appointment) => getAppointmentTimestamp(appointment) >= nowTimestamp)
     .sort(
       (firstAppointment, secondAppointment) =>
         getAppointmentTimestamp(firstAppointment) - getAppointmentTimestamp(secondAppointment)
     );
+  const sortedCompletedAppointments = [...completedAppointments]
+    .sort(
+      (firstAppointment, secondAppointment) =>
+        getAppointmentTimestamp(secondAppointment) - getAppointmentTimestamp(firstAppointment)
+    )
+    .slice(0, 5);
   const todayValue = getTodayDateValue();
   const todayAppointments = activeAppointments.filter(
     (appointment) => normalizeComparableDateValue(appointment.data) === todayValue
@@ -1378,75 +1470,22 @@ const renderAdminDashboardOverview = () => {
 
   renderAdminDashboardBarberAgenda();
 
-  if (!adminUpcomingList) {
-    return;
-  }
-
   const nextAppointments = sortedUpcomingAppointments.slice(0, 5);
-
-  if (!nextAppointments.length) {
-    adminUpcomingList.innerHTML =
-      '<p class="admin-empty-copy">Nenhum atendimento próximo encontrado.</p>';
-    return;
-  }
-
   const hasMoreUpcomingAppointments = sortedUpcomingAppointments.length > nextAppointments.length;
+  const hasMoreCompletedAppointments = completedAppointments.length > sortedCompletedAppointments.length;
 
-  adminUpcomingList.innerHTML = `
-    <div class="admin-upcoming-table-shell">
-      <div class="admin-upcoming-table">
-        <div class="admin-upcoming-table-head">
-          <span>Hora</span>
-          <span>Cliente</span>
-          <span>Serviço</span>
-          <span>Barbeiro</span>
-          <span>Status</span>
-        </div>
-        <div class="admin-upcoming-table-body">
-          ${nextAppointments
-            .map(
-              (appointment, index) => {
-                const statusClass = normalizeStatusClass(appointment.status || "pendente");
-                const isHighlightedNext = index === 0 && statusClass !== "concluido";
+  renderAdminDashboardTable(adminUpcomingList, nextAppointments, {
+    emptyMessage: "Nenhum atendimento próximo encontrado.",
+    noteMessage: hasMoreUpcomingAppointments ? "Veja todos na agenda completa." : "",
+    highlightFirstRow: true,
+  });
 
-                return `
-                <article class="admin-upcoming-row ${isHighlightedNext ? "is-next" : ""} status-${statusClass}">
-                  <div class="admin-upcoming-cell admin-upcoming-cell--time">
-                    <div class="admin-upcoming-time-top">
-                      <strong>${escapeHtml(appointment.horario || "-")}</strong>
-                    </div>
-                  </div>
-                  <div class="admin-upcoming-cell admin-upcoming-cell--client">
-                    <strong>${escapeHtml(appointment.nome || "Cliente")}</strong>
-                  </div>
-                  <div class="admin-upcoming-cell admin-upcoming-cell--service">
-                    <span>${escapeHtml(appointment.servico || "-")}</span>
-                  </div>
-                  <div class="admin-upcoming-cell admin-upcoming-cell--barber">
-                    <span>${escapeHtml(appointment.barbeiro || "-")}</span>
-                  </div>
-                  <div class="admin-upcoming-cell admin-upcoming-cell--status">
-                    <div class="admin-upcoming-status-stack">
-                      ${isHighlightedNext ? '<span class="admin-upcoming-badge">Próximo</span>' : ""}
-                      <span class="admin-status status-${statusClass}">${escapeHtml(
-                        appointment.status || "pendente"
-                      )}</span>
-                    </div>
-                  </div>
-                </article>
-              `;
-              }
-            )
-            .join("")}
-        </div>
-      </div>
-      ${
-        hasMoreUpcomingAppointments
-          ? '<p class="admin-upcoming-note">Veja todos na agenda completa.</p>'
-          : ""
-      }
-    </div>
-  `;
+  renderAdminDashboardTable(adminCompletedList, sortedCompletedAppointments, {
+    emptyMessage: "Nenhum atendimento concluído ainda.",
+    noteMessage: hasMoreCompletedAppointments ? "Veja todos na agenda completa." : "",
+    variantClass: "admin-upcoming-table-shell--completed",
+    showDate: true,
+  });
 };
 
 const getFilteredAppointments = (appointments) => {
