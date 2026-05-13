@@ -4460,7 +4460,7 @@ body.experience-adjust-active .about-gallery-card img {
   min-width: 620px;
   display: grid;
   grid-template-columns: 74px minmax(140px, 1.2fr) minmax(160px, 1.2fr) minmax(108px, 0.92fr) minmax(112px, 0.82fr);
-  gap: 0.7rem;
+  gap: 0.78rem;
   align-items: center;
 }
 
@@ -4471,7 +4471,7 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-upcoming-table-head span {
   color: rgba(244, 241, 235, 0.64);
-  font-size: 0.7rem;
+  font-size: 0.73rem;
   font-weight: 800;
   letter-spacing: 0.12em;
   text-transform: uppercase;
@@ -4485,7 +4485,7 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-upcoming-row {
   min-height: 3rem;
-  padding: 0.5rem 0.12rem;
+  padding: 0.56rem 0.18rem;
   border-radius: 14px;
   border: 1px solid transparent;
   background: rgba(255, 255, 255, 0.02);
@@ -4517,7 +4517,7 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-upcoming-cell--time strong {
   margin: 0;
-  font-size: 1rem;
+  font-size: 1.04rem;
   line-height: 1;
   color: #fff7e8;
 }
@@ -4547,7 +4547,7 @@ body.experience-adjust-active .about-gallery-card img {
   color: rgba(244, 241, 235, 0.86);
   font-weight: 600;
   line-height: 1.3;
-  font-size: 0.84rem;
+  font-size: 0.88rem;
 }
 
 .admin-upcoming-cell--client strong {
@@ -4740,41 +4740,28 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-barber-slot-content {
-  display: flex;
-  align-items: center;
-  gap: 0.42rem;
-  flex-wrap: wrap;
+  display: block;
   min-width: 0;
 }
 
-.admin-barber-slot-status,
 .admin-barber-slot-summary {
   display: block;
   min-width: 0;
   line-height: 1.25;
 }
 
-.admin-barber-slot-status {
-  font-size: 0.68rem;
-  font-weight: 800;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-}
-
-.admin-barber-slot.is-free .admin-barber-slot-status,
 .admin-barber-slot.is-free .admin-barber-slot-summary {
   color: #79d9a7;
 }
 
-.admin-barber-slot.is-occupied .admin-barber-slot-status,
 .admin-barber-slot.is-occupied .admin-barber-slot-summary {
   color: #f0b3a0;
 }
 
 .admin-barber-slot-summary {
   color: rgba(244, 241, 235, 0.82);
-  font-size: 0.8rem;
-  font-weight: 600;
+  font-size: 0.82rem;
+  font-weight: 700;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;

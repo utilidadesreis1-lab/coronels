@@ -298,6 +298,16 @@ const formatDate = (dateValue) => {
 };
 
 const normalizeComparableDateValue = (dateValue) => {
+  if (dateValue && typeof dateValue === "object") {
+    if (typeof dateValue.toDate === "function") {
+      return toDateValue(dateValue.toDate());
+    }
+
+    if (dateValue instanceof Date && !Number.isNaN(dateValue.getTime())) {
+      return toDateValue(dateValue);
+    }
+  }
+
   const normalizedDate = String(dateValue || "").trim();
 
   if (!normalizedDate) {
@@ -315,6 +325,8 @@ const normalizeComparableDateValue = (dateValue) => {
 
   return normalizedDate;
 };
+
+const getCurrentTimestamp = () => new Date().getTime();
 
 const normalizeStatusClass = (status) =>
   String(status)
@@ -1246,6 +1258,7 @@ const renderAdminDashboardBarberAgenda = () => {
   const todayValue = getTodayDateValue();
   const slots = getAdminManualScheduleSlots();
   const availableBarbers = getAvailableBarbers();
+  const nowTimestamp = getCurrentTimestamp();
   const todayAppointments = appointmentsState
     .filter(
       (appointment) =>
@@ -1262,9 +1275,10 @@ const renderAdminDashboardBarberAgenda = () => {
       const barberAppointments = todayAppointments.filter(
         (appointment) => String(appointment.barbeiro || "").trim() === barber.nome
       );
-      const barberNextSlot = barberAppointments.length
-        ? String(barberAppointments[0].horario || "").trim()
-        : "";
+      const barberNextAppointment = barberAppointments.find(
+        (appointment) => getAppointmentTimestamp(appointment) >= nowTimestamp
+      );
+      const barberNextSlot = String(barberNextAppointment?.horario || "").trim();
 
       const scheduleRows = slots
         .map((time) => {
@@ -1273,9 +1287,8 @@ const renderAdminDashboardBarberAgenda = () => {
           );
           const isOccupied = Boolean(occupiedAppointment);
           const isNext = Boolean(barberNextSlot) && barberNextSlot === time;
-          const statusLabel = isOccupied ? "Ocupado" : "Livre";
           const compactSummary = isOccupied
-            ? `${statusLabel} | ${escapeHtml(occupiedAppointment.nome || "Cliente")} | ${escapeHtml(
+            ? `Ocupado | ${escapeHtml(occupiedAppointment.nome || "Cliente")} | ${escapeHtml(
                 occupiedAppointment.servico || "Serviço"
               )}`
             : "Livre";
@@ -1287,7 +1300,6 @@ const renderAdminDashboardBarberAgenda = () => {
                 ${isNext ? '<span class="admin-barber-slot-badge">Próximo</span>' : ""}
               </div>
               <div class="admin-barber-slot-content">
-                <span class="admin-barber-slot-status">${statusLabel}</span>
                 <span class="admin-barber-slot-summary">${compactSummary}</span>
               </div>
             </article>
@@ -1316,7 +1328,7 @@ const renderAdminDashboardBarberAgenda = () => {
 };
 
 const getAppointmentTimestamp = (appointment) => {
-  const date = String(appointment?.data || "").trim();
+  const date = normalizeComparableDateValue(appointment?.data || "");
   const time = String(appointment?.horario || "").trim();
 
   if (!date || !time) {
@@ -1327,13 +1339,16 @@ const getAppointmentTimestamp = (appointment) => {
 };
 
 const renderAdminDashboardOverview = () => {
+  const nowTimestamp = getCurrentTimestamp();
   const activeAppointments = appointmentsState.filter(
     (appointment) => normalizeStatusClass(appointment.status || "pendente") !== "cancelado"
   );
-  const sortedUpcomingAppointments = [...activeAppointments].sort(
-    (firstAppointment, secondAppointment) =>
-      getAppointmentTimestamp(firstAppointment) - getAppointmentTimestamp(secondAppointment)
-  );
+  const sortedUpcomingAppointments = [...activeAppointments]
+    .filter((appointment) => getAppointmentTimestamp(appointment) >= nowTimestamp)
+    .sort(
+      (firstAppointment, secondAppointment) =>
+        getAppointmentTimestamp(firstAppointment) - getAppointmentTimestamp(secondAppointment)
+    );
   const todayValue = getTodayDateValue();
   const todayAppointments = activeAppointments.filter(
     (appointment) => normalizeComparableDateValue(appointment.data) === todayValue
