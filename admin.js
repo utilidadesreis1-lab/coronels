@@ -1262,7 +1262,7 @@ const renderAdminDashboardOverview = () => {
     return;
   }
 
-  const nextAppointments = sortedUpcomingAppointments.slice(0, 4);
+  const nextAppointments = sortedUpcomingAppointments.slice(0, 5);
 
   if (!nextAppointments.length) {
     adminUpcomingList.innerHTML =
@@ -1281,6 +1281,11 @@ const renderAdminDashboardOverview = () => {
           <div class="admin-upcoming-main">
             <strong>${escapeHtml(appointment.nome || "Cliente")}</strong>
             <span>${escapeHtml(appointment.servico || "-")}</span>
+            ${
+              String(appointment.telefone || "").trim()
+                ? `<small>${escapeHtml(appointment.telefone)}</small>`
+                : ""
+            }
           </div>
           <div class="admin-upcoming-meta">
             <span>${escapeHtml(appointment.barbeiro || "-")}</span>
