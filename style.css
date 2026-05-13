@@ -4737,6 +4737,8 @@ body.experience-adjust-active .about-gallery-card img {
   max-height: 21rem;
   padding-right: 0.2rem;
   overflow-y: auto;
+  overscroll-behavior: contain;
+  overscroll-behavior-y: contain;
 }
 
 .admin-barber-agenda-slots::-webkit-scrollbar {

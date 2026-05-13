@@ -1332,6 +1332,37 @@ const renderAdminDashboardBarberAgenda = () => {
       `;
     })
     .join("");
+
+  lockAdminBarberAgendaScroll();
+};
+
+const lockAdminBarberAgendaScroll = () => {
+  if (!adminBarberAgendaGrid) {
+    return;
+  }
+
+  adminBarberAgendaGrid
+    .querySelectorAll(".admin-barber-agenda-slots")
+    .forEach((slotsContainer) => {
+      if (slotsContainer.dataset.scrollLocked === "true") {
+        return;
+      }
+
+      slotsContainer.addEventListener(
+        "wheel",
+        (event) => {
+          if (slotsContainer.scrollHeight <= slotsContainer.clientHeight) {
+            return;
+          }
+
+          event.preventDefault();
+          slotsContainer.scrollTop += event.deltaY;
+        },
+        { passive: false }
+      );
+
+      slotsContainer.dataset.scrollLocked = "true";
+    });
 };
 
 const getAppointmentTimestamp = (appointment) => {
