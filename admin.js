@@ -1803,8 +1803,9 @@ const renderAppointments = () => {
 
   adminTableBody.innerHTML = filteredAppointments
     .map(
-      (appointment) => `
+      (appointment, index) => `
         <tr class="status-${normalizeStatusClass(appointment.status || "pendente")}">
+          <td class="admin-table-index">${index + 1}</td>
           <td>${escapeHtml(appointment.horario || "-")}</td>
           <td>${escapeHtml(appointment.nome || "-")}</td>
           <td>${escapeHtml(appointment.telefone || "-")}</td>
