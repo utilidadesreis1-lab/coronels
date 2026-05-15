@@ -1856,14 +1856,19 @@ const renderAppointments = () => {
                 >
                   WhatsApp
                 </button>
-                <button
+                ${
+                  normalizeStatusClass(appointment.status || "pendente") ===
+                  "concluido"
+                    ? `<span class="admin-action admin-action-static action-finalized">Finalizado</span>`
+                    : `<button
                   class="admin-action action-complete"
                 type="button"
                 data-admin-action="complete"
                 data-admin-id="${escapeHtml(appointment.id)}"
                 >
                   Concluir
-                </button>
+                </button>`
+                }
                 <button
                   class="admin-action action-cancel"
                   type="button"

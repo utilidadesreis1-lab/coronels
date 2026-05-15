@@ -5287,6 +5287,19 @@ body.experience-adjust-active .about-gallery-card img {
   white-space: nowrap;
 }
 
+.admin-table-actions .admin-action-static {
+  cursor: default;
+  pointer-events: none;
+  justify-content: center;
+}
+
+.admin-table-actions .action-finalized {
+  border-color: rgba(111, 181, 133, 0.34);
+  background: rgba(111, 181, 133, 0.14);
+  color: #c5e2cf;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
 .admin-table-empty {
   color: var(--muted);
   text-align: center;
