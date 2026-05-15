@@ -5300,6 +5300,13 @@ body.experience-adjust-active .about-gallery-card img {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
 }
 
+.admin-table-actions .action-cancelled {
+  border-color: rgba(214, 103, 103, 0.34);
+  background: rgba(214, 103, 103, 0.12);
+  color: #e8bbbb;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+}
+
 .admin-table-empty {
   color: var(--muted);
   text-align: center;

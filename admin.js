@@ -1860,6 +1860,9 @@ const renderAppointments = () => {
                   normalizeStatusClass(appointment.status || "pendente") ===
                   "concluido"
                     ? `<span class="admin-action admin-action-static action-finalized">Finalizado</span>`
+                    : normalizeStatusClass(appointment.status || "pendente") ===
+                        "cancelado"
+                      ? `<span class="admin-action admin-action-static action-cancelled">Cancelado</span>`
                     : `<button
                   class="admin-action action-complete"
                 type="button"
@@ -1869,14 +1872,21 @@ const renderAppointments = () => {
                   Concluir
                 </button>`
                 }
-                <button
+                ${
+                  normalizeStatusClass(appointment.status || "pendente") ===
+                    "pendente" ||
+                  normalizeStatusClass(appointment.status || "pendente") ===
+                    "confirmado"
+                    ? `<button
                   class="admin-action action-cancel"
                   type="button"
                   data-admin-action="cancel"
                   data-admin-id="${escapeHtml(appointment.id)}"
                 >
                   Cancelar
-                </button>
+                </button>`
+                    : ""
+                }
               </div>
             </td>
         </tr>
