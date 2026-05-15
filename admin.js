@@ -1754,8 +1754,22 @@ const renderAdminDashboardTable = (
           ${appointments
             .map((appointment, index) => {
               const statusClass = normalizeStatusClass(appointment.status || "pendente");
+              const appointmentType = normalizeAdminAppointmentType(
+                appointment.tipoAtendimento
+              );
+              const paymentLabel = normalizeAdminPaymentLabel(appointment.formaPagamento);
               const isHighlightedNext =
                 highlightFirstRow && index === 0 && statusClass !== "concluido";
+              const displayClientName =
+                appointmentType === "assinatura"
+                  ? `★ ${escapeHtml(appointment.nome || "Cliente")}`
+                  : escapeHtml(appointment.nome || "Cliente");
+              const displayServiceName = escapeHtml(
+                getAdminAppointmentDisplayServiceName(appointment)
+              );
+              const detailMeta = `${escapeHtml(
+                normalizeAdminAppointmentTypeLabel(appointment.tipoAtendimento)
+              )} • ${escapeHtml(paymentLabel)}`;
 
               return `
                 <article class="admin-upcoming-row ${isHighlightedNext ? "is-next" : ""} status-${statusClass} ${showDate ? "admin-upcoming-row--with-date" : ""}">
@@ -1765,10 +1779,11 @@ const renderAdminDashboardTable = (
                     </div>
                   </div>
                   <div class="admin-upcoming-cell admin-upcoming-cell--client">
-                    <strong>${escapeHtml(appointment.nome || "Cliente")}</strong>
+                    <strong>${displayClientName}</strong>
                   </div>
                   <div class="admin-upcoming-cell admin-upcoming-cell--service">
-                    <span>${escapeHtml(appointment.servico || "-")}</span>
+                    <span>${displayServiceName}</span>
+                    <small>${detailMeta}</small>
                   </div>
                   <div class="admin-upcoming-cell admin-upcoming-cell--barber">
                     <span>${escapeHtml(appointment.barbeiro || "-")}</span>
