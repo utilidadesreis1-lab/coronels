@@ -194,49 +194,43 @@
 
                 <div class="admin-panels">
                   <section class="admin-view is-active" data-admin-view="dashboard">
-                    <div class="admin-overview-grid">
-                      <article class="admin-overview-card">
+                    <div class="admin-dashboard-metrics">
+                      <article class="admin-dashboard-metric">
                         <span>Agendamentos hoje</span>
                         <strong data-admin-today>0</strong>
-                        <p>Visão rápida do movimento confirmado para o dia atual.</p>
                       </article>
 
-                      <article class="admin-overview-card">
-                        <span>Próximos atendimentos</span>
+                      <article class="admin-dashboard-metric">
+                        <span>Próximos</span>
                         <strong data-admin-upcoming-count>0</strong>
-                        <p>Atendimentos mais próximos da fila operacional.</p>
                       </article>
 
-                      <article class="admin-overview-card">
-                        <span>Horários ocupados</span>
+                      <article class="admin-dashboard-metric">
+                        <span>Ocupados</span>
                         <strong data-admin-busy-slots>0</strong>
-                        <p>Slots já comprometidos dentro da agenda ativa.</p>
                       </article>
 
-                      <article class="admin-overview-card">
-                        <span>Barbeiros ativos</span>
+                      <article class="admin-dashboard-metric">
+                        <span>Barbeiros</span>
                         <strong data-admin-active-barbers>0</strong>
-                        <p>Equipe habilitada para atendimento no sistema.</p>
                       </article>
-                    </div>
 
-                    <div class="admin-summary">
-                      <article class="admin-summary-card">
-                        <span>Total de agendamentos</span>
+                      <article class="admin-dashboard-metric">
+                        <span>Total</span>
                         <strong data-admin-total>0</strong>
                       </article>
 
-                      <article class="admin-summary-card">
+                      <article class="admin-dashboard-metric">
                         <span>Pendentes</span>
                         <strong data-admin-pending>0</strong>
                       </article>
 
-                      <article class="admin-summary-card">
+                      <article class="admin-dashboard-metric">
                         <span>Concluídos</span>
                         <strong data-admin-completed>0</strong>
                       </article>
 
-                      <article class="admin-summary-card">
+                      <article class="admin-dashboard-metric">
                         <span>Cancelados</span>
                         <strong data-admin-cancelled>0</strong>
                       </article>
@@ -263,29 +257,6 @@
                           >
                             Ver agenda completa
                           </button>
-                        </div>
-                      </article>
-
-                      <article class="admin-dashboard-panel admin-dashboard-panel--system">
-                        <div class="admin-subsection-head">
-                          <div>
-                            <p class="eyebrow">Sistema</p>
-                            <h3>Painel conectado</h3>
-                          </div>
-                          <p class="admin-subsection-intro">
-                            O painel continua usando a mesma lógica atual de login, leitura e atualização dos agendamentos.
-                          </p>
-                        </div>
-
-                        <div class="admin-dashboard-notes">
-                          <div class="admin-note-card">
-                            <strong>Agenda online</strong>
-                            <p>Os dados recebidos continuam vindo do Firebase e permanecem disponíveis para o painel atual.</p>
-                          </div>
-                          <div class="admin-note-card">
-                            <strong>Equipe ativa</strong>
-                            <p>Os barbeiros cadastrados continuam abastecendo o agendamento manual e a visão da operação.</p>
-                          </div>
                         </div>
                       </article>
                     </div>
@@ -325,6 +296,29 @@
                       </div>
 
                       <div class="admin-barber-agenda-grid" data-admin-barber-agenda-grid></div>
+                    </article>
+
+                    <article class="admin-dashboard-panel admin-dashboard-panel--system">
+                      <div class="admin-subsection-head">
+                        <div>
+                          <p class="eyebrow">Sistema</p>
+                          <h3>Painel conectado</h3>
+                        </div>
+                        <p class="admin-subsection-intro">
+                          O painel continua usando a mesma lógica atual de login, leitura e atualização dos agendamentos.
+                        </p>
+                      </div>
+
+                      <div class="admin-dashboard-notes">
+                        <div class="admin-note-card">
+                          <strong>Agenda online</strong>
+                          <p>Os dados recebidos continuam vindo do Firebase e permanecem disponíveis para o painel atual.</p>
+                        </div>
+                        <div class="admin-note-card">
+                          <strong>Equipe ativa</strong>
+                          <p>Os barbeiros cadastrados continuam abastecendo o agendamento manual e a visão da operação.</p>
+                        </div>
+                      </div>
                     </article>
                   </section>
 
