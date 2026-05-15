@@ -5106,10 +5106,10 @@ body.experience-adjust-active .about-gallery-card img {
   justify-content: center;
   min-height: 30px;
   min-width: 108px;
-  padding: 0.38rem 0.78rem;
+  padding: 0.38rem 0.88rem;
   border-radius: 999px;
   border: 1px solid transparent;
-  font-size: 0.68rem;
+  font-size: 0.7rem;
   font-weight: 800;
   letter-spacing: 0.03em;
   white-space: nowrap;
@@ -5124,6 +5124,9 @@ body.experience-adjust-active .about-gallery-card img {
   cursor: pointer;
   text-align: center;
   text-align-last: center;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 8px 18px rgba(5, 8, 16, 0.18);
   transition:
     border-color 0.2s ease,
     box-shadow 0.2s ease,
@@ -5133,12 +5136,40 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-payment-select:focus {
   outline: none;
-  box-shadow: 0 0 0 2px rgba(244, 241, 235, 0.08);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 0 0 2px rgba(244, 241, 235, 0.08),
+    0 10px 22px rgba(5, 8, 16, 0.2);
 }
 
 .admin-payment-select:disabled {
   opacity: 0.7;
   cursor: wait;
+}
+
+.admin-payment-select option {
+  background: #12161f;
+  color: #f3ecde;
+}
+
+.admin-payment-select option[value="Pix"] {
+  background: #13231a;
+  color: #b5e1c0;
+}
+
+.admin-payment-select option[value="Dinheiro"] {
+  background: #221c12;
+  color: #ead6a8;
+}
+
+.admin-payment-select option[value="Cartão"] {
+  background: #171d28;
+  color: #cfdbef;
+}
+
+.admin-payment-select option[value="Pendente"] {
+  background: #211a11;
+  color: #e4c996;
 }
 
 .admin-table th:nth-child(2),
@@ -5180,31 +5211,31 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-payment-select.payment-pendente {
-  background-color: rgba(187, 154, 90, 0.16);
-  color: #d6bd8e;
-  border-color: rgba(187, 154, 90, 0.28);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  background:
+    linear-gradient(180deg, rgba(199, 165, 99, 0.28), rgba(134, 103, 49, 0.2));
+  color: #efd7a8;
+  border-color: rgba(204, 169, 99, 0.36);
 }
 
 .admin-payment-select.payment-pix {
-  background-color: rgba(111, 181, 133, 0.16);
-  color: #9dd3ae;
-  border-color: rgba(111, 181, 133, 0.28);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  background:
+    linear-gradient(180deg, rgba(98, 171, 122, 0.28), rgba(48, 100, 67, 0.2));
+  color: #c0e6cb;
+  border-color: rgba(111, 181, 133, 0.34);
 }
 
 .admin-payment-select.payment-dinheiro {
-  background-color: rgba(212, 176, 92, 0.14);
-  color: #e0ca9e;
-  border-color: rgba(212, 176, 92, 0.24);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  background:
+    linear-gradient(180deg, rgba(210, 177, 97, 0.26), rgba(145, 109, 43, 0.19));
+  color: #f1ddb0;
+  border-color: rgba(212, 176, 92, 0.32);
 }
 
 .admin-payment-select.payment-cartao {
-  background-color: rgba(128, 149, 184, 0.16);
-  color: #bfd0eb;
-  border-color: rgba(128, 149, 184, 0.26);
-  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  background:
+    linear-gradient(180deg, rgba(126, 149, 186, 0.26), rgba(58, 76, 110, 0.2));
+  color: #dae6fb;
+  border-color: rgba(128, 149, 184, 0.32);
 }
 
 .admin-table tbody tr:last-child td {
