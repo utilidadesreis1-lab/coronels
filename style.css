@@ -5121,9 +5121,11 @@ body.experience-adjust-active .about-gallery-card img {
   background-position: center;
   background-size: 0;
   color: inherit;
+  color-scheme: dark;
   cursor: pointer;
   text-align: center;
   text-align-last: center;
+  line-height: 1.15;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.04),
     0 8px 18px rgba(5, 8, 16, 0.18);
@@ -5138,7 +5140,7 @@ body.experience-adjust-active .about-gallery-card img {
   outline: none;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.04),
-    0 0 0 2px rgba(244, 241, 235, 0.08),
+    0 0 0 2px rgba(244, 241, 235, 0.1),
     0 10px 22px rgba(5, 8, 16, 0.2);
 }
 
@@ -5150,6 +5152,7 @@ body.experience-adjust-active .about-gallery-card img {
 .admin-payment-select option {
   background: #12161f;
   color: #f3ecde;
+  font-weight: 700;
 }
 
 .admin-payment-select option[value="Pix"] {
@@ -5170,6 +5173,13 @@ body.experience-adjust-active .about-gallery-card img {
 .admin-payment-select option[value="Pendente"] {
   background: #211a11;
   color: #e4c996;
+}
+
+.admin-payment-select option:checked,
+.admin-payment-select option:hover,
+.admin-payment-select option:focus {
+  background: #232a36;
+  color: #f8f3ea;
 }
 
 .admin-table th:nth-child(2),
