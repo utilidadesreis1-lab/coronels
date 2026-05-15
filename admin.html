@@ -483,6 +483,28 @@
                               <div class="admin-manual-schedule-grid" data-admin-manual-schedule-grid></div>
                             </div>
 
+                            <label class="field admin-manual-type-field">
+                              <span>Tipo de atendimento</span>
+                              <select name="tipoAtendimento" data-admin-manual-type-select>
+                                <option value="avulso" selected>Avulso</option>
+                                <option value="assinatura">Assinatura</option>
+                              </select>
+                            </label>
+
+                            <label class="field admin-manual-plan-field" data-admin-manual-plan-field hidden>
+                              <span>Plano de assinatura</span>
+                              <select name="planoAssinatura" data-admin-manual-plan-select>
+                                <option value="" selected disabled>Selecione o plano</option>
+                                <option value="Corte assinatura">Corte assinatura — R$ 89,99</option>
+                                <option value="Barba assinatura">Barba assinatura — R$ 89,99</option>
+                                <option value="Corte + Barba assinatura">Corte + Barba assinatura — R$ 160,00</option>
+                              </select>
+                            </label>
+
+                            <p class="admin-manual-signature-note" data-admin-manual-signature-note hidden>
+                              Assinaturas são válidas de segunda a quarta.
+                            </p>
+
                             <label class="field admin-manual-payment-field">
                               <span>Forma de pagamento</span>
                               <select name="formaPagamento">
@@ -602,7 +624,7 @@
                         data-admin-agenda-table-shell
                       >
                         <table class="admin-table">
-                          <thead>
+                            <thead>
                             <tr>
                               <th>Nº</th>
                               <th>Hora</th>
@@ -610,6 +632,7 @@
                               <th>Telefone</th>
                               <th>Serviço</th>
                               <th>Valor</th>
+                              <th>Tipo</th>
                               <th>Pagamento</th>
                               <th>Profissional</th>
                               <th>Data</th>

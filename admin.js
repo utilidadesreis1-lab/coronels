@@ -44,6 +44,10 @@ const adminManualDateInput = document.querySelector("[data-admin-manual-date-inp
 const adminManualScheduleGrid = document.querySelector("[data-admin-manual-schedule-grid]");
 const adminManualScheduleShell = document.querySelector("[data-admin-manual-schedule-shell]");
 const adminManualScheduleHelper = document.querySelector("[data-admin-manual-schedule-helper]");
+const adminManualTypeSelect = document.querySelector("[data-admin-manual-type-select]");
+const adminManualPlanField = document.querySelector("[data-admin-manual-plan-field]");
+const adminManualPlanSelect = document.querySelector("[data-admin-manual-plan-select]");
+const adminManualSignatureNote = document.querySelector("[data-admin-manual-signature-note]");
 const adminBarberForm = document.querySelector("[data-admin-barber-form]");
 const adminBarberFeedback = document.querySelector("[data-admin-barber-feedback]");
 const adminBarbersList = document.querySelector("[data-admin-barbers-list]");
@@ -143,6 +147,18 @@ const adminServiceMeta = {
     price: "R$ 100",
     description:
       "Desenho de barba personalizado com proporção facial e acabamento premium.",
+  },
+};
+
+const adminSubscriptionPlanMeta = {
+  "Corte assinatura": {
+    price: "R$ 89,99",
+  },
+  "Barba assinatura": {
+    price: "R$ 89,99",
+  },
+  "Corte + Barba assinatura": {
+    price: "R$ 160,00",
   },
 };
 
@@ -692,6 +708,7 @@ const selectAdminManualDate = (dateValue) => {
   toggleManualChoiceShellError(adminManualDateShell, false);
   renderAdminManualDateChips();
   syncAdminManualScheduleContext();
+  syncAdminManualAppointmentType();
   return true;
 };
 
@@ -902,6 +919,17 @@ const getAppointmentPayload = (formData, origem) => ({
   data: String(formData.get("data") || "").trim(),
   horario: String(formData.get("horario") || "").trim(),
   formaPagamento: normalizeAdminPaymentLabel(formData.get("formaPagamento")),
+  tipoAtendimento: normalizeAdminAppointmentType(formData.get("tipoAtendimento")),
+  planoAssinatura:
+    normalizeAdminAppointmentType(formData.get("tipoAtendimento")) === "assinatura"
+      ? normalizeAdminSubscriptionPlan(formData.get("planoAssinatura"))
+      : "",
+  valorAssinatura:
+    normalizeAdminAppointmentType(formData.get("tipoAtendimento")) === "assinatura"
+      ? getAdminSubscriptionPlanPrice(
+          normalizeAdminSubscriptionPlan(formData.get("planoAssinatura"))
+        )
+      : "",
   status: "pendente",
   origem,
 });
@@ -1203,6 +1231,7 @@ const closeManualForm = () => {
   renderAdminManualServiceCards();
   setAdminManualServicePanelState(false);
   renderAdminManualScheduleGrid();
+  syncAdminManualAppointmentType();
   setFeedbackMessage(adminManualFeedback, "");
 };
 
@@ -1235,6 +1264,7 @@ const openManualForm = () => {
   renderAdminManualServiceCards();
   setAdminManualServicePanelState(false);
   renderAdminManualScheduleGrid();
+  syncAdminManualAppointmentType();
   setAdminManualScheduleHelper(defaultAdminManualScheduleHelper);
 };
 
@@ -1399,6 +1429,44 @@ const formatAdminStatusLabel = (status) => {
 
 const getAdminServicePrice = (serviceName) =>
   adminServiceMeta[String(serviceName || "").trim()]?.price || "—";
+
+const normalizeAdminAppointmentType = (type) =>
+  String(type || "").trim().toLocaleLowerCase("pt-BR") === "assinatura"
+    ? "assinatura"
+    : "avulso";
+
+const normalizeAdminAppointmentTypeLabel = (type) =>
+  normalizeAdminAppointmentType(type) === "assinatura" ? "Assinatura" : "Avulso";
+
+const normalizeAdminSubscriptionPlan = (plan) => {
+  const normalizedPlan = String(plan || "").trim();
+
+  return adminSubscriptionPlanMeta[normalizedPlan] ? normalizedPlan : "";
+};
+
+const getAdminSubscriptionPlanPrice = (plan) =>
+  adminSubscriptionPlanMeta[normalizeAdminSubscriptionPlan(plan)]?.price || "";
+
+const isAdminSubscriptionDateAllowed = (dateValue) => {
+  const normalizedDate = normalizeComparableDateValue(dateValue);
+
+  if (!normalizedDate) {
+    return true;
+  }
+
+  const [year, month, day] = normalizedDate.split("-").map(Number);
+  const parsedDate = new Date(year, month - 1, day);
+  const weekday = parsedDate.getDay();
+
+  return weekday >= 1 && weekday <= 3;
+};
+
+const getAdminAppointmentDisplayValue = (appointment) =>
+  normalizeAdminAppointmentType(appointment.tipoAtendimento) === "assinatura"
+    ? getAdminSubscriptionPlanPrice(appointment.planoAssinatura) ||
+      String(appointment.valorAssinatura || "").trim() ||
+      "—"
+    : getAdminServicePrice(appointment.servico);
 
 const normalizeAdminPaymentClass = (payment) => {
   const normalizedPayment = String(payment || "")
@@ -1815,15 +1883,29 @@ const renderAppointments = () => {
   }
 
   adminTableBody.innerHTML = filteredAppointments
-    .map(
-      (appointment, index) => `
-        <tr class="status-${normalizeStatusClass(appointment.status || "pendente")}">
+    .map((appointment, index) => {
+      const normalizedStatus = normalizeStatusClass(appointment.status || "pendente");
+      const normalizedType = normalizeAdminAppointmentType(appointment.tipoAtendimento);
+      const displayClientName =
+        normalizedType === "assinatura"
+          ? `<span class="admin-client-name is-signature"><span class="admin-client-star" aria-hidden="true">★</span>${escapeHtml(
+              appointment.nome || "-"
+            )}</span>`
+          : `<span class="admin-client-name">${escapeHtml(appointment.nome || "-")}</span>`;
+
+      return `
+        <tr class="status-${normalizedStatus}">
           <td class="admin-table-index">${index + 1}</td>
           <td>${escapeHtml(appointment.horario || "-")}</td>
-          <td>${escapeHtml(appointment.nome || "-")}</td>
+          <td>${displayClientName}</td>
           <td>${escapeHtml(appointment.telefone || "-")}</td>
           <td>${escapeHtml(appointment.servico || "-")}</td>
-          <td class="admin-table-value">${escapeHtml(getAdminServicePrice(appointment.servico))}</td>
+          <td class="admin-table-value">${escapeHtml(getAdminAppointmentDisplayValue(appointment))}</td>
+          <td>
+            <span class="admin-type-badge type-${normalizedType}">${escapeHtml(
+              normalizeAdminAppointmentTypeLabel(appointment.tipoAtendimento)
+            )}</span>
+          </td>
           <td>
             <select
               class="admin-payment-select payment-${normalizeAdminPaymentClass(
@@ -1842,9 +1924,9 @@ const renderAppointments = () => {
           <td>${escapeHtml(appointment.barbeiro || "-")}</td>
           <td>${escapeHtml(formatDate(String(appointment.data || "-")))}</td>
           <td>
-            <span class="admin-status status-${normalizeStatusClass(
+            <span class="admin-status status-${normalizedStatus}">${escapeHtml(
               appointment.status || "pendente"
-            )}">${escapeHtml(appointment.status || "pendente")}</span>
+            )}</span>
           </td>
           <td>
             <div class="admin-table-actions">
@@ -1857,11 +1939,9 @@ const renderAppointments = () => {
                   WhatsApp
                 </button>
                 ${
-                  normalizeStatusClass(appointment.status || "pendente") ===
-                  "concluido"
+                  normalizedStatus === "concluido"
                     ? `<span class="admin-action admin-action-static action-finalized">Finalizado</span>`
-                    : normalizeStatusClass(appointment.status || "pendente") ===
-                        "cancelado"
+                    : normalizedStatus === "cancelado"
                       ? `<span class="admin-action admin-action-static action-cancelled">Cancelado</span>`
                     : `<button
                   class="admin-action action-complete"
@@ -1873,10 +1953,7 @@ const renderAppointments = () => {
                 </button>`
                 }
                 ${
-                  normalizeStatusClass(appointment.status || "pendente") ===
-                    "pendente" ||
-                  normalizeStatusClass(appointment.status || "pendente") ===
-                    "confirmado"
+                  normalizedStatus === "pendente" || normalizedStatus === "confirmado"
                     ? `<button
                   class="admin-action action-cancel"
                   type="button"
@@ -1890,9 +1967,44 @@ const renderAppointments = () => {
               </div>
             </td>
         </tr>
-      `
-    )
+      `;
+    })
     .join("");
+};
+
+const syncAdminManualAppointmentType = () => {
+  if (!adminManualTypeSelect || !adminManualPlanField || !adminManualPlanSelect) {
+    return;
+  }
+
+  const appointmentType = normalizeAdminAppointmentType(adminManualTypeSelect.value);
+  const isSubscription = appointmentType === "assinatura";
+
+  adminManualPlanField.hidden = !isSubscription;
+  adminManualPlanSelect.disabled = !isSubscription;
+
+  if (!isSubscription) {
+    adminManualPlanSelect.value = "";
+    toggleFieldError(adminManualPlanSelect, false);
+  }
+
+  if (adminManualSignatureNote) {
+    if (!isSubscription) {
+      adminManualSignatureNote.hidden = true;
+      adminManualSignatureNote.textContent = "Assinaturas são válidas de segunda a quarta.";
+      adminManualSignatureNote.classList.remove("is-warning");
+    } else {
+      const selectedDate =
+        adminManualForm?.querySelector('input[name="data"]')?.value || "";
+      const isAllowedDate = isAdminSubscriptionDateAllowed(selectedDate);
+
+      adminManualSignatureNote.hidden = false;
+      adminManualSignatureNote.textContent = isAllowedDate
+        ? "Assinaturas são válidas de segunda a quarta."
+        : "Assinaturas são válidas somente de segunda a quarta.";
+      adminManualSignatureNote.classList.toggle("is-warning", !isAllowedDate);
+    }
+  }
 };
 
 const getFirebaseErrorMessage = (fallbackMessage) => {
@@ -2118,6 +2230,20 @@ if (adminManualForm && adminManualFeedback) {
     });
   }
 
+  if (adminManualTypeSelect) {
+    adminManualTypeSelect.addEventListener("change", () => {
+      toggleFieldError(adminManualTypeSelect, false);
+      syncAdminManualAppointmentType();
+    });
+  }
+
+  if (adminManualPlanSelect) {
+    adminManualPlanSelect.addEventListener("change", () => {
+      toggleFieldError(adminManualPlanSelect, false);
+      syncAdminManualAppointmentType();
+    });
+  }
+
   if (adminManualServiceSelect) {
     adminManualServiceSelect.addEventListener("change", () => {
       toggleManualChoiceShellError(adminManualServiceShell, false);
@@ -2187,6 +2313,7 @@ if (adminManualForm && adminManualFeedback) {
       toggleManualChoiceShellError(adminManualDateShell, false);
       renderAdminManualDateChips();
       syncAdminManualScheduleContext();
+      syncAdminManualAppointmentType();
     });
   }
 
@@ -2256,11 +2383,13 @@ if (adminManualForm && adminManualFeedback) {
   updateAdminManualDateInput();
   setAdminManualServicePanelState(false);
   renderAdminManualScheduleGrid();
+  syncAdminManualAppointmentType();
 
   adminManualForm.addEventListener("submit", async (event) => {
     event.preventDefault();
 
     let hasError = false;
+    const appointmentType = normalizeAdminAppointmentType(adminManualTypeSelect?.value);
 
     manualRequiredFields.forEach((field) => {
       const isInvalid = field.value.trim() === "";
@@ -2270,6 +2399,15 @@ if (adminManualForm && adminManualFeedback) {
         hasError = true;
       }
     });
+
+    if (appointmentType === "assinatura" && adminManualPlanSelect) {
+      const missingPlan = !String(adminManualPlanSelect.value || "").trim();
+      toggleFieldError(adminManualPlanSelect, missingPlan);
+
+      if (missingPlan) {
+        hasError = true;
+      }
+    }
 
     toggleManualChoiceShellError(
       adminManualServiceShell,
@@ -2312,6 +2450,18 @@ if (adminManualForm && adminManualFeedback) {
         "Informe um telefone válido com DDD."
       );
       return;
+    }
+
+    if (
+      appointmentType === "assinatura" &&
+      manualDateField &&
+      !isAdminSubscriptionDateAllowed(manualDateField.value)
+    ) {
+      syncAdminManualAppointmentType();
+      setFeedbackMessage(
+        adminManualFeedback,
+        "Assinaturas são válidas somente de segunda a quarta."
+      );
     }
 
     const submitButton = adminManualForm.querySelector('button[type="submit"]');
