@@ -1496,9 +1496,24 @@ const getAdminAppointmentDisplayValue = (appointment) =>
       "—"
     : getAdminServicePrice(appointment.servico);
 
+const getAdminCompactSubscriptionPlanName = (plan) => {
+  const normalizedPlan = normalizeAdminSubscriptionPlan(plan);
+
+  switch (normalizedPlan) {
+    case "Corte assinatura":
+      return "Corte";
+    case "Barba assinatura":
+      return "Barba";
+    case "Corte + Barba assinatura":
+      return "Corte + Barba";
+    default:
+      return normalizedPlan;
+  }
+};
+
 const getAdminAppointmentDisplayServiceName = (appointment) =>
   normalizeAdminAppointmentType(appointment.tipoAtendimento) === "assinatura"
-    ? normalizeAdminSubscriptionPlan(appointment.planoAssinatura) ||
+    ? getAdminCompactSubscriptionPlanName(appointment.planoAssinatura) ||
       String(appointment.servico || "").trim() ||
       "-"
     : String(appointment.servico || "").trim() || "-";
@@ -1945,10 +1960,12 @@ const renderAppointments = () => {
       const normalizedType = normalizeAdminAppointmentType(appointment.tipoAtendimento);
       const displayClientName =
         normalizedType === "assinatura"
-          ? `<span class="admin-client-name is-signature"><span class="admin-client-star" aria-hidden="true">★</span>${escapeHtml(
+          ? `<span class="admin-client-name is-signature"><span class="admin-client-star" aria-hidden="true">★</span><span class="admin-client-name-label">${escapeHtml(
               appointment.nome || "-"
-            )}</span>`
-          : `<span class="admin-client-name">${escapeHtml(appointment.nome || "-")}</span>`;
+            )}</span></span>`
+          : `<span class="admin-client-name"><span class="admin-client-name-label">${escapeHtml(
+              appointment.nome || "-"
+            )}</span></span>`;
 
       return `
         <tr class="status-${normalizedStatus}">

@@ -5068,7 +5068,7 @@ body.experience-adjust-active .about-gallery-card img {
 .admin-table {
   width: 100%;
   border-collapse: collapse;
-  min-width: 1180px;
+  min-width: 1120px;
 }
 
 .admin-table th,
@@ -5123,6 +5123,8 @@ body.experience-adjust-active .about-gallery-card img {
   display: inline-flex;
   align-items: center;
   gap: 0.38rem;
+  max-width: 100%;
+  min-width: 0;
 }
 
 .admin-client-name.is-signature {
@@ -5130,7 +5132,14 @@ body.experience-adjust-active .about-gallery-card img {
   font-weight: 700;
 }
 
+.admin-client-name-label {
+  min-width: 0;
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
 .admin-client-star {
+  flex: 0 0 auto;
   color: #d9bd80;
   font-size: 0.78rem;
   line-height: 1;
@@ -5142,12 +5151,12 @@ body.experience-adjust-active .about-gallery-card img {
   align-items: center;
   justify-content: center;
   min-height: 28px;
-  padding: 0.3rem 0.72rem;
+  padding: 0.28rem 0.62rem;
   border-radius: 999px;
   border: 1px solid rgba(255, 255, 255, 0.1);
-  font-size: 0.68rem;
+  font-size: 0.66rem;
   font-weight: 800;
-  letter-spacing: 0.05em;
+  letter-spacing: 0.04em;
   text-transform: uppercase;
   white-space: nowrap;
 }
@@ -5170,11 +5179,11 @@ body.experience-adjust-active .about-gallery-card img {
   align-items: center;
   justify-content: center;
   min-height: 30px;
-  min-width: 108px;
-  padding: 0.38rem 0.88rem;
+  min-width: 96px;
+  padding: 0.34rem 0.74rem;
   border-radius: 999px;
   border: 1px solid transparent;
-  font-size: 0.7rem;
+  font-size: 0.68rem;
   font-weight: 800;
   letter-spacing: 0.03em;
   white-space: nowrap;
@@ -5256,8 +5265,8 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-table th:nth-child(3),
 .admin-table td:nth-child(3) {
-  width: 146px;
-  max-width: 146px;
+  width: 164px;
+  max-width: 164px;
 }
 
 .admin-table td:nth-child(3) {
@@ -5267,8 +5276,8 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-table th:nth-child(4),
 .admin-table td:nth-child(4) {
-  width: 138px;
-  max-width: 138px;
+  width: 132px;
+  max-width: 132px;
 }
 
 .admin-table td:nth-child(4) {
@@ -5276,6 +5285,17 @@ body.experience-adjust-active .about-gallery-card img {
   word-break: normal;
   padding-left: 0.48rem;
   letter-spacing: 0.01em;
+}
+
+.admin-table th:nth-child(5),
+.admin-table td:nth-child(5) {
+  width: 156px;
+  max-width: 156px;
+}
+
+.admin-table td:nth-child(5) {
+  white-space: normal;
+  word-break: break-word;
 }
 
 .admin-table td:nth-child(6),
@@ -5343,13 +5363,13 @@ body.experience-adjust-active .about-gallery-card img {
   align-items: center;
   justify-content: flex-start;
   gap: 0.42rem;
-  min-width: 178px;
+  min-width: 162px;
 }
 
 .admin-table-actions .admin-action {
   min-height: 32px;
-  padding: 0.42rem 0.58rem;
-  font-size: 0.68rem;
+  padding: 0.38rem 0.52rem;
+  font-size: 0.66rem;
   border-radius: 12px;
   white-space: nowrap;
 }
