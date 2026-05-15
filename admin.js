@@ -153,12 +153,15 @@ const adminServiceMeta = {
 const adminSubscriptionPlanMeta = {
   "Corte assinatura": {
     price: "R$ 89,99",
+    amount: 89.99,
   },
   "Barba assinatura": {
     price: "R$ 89,99",
+    amount: 89.99,
   },
   "Corte + Barba assinatura": {
     price: "R$ 160,00",
+    amount: 160.0,
   },
 };
 
@@ -267,6 +270,10 @@ const shortWeekdayFormatter = new Intl.DateTimeFormat("pt-BR", {
 
 const shortMonthFormatter = new Intl.DateTimeFormat("pt-BR", {
   month: "short",
+});
+const currencyFormatter = new Intl.NumberFormat("pt-BR", {
+  style: "currency",
+  currency: "BRL",
 });
 
 const getTodayDateValue = () => {
@@ -911,28 +918,34 @@ const buildAdminWhatsappUrl = (phone) => {
   )}`;
 };
 
-const getAppointmentPayload = (formData, origem) => ({
-  nome: String(formData.get("nome") || "").trim(),
-  telefone: formatPhone(formData.get("telefone")),
-  servico: String(formData.get("servico") || "").trim(),
-  barbeiro: String(formData.get("barbeiro") || "").trim(),
-  data: String(formData.get("data") || "").trim(),
-  horario: String(formData.get("horario") || "").trim(),
-  formaPagamento: normalizeAdminPaymentLabel(formData.get("formaPagamento")),
-  tipoAtendimento: normalizeAdminAppointmentType(formData.get("tipoAtendimento")),
-  planoAssinatura:
-    normalizeAdminAppointmentType(formData.get("tipoAtendimento")) === "assinatura"
+const getAppointmentPayload = (formData, origem) => {
+  const appointmentType = normalizeAdminAppointmentType(formData.get("tipoAtendimento"));
+  const selectedPlan =
+    appointmentType === "assinatura"
       ? normalizeAdminSubscriptionPlan(formData.get("planoAssinatura"))
-      : "",
-  valorAssinatura:
-    normalizeAdminAppointmentType(formData.get("tipoAtendimento")) === "assinatura"
-      ? getAdminSubscriptionPlanPrice(
-          normalizeAdminSubscriptionPlan(formData.get("planoAssinatura"))
-        )
-      : "",
-  status: "pendente",
-  origem,
-});
+      : "";
+
+  return {
+    nome: String(formData.get("nome") || "").trim(),
+    telefone: formatPhone(formData.get("telefone")),
+    servico:
+      appointmentType === "assinatura"
+        ? selectedPlan
+        : String(formData.get("servico") || "").trim(),
+    barbeiro: String(formData.get("barbeiro") || "").trim(),
+    data: String(formData.get("data") || "").trim(),
+    horario: String(formData.get("horario") || "").trim(),
+    formaPagamento: normalizeAdminPaymentLabel(formData.get("formaPagamento")),
+    tipoAtendimento: appointmentType,
+    planoAssinatura: appointmentType === "assinatura" ? selectedPlan : "",
+    valorAssinatura:
+      appointmentType === "assinatura"
+        ? getAdminSubscriptionPlanAmount(selectedPlan)
+        : "",
+    status: "pendente",
+    origem,
+  };
+};
 
 const getBarberPayload = (formData) => ({
   nome: String(formData.get("nome") || "").trim(),
@@ -1447,6 +1460,21 @@ const normalizeAdminSubscriptionPlan = (plan) => {
 const getAdminSubscriptionPlanPrice = (plan) =>
   adminSubscriptionPlanMeta[normalizeAdminSubscriptionPlan(plan)]?.price || "";
 
+const getAdminSubscriptionPlanAmount = (plan) =>
+  adminSubscriptionPlanMeta[normalizeAdminSubscriptionPlan(plan)]?.amount ?? "";
+
+const formatAdminCurrencyValue = (value) => {
+  if (typeof value === "number" && Number.isFinite(value)) {
+    return currencyFormatter.format(value);
+  }
+
+  const numericValue = Number(String(value || "").replace(",", "."));
+
+  return Number.isFinite(numericValue) && String(value || "").trim() !== ""
+    ? currencyFormatter.format(numericValue)
+    : "—";
+};
+
 const isAdminSubscriptionDateAllowed = (dateValue) => {
   const normalizedDate = normalizeComparableDateValue(dateValue);
 
@@ -1464,9 +1492,38 @@ const isAdminSubscriptionDateAllowed = (dateValue) => {
 const getAdminAppointmentDisplayValue = (appointment) =>
   normalizeAdminAppointmentType(appointment.tipoAtendimento) === "assinatura"
     ? getAdminSubscriptionPlanPrice(appointment.planoAssinatura) ||
-      String(appointment.valorAssinatura || "").trim() ||
+      formatAdminCurrencyValue(appointment.valorAssinatura) ||
       "—"
     : getAdminServicePrice(appointment.servico);
+
+const getAdminAppointmentDisplayServiceName = (appointment) =>
+  normalizeAdminAppointmentType(appointment.tipoAtendimento) === "assinatura"
+    ? normalizeAdminSubscriptionPlan(appointment.planoAssinatura) ||
+      String(appointment.servico || "").trim() ||
+      "-"
+    : String(appointment.servico || "").trim() || "-";
+
+const syncAdminManualServiceRequirement = () => {
+  if (!adminManualServiceSelect || !adminManualServiceShell || !adminManualServiceSummary) {
+    return;
+  }
+
+  const isSubscription =
+    normalizeAdminAppointmentType(adminManualTypeSelect?.value) === "assinatura";
+
+  adminManualServiceSelect.disabled = isSubscription;
+  adminManualServiceSelect.required = !isSubscription;
+  adminManualServiceShell.hidden = isSubscription;
+  toggleFieldError(adminManualServiceSelect, false);
+  toggleManualChoiceShellError(adminManualServiceShell, false);
+
+  if (isSubscription) {
+    setAdminManualServicePanelState(false);
+    adminManualServiceSummary.textContent = "Plano de assinatura selecionado abaixo";
+  } else {
+    updateAdminManualServiceSummary();
+  }
+};
 
 const normalizeAdminPaymentClass = (payment) => {
   const normalizedPayment = String(payment || "")
@@ -1899,7 +1956,7 @@ const renderAppointments = () => {
           <td>${escapeHtml(appointment.horario || "-")}</td>
           <td>${displayClientName}</td>
           <td>${escapeHtml(appointment.telefone || "-")}</td>
-          <td>${escapeHtml(appointment.servico || "-")}</td>
+          <td>${escapeHtml(getAdminAppointmentDisplayServiceName(appointment))}</td>
           <td class="admin-table-value">${escapeHtml(getAdminAppointmentDisplayValue(appointment))}</td>
           <td>
             <span class="admin-type-badge type-${normalizedType}">${escapeHtml(
@@ -1982,6 +2039,7 @@ const syncAdminManualAppointmentType = () => {
 
   adminManualPlanField.hidden = !isSubscription;
   adminManualPlanSelect.disabled = !isSubscription;
+  syncAdminManualServiceRequirement();
 
   if (!isSubscription) {
     adminManualPlanSelect.value = "";
@@ -2392,6 +2450,11 @@ if (adminManualForm && adminManualFeedback) {
     const appointmentType = normalizeAdminAppointmentType(adminManualTypeSelect?.value);
 
     manualRequiredFields.forEach((field) => {
+      if (field.disabled) {
+        toggleFieldError(field, false);
+        return;
+      }
+
       const isInvalid = field.value.trim() === "";
       toggleFieldError(field, isInvalid);
 
@@ -2411,7 +2474,7 @@ if (adminManualForm && adminManualFeedback) {
 
     toggleManualChoiceShellError(
       adminManualServiceShell,
-      !String(adminManualServiceSelect?.value || "").trim()
+      appointmentType === "avulso" && !String(adminManualServiceSelect?.value || "").trim()
     );
     toggleManualChoiceShellError(
       adminManualBarberShell,
@@ -2462,6 +2525,7 @@ if (adminManualForm && adminManualFeedback) {
         adminManualFeedback,
         "Assinaturas são válidas somente de segunda a quarta."
       );
+      return;
     }
 
     const submitButton = adminManualForm.querySelector('button[type="submit"]');
