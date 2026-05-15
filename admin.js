@@ -1433,6 +1433,19 @@ const normalizeAdminPaymentLabel = (payment) => {
   }
 };
 
+const buildAdminPaymentOptions = (selectedPayment) => {
+  const normalizedSelectedPayment = normalizeAdminPaymentLabel(selectedPayment);
+
+  return ["Pendente", "Pix", "Dinheiro", "Cartão"]
+    .map(
+      (paymentOption) =>
+        `<option value="${escapeHtml(paymentOption)}" ${
+          paymentOption === normalizedSelectedPayment ? "selected" : ""
+        }>${escapeHtml(paymentOption)}</option>`
+    )
+    .join("");
+};
+
 const getAgendaReferenceDateValue = () =>
   adminDateStartFilter?.value || adminDateEndFilter?.value || getTodayDateValue();
 
@@ -1812,9 +1825,19 @@ const renderAppointments = () => {
           <td>${escapeHtml(appointment.servico || "-")}</td>
           <td class="admin-table-value">${escapeHtml(getAdminServicePrice(appointment.servico))}</td>
           <td>
-            <span class="admin-payment-badge payment-${normalizeAdminPaymentClass(
-              appointment.formaPagamento
-            )}">${escapeHtml(normalizeAdminPaymentLabel(appointment.formaPagamento))}</span>
+            <select
+              class="admin-payment-select payment-${normalizeAdminPaymentClass(
+                appointment.formaPagamento
+              )}"
+              data-admin-payment-select
+              data-admin-id="${escapeHtml(appointment.id)}"
+              data-current-payment="${escapeHtml(
+                normalizeAdminPaymentLabel(appointment.formaPagamento)
+              )}"
+              aria-label="Forma de pagamento de ${escapeHtml(appointment.nome || "Cliente")}"
+            >
+              ${buildAdminPaymentOptions(appointment.formaPagamento)}
+            </select>
           </td>
           <td>${escapeHtml(appointment.barbeiro || "-")}</td>
           <td>${escapeHtml(formatDate(String(appointment.data || "-")))}</td>
@@ -1972,6 +1995,16 @@ const updateAppointmentStatus = async (appointmentId, status) => {
   }
 
   await updateDoc(doc(getAppointmentsCollection(), appointmentId), { status });
+};
+
+const updateAppointmentPayment = async (appointmentId, formaPagamento) => {
+  if (!hasFirebaseConfig) {
+    throw new Error("firebase-not-configured");
+  }
+
+  await updateDoc(doc(getAppointmentsCollection(), appointmentId), {
+    formaPagamento: normalizeAdminPaymentLabel(formaPagamento),
+  });
 };
 
 const deleteAppointment = async (appointmentId) => {
@@ -2514,6 +2547,51 @@ if (adminList) {
 
 if (adminTableBody) {
   adminTableBody.addEventListener("click", handleAdminActionClick);
+  adminTableBody.addEventListener("change", async (event) => {
+    const paymentSelect = event.target.closest("[data-admin-payment-select]");
+
+    if (!paymentSelect) {
+      return;
+    }
+
+    const appointmentId = String(paymentSelect.getAttribute("data-admin-id") || "").trim();
+    const previousPayment = normalizeAdminPaymentLabel(
+      paymentSelect.getAttribute("data-current-payment")
+    );
+    const nextPayment = normalizeAdminPaymentLabel(paymentSelect.value);
+
+    if (!appointmentId || nextPayment === previousPayment) {
+      paymentSelect.value = previousPayment;
+      paymentSelect.className = `admin-payment-select payment-${normalizeAdminPaymentClass(
+        previousPayment
+      )}`;
+      return;
+    }
+
+    paymentSelect.disabled = true;
+    paymentSelect.className = `admin-payment-select payment-${normalizeAdminPaymentClass(
+      nextPayment
+    )}`;
+
+    try {
+      await updateAppointmentPayment(appointmentId, nextPayment);
+      paymentSelect.setAttribute("data-current-payment", nextPayment);
+      setFeedbackMessage(adminFeedback, "Forma de pagamento atualizada.", true);
+    } catch (error) {
+      paymentSelect.value = previousPayment;
+      paymentSelect.className = `admin-payment-select payment-${normalizeAdminPaymentClass(
+        previousPayment
+      )}`;
+      setFeedbackMessage(
+        adminFeedback,
+        getFirebaseErrorMessage(
+          "Não foi possível atualizar a forma de pagamento agora. Tente novamente."
+        )
+      );
+    } finally {
+      paymentSelect.disabled = false;
+    }
+  });
 }
 
 if (adminBarbersList) {

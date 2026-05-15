@@ -5100,12 +5100,13 @@ body.experience-adjust-active .about-gallery-card img {
   font-size: 0.88rem;
 }
 
-.admin-payment-badge {
+.admin-payment-select {
   display: inline-flex;
   align-items: center;
   justify-content: center;
   min-height: 30px;
-  padding: 0.38rem 0.68rem;
+  min-width: 108px;
+  padding: 0.38rem 2rem 0.38rem 0.68rem;
   border-radius: 999px;
   border: 1px solid transparent;
   font-size: 0.68rem;
@@ -5113,6 +5114,27 @@ body.experience-adjust-active .about-gallery-card img {
   letter-spacing: 0.07em;
   text-transform: uppercase;
   white-space: nowrap;
+  appearance: none;
+  background-repeat: no-repeat;
+  background-position: right 0.72rem center;
+  background-size: 0.62rem;
+  color: inherit;
+  cursor: pointer;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease,
+    color 0.2s ease;
+}
+
+.admin-payment-select:focus {
+  outline: none;
+  box-shadow: 0 0 0 2px rgba(244, 241, 235, 0.08);
+}
+
+.admin-payment-select:disabled {
+  opacity: 0.7;
+  cursor: wait;
 }
 
 .admin-table th:nth-child(2),
@@ -5148,32 +5170,37 @@ body.experience-adjust-active .about-gallery-card img {
 .admin-table td:nth-child(7),
 .admin-table td:nth-child(8),
 .admin-table td:nth-child(9),
-.admin-table td:nth-child(10) {
+.admin-table td:nth-child(10),
+.admin-table td:nth-child(11) {
   white-space: nowrap;
 }
 
-.admin-payment-badge.payment-pendente {
+.admin-payment-select.payment-pendente {
   background: rgba(187, 154, 90, 0.16);
   color: #d6bd8e;
   border-color: rgba(187, 154, 90, 0.28);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23d6bd8e' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
-.admin-payment-badge.payment-pix {
+.admin-payment-select.payment-pix {
   background: rgba(111, 181, 133, 0.16);
   color: #9dd3ae;
   border-color: rgba(111, 181, 133, 0.28);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%239dd3ae' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
-.admin-payment-badge.payment-dinheiro {
+.admin-payment-select.payment-dinheiro {
   background: rgba(212, 176, 92, 0.14);
   color: #e0ca9e;
   border-color: rgba(212, 176, 92, 0.24);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23e0ca9e' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
-.admin-payment-badge.payment-cartao {
+.admin-payment-select.payment-cartao {
   background: rgba(128, 149, 184, 0.16);
   color: #bfd0eb;
   border-color: rgba(128, 149, 184, 0.26);
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6' fill='none'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23bfd0eb' stroke-width='1.25' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");
 }
 
 .admin-table tbody tr:last-child td {
