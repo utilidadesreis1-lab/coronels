@@ -5158,8 +5158,8 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-payment-select option[value="Dinheiro"] {
-  background: #1d2418;
-  color: #c9e1b8;
+  background: #251813;
+  color: #e3b8a1;
 }
 
 .admin-payment-select option[value="Cartão"] {
@@ -5226,9 +5226,9 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-payment-select.payment-dinheiro {
   background:
-    linear-gradient(180deg, rgba(125, 160, 92, 0.26), rgba(62, 88, 45, 0.19));
-  color: #d5e7bf;
-  border-color: rgba(125, 160, 92, 0.34);
+    linear-gradient(180deg, rgba(170, 106, 72, 0.28), rgba(95, 52, 34, 0.2));
+  color: #efc4ae;
+  border-color: rgba(170, 106, 72, 0.34);
 }
 
 .admin-payment-select.payment-cartao {
