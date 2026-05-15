@@ -5121,8 +5121,8 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-client-name {
   display: inline-flex;
-  align-items: center;
-  gap: 0.38rem;
+  align-items: flex-start;
+  gap: 0.34rem;
   max-width: 100%;
   min-width: 0;
 }
@@ -5133,9 +5133,13 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-client-name-label {
+  display: -webkit-box;
   min-width: 0;
   line-height: 1.4;
-  overflow-wrap: anywhere;
+  overflow: hidden;
+  overflow-wrap: break-word;
+  -webkit-line-clamp: 2;
+  -webkit-box-orient: vertical;
 }
 
 .admin-client-star {
@@ -5143,7 +5147,7 @@ body.experience-adjust-active .about-gallery-card img {
   color: #d9bd80;
   font-size: 0.78rem;
   line-height: 1;
-  transform: translateY(-1px);
+  margin-top: 0.18rem;
 }
 
 .admin-type-badge {
@@ -5265,8 +5269,8 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-table th:nth-child(3),
 .admin-table td:nth-child(3) {
-  width: 164px;
-  max-width: 164px;
+  width: 178px;
+  max-width: 178px;
 }
 
 .admin-table td:nth-child(3) {
@@ -5276,8 +5280,8 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-table th:nth-child(4),
 .admin-table td:nth-child(4) {
-  width: 132px;
-  max-width: 132px;
+  width: 126px;
+  max-width: 126px;
 }
 
 .admin-table td:nth-child(4) {
@@ -5358,20 +5362,26 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-table-actions {
-  display: flex;
-  flex-wrap: wrap;
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: center;
-  justify-content: flex-start;
-  gap: 0.42rem;
-  min-width: 162px;
+  gap: 0.38rem;
+  min-width: 170px;
 }
 
 .admin-table-actions .admin-action {
   min-height: 32px;
-  padding: 0.38rem 0.52rem;
+  width: 100%;
+  justify-content: center;
+  text-align: center;
+  padding: 0.38rem 0.5rem;
   font-size: 0.66rem;
   border-radius: 12px;
   white-space: nowrap;
+}
+
+.admin-table-actions .action-whatsapp {
+  grid-column: 1 / -1;
 }
 
 .admin-table-actions .admin-action-static {
