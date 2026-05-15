@@ -5073,7 +5073,7 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-table th,
 .admin-table td {
-  padding: 0.86rem 0.82rem;
+  padding: 0.72rem 0.76rem;
   text-align: left;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
 }
@@ -5088,10 +5088,10 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-table td {
-  font-size: 0.9rem;
+  font-size: 0.88rem;
   color: var(--text);
   vertical-align: middle;
-  line-height: 1.35;
+  line-height: 1.28;
 }
 
 .admin-table td .admin-status {
@@ -5135,7 +5135,7 @@ body.experience-adjust-active .about-gallery-card img {
 .admin-client-name-label {
   display: -webkit-box;
   min-width: 0;
-  line-height: 1.4;
+  line-height: 1.32;
   overflow: hidden;
   overflow-wrap: break-word;
   -webkit-line-clamp: 2;
@@ -5365,18 +5365,19 @@ body.experience-adjust-active .about-gallery-card img {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   align-items: center;
-  gap: 0.38rem;
-  min-width: 170px;
+  justify-items: stretch;
+  gap: 0.3rem;
+  min-width: 162px;
 }
 
 .admin-table-actions .admin-action {
-  min-height: 32px;
+  min-height: 29px;
   width: 100%;
   justify-content: center;
   text-align: center;
-  padding: 0.38rem 0.5rem;
-  font-size: 0.66rem;
-  border-radius: 12px;
+  padding: 0.32rem 0.46rem;
+  font-size: 0.64rem;
+  border-radius: 11px;
   white-space: nowrap;
 }
 
