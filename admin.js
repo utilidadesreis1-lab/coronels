@@ -67,6 +67,7 @@ const adminViews = document.querySelectorAll("[data-admin-view]");
 const adminCurrentTitle = document.querySelector("[data-admin-current-title]");
 const adminCurrentCopy = document.querySelector("[data-admin-current-copy]");
 const adminUpcomingList = document.querySelector("[data-admin-upcoming-list]");
+const adminUpcomingQueue = document.querySelector("[data-admin-upcoming-queue]");
 const adminCompletedList = document.querySelector("[data-admin-completed-list]");
 const adminDashboardOpenAgendaButtons = document.querySelectorAll(
   "[data-admin-dashboard-open-agenda]"
@@ -1848,6 +1849,16 @@ const renderAdminDashboardOverview = () => {
 
   if (adminUpcomingCount) {
     adminUpcomingCount.textContent = String(sortedUpcomingAppointments.length);
+  }
+
+  if (adminUpcomingQueue) {
+    if (!sortedUpcomingAppointments.length) {
+      adminUpcomingQueue.textContent = "Nenhum próximo atendimento na fila";
+    } else if (sortedUpcomingAppointments.length === 1) {
+      adminUpcomingQueue.textContent = "1 próximo atendimento na fila";
+    } else {
+      adminUpcomingQueue.textContent = `${sortedUpcomingAppointments.length} próximos atendimentos na fila`;
+    }
   }
 
   if (adminBusySlots) {
