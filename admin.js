@@ -69,6 +69,7 @@ const adminCurrentCopy = document.querySelector("[data-admin-current-copy]");
 const adminUpcomingList = document.querySelector("[data-admin-upcoming-list]");
 const adminUpcomingQueue = document.querySelector("[data-admin-upcoming-queue]");
 const adminCompletedList = document.querySelector("[data-admin-completed-list]");
+const adminCompletedSummary = document.querySelector("[data-admin-completed-summary]");
 const adminDashboardOpenAgendaButtons = document.querySelectorAll(
   "[data-admin-dashboard-open-agenda]"
 );
@@ -1497,6 +1498,29 @@ const getAdminAppointmentDisplayValue = (appointment) =>
       "—"
     : getAdminServicePrice(appointment.servico);
 
+const getAdminAppointmentDisplayAmount = (appointment) => {
+  if (normalizeAdminAppointmentType(appointment.tipoAtendimento) === "assinatura") {
+    const planAmount = getAdminSubscriptionPlanAmount(appointment.planoAssinatura);
+
+    if (typeof planAmount === "number" && Number.isFinite(planAmount)) {
+      return planAmount;
+    }
+
+    const signatureAmount = Number(String(appointment.valorAssinatura ?? "").replace(",", "."));
+    return Number.isFinite(signatureAmount) ? signatureAmount : null;
+  }
+
+  const servicePrice = getAdminServicePrice(appointment.servico);
+  const normalizedPrice = Number(
+    String(servicePrice || "")
+      .replace(/[^\d,.-]/g, "")
+      .replace(/\./g, "")
+      .replace(",", ".")
+  );
+
+  return Number.isFinite(normalizedPrice) ? normalizedPrice : null;
+};
+
 const getAdminCompactSubscriptionPlanName = (plan) => {
   const normalizedPlan = normalizeAdminSubscriptionPlan(plan);
 
@@ -1729,6 +1753,7 @@ const renderAdminDashboardTable = (
     noteMessage = "",
     variantClass = "",
     showDate = false,
+    showValue = false,
     highlightFirstRow = false,
   }
 ) => {
@@ -1742,7 +1767,9 @@ const renderAdminDashboardTable = (
   }
 
   const headColumns = showDate
-    ? "<span>Hora</span><span>Cliente</span><span>Serviço</span><span>Barbeiro</span><span>Data</span><span>Status</span>"
+    ? showValue
+      ? "<span>Hora</span><span>Cliente</span><span>Serviço</span><span>Valor</span><span>Barbeiro</span><span>Data</span><span>Status</span>"
+      : "<span>Hora</span><span>Cliente</span><span>Serviço</span><span>Barbeiro</span><span>Data</span><span>Status</span>"
     : "<span>Hora</span><span>Cliente</span><span>Serviço</span><span>Barbeiro</span><span>Status</span>";
 
   target.innerHTML = `
@@ -1765,12 +1792,13 @@ const renderAdminDashboardTable = (
                 appointmentType === "assinatura"
                   ? `★ ${escapeHtml(appointment.nome || "Cliente")}`
                   : escapeHtml(appointment.nome || "Cliente");
-              const displayServiceName = escapeHtml(
-                getAdminAppointmentDisplayServiceName(appointment)
-              );
-              const detailMeta = `${escapeHtml(
-                normalizeAdminAppointmentTypeLabel(appointment.tipoAtendimento)
-              )} • ${escapeHtml(paymentLabel)}`;
+               const displayServiceName = escapeHtml(
+                 getAdminAppointmentDisplayServiceName(appointment)
+               );
+               const displayValue = escapeHtml(getAdminAppointmentDisplayValue(appointment));
+               const detailMeta = `${escapeHtml(
+                 normalizeAdminAppointmentTypeLabel(appointment.tipoAtendimento)
+               )} • ${escapeHtml(paymentLabel)}`;
 
               return `
                 <article class="admin-upcoming-row ${isHighlightedNext ? "is-next" : ""} status-${statusClass} ${showDate ? "admin-upcoming-row--with-date" : ""}">
@@ -1782,13 +1810,20 @@ const renderAdminDashboardTable = (
                   <div class="admin-upcoming-cell admin-upcoming-cell--client">
                     <strong>${displayClientName}</strong>
                   </div>
-                  <div class="admin-upcoming-cell admin-upcoming-cell--service">
-                    <span>${displayServiceName}</span>
-                    <small>${detailMeta}</small>
-                  </div>
-                  <div class="admin-upcoming-cell admin-upcoming-cell--barber">
-                    <span>${escapeHtml(appointment.barbeiro || "-")}</span>
-                  </div>
+                   <div class="admin-upcoming-cell admin-upcoming-cell--service">
+                     <span>${displayServiceName}</span>
+                     <small>${detailMeta}</small>
+                   </div>
+                   ${
+                     showValue
+                       ? `<div class="admin-upcoming-cell admin-upcoming-cell--value">
+                            <span>${displayValue}</span>
+                          </div>`
+                       : ""
+                   }
+                   <div class="admin-upcoming-cell admin-upcoming-cell--barber">
+                     <span>${escapeHtml(appointment.barbeiro || "-")}</span>
+                   </div>
                   ${
                     showDate
                       ? `<div class="admin-upcoming-cell admin-upcoming-cell--date">
@@ -1874,6 +1909,24 @@ const renderAdminDashboardOverview = () => {
   const nextAppointments = sortedUpcomingAppointments.slice(0, 5);
   const hasMoreUpcomingAppointments = sortedUpcomingAppointments.length > nextAppointments.length;
   const hasMoreCompletedAppointments = completedAppointments.length > sortedCompletedAppointments.length;
+  const completedTotalAmount = sortedCompletedAppointments.reduce((totalAmount, appointment) => {
+    const appointmentAmount = getAdminAppointmentDisplayAmount(appointment);
+    return totalAmount + (typeof appointmentAmount === "number" ? appointmentAmount : 0);
+  }, 0);
+
+  if (adminCompletedSummary) {
+    if (!sortedCompletedAppointments.length) {
+      adminCompletedSummary.textContent = "Nenhum atendimento concluído ainda";
+    } else {
+      const completedLabel =
+        sortedCompletedAppointments.length === 1
+          ? "1 atendimento concluído"
+          : `${sortedCompletedAppointments.length} atendimentos concluídos`;
+      adminCompletedSummary.textContent = `${completedLabel} • Total: ${formatAdminCurrencyValue(
+        completedTotalAmount
+      )}`;
+    }
+  }
 
   renderAdminDashboardTable(adminUpcomingList, nextAppointments, {
     emptyMessage: "Nenhum atendimento próximo encontrado.",
@@ -1886,6 +1939,7 @@ const renderAdminDashboardOverview = () => {
     noteMessage: hasMoreCompletedAppointments ? "Veja todos na agenda completa." : "",
     variantClass: "admin-upcoming-table-shell--completed",
     showDate: true,
+    showValue: true,
   });
 };
 

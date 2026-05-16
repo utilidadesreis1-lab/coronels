@@ -4752,6 +4752,12 @@ body.experience-adjust-active .about-gallery-card img {
   grid-template-columns: 74px minmax(142px, 1.16fr) minmax(164px, 1.14fr) minmax(100px, 0.86fr) minmax(104px, 0.86fr) minmax(112px, 0.82fr);
 }
 
+.admin-upcoming-table-shell--completed .admin-upcoming-table-head--with-date,
+.admin-upcoming-table-shell--completed .admin-upcoming-row--with-date {
+  min-width: 872px;
+  grid-template-columns: 74px minmax(132px, 1.08fr) minmax(156px, 1.08fr) 88px minmax(100px, 0.84fr) 106px minmax(112px, 0.8fr);
+}
+
 .admin-upcoming-table-head {
   padding: 0 0.1rem 0.45rem;
   border-bottom: 1px solid rgba(255, 255, 255, 0.06);
@@ -4889,6 +4895,21 @@ body.experience-adjust-active .about-gallery-card img {
   letter-spacing: 0.04em;
 }
 
+.admin-upcoming-cell--value {
+  display: flex;
+  justify-content: flex-start;
+}
+
+.admin-upcoming-cell--value span {
+  display: inline-flex;
+  align-items: center;
+  color: #e5f6eb;
+  font-size: 0.84rem;
+  font-weight: 800;
+  line-height: 1.1;
+  white-space: nowrap;
+}
+
 .admin-upcoming-cell--status {
   display: flex;
   justify-content: flex-end;
@@ -4916,6 +4937,10 @@ body.experience-adjust-active .about-gallery-card img {
   color: rgba(244, 241, 235, 0.58);
   font-size: 0.78rem;
   line-height: 1.4;
+}
+
+.admin-completed-summary {
+  color: rgba(220, 244, 230, 0.7);
 }
 
 .admin-upcoming-table::-webkit-scrollbar {
