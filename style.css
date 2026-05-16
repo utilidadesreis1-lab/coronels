@@ -4572,7 +4572,7 @@ body.experience-adjust-active .about-gallery-card img {
 .admin-dashboard-metrics {
   display: grid;
   grid-template-columns: repeat(8, minmax(0, 1fr));
-  gap: 0.58rem;
+  gap: 0.48rem;
   align-items: stretch;
 }
 
@@ -4591,33 +4591,42 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-dashboard-metric {
-  padding: 0.72rem 0.82rem 0.68rem;
-  border-radius: 18px;
+  min-height: 54px;
+  padding: 0.58rem 0.72rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.55rem;
+  border-radius: 16px;
   background:
     radial-gradient(circle at top right, rgba(255, 255, 255, 0.12), transparent 46%),
     linear-gradient(180deg, rgba(255, 255, 255, 0.04), rgba(255, 255, 255, 0.018)),
     rgba(255, 255, 255, 0.02);
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.035),
-    0 12px 24px rgba(0, 0, 0, 0.08);
+    0 10px 18px rgba(0, 0, 0, 0.08);
 }
 
 .admin-dashboard-metric span {
-  display: block;
-  margin-bottom: 0.24rem;
+  display: inline-flex;
+  align-items: center;
   color: rgba(244, 241, 235, 0.7);
-  font-size: 0.66rem;
+  font-size: 0.62rem;
   font-weight: 800;
-  letter-spacing: 0.11em;
+  letter-spacing: 0.1em;
   text-transform: uppercase;
+  line-height: 1.1;
 }
 
 .admin-dashboard-metric strong {
-  display: block;
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
   margin: 0;
-  font-size: clamp(1.14rem, 1.7vw, 1.54rem);
+  font-size: clamp(1rem, 1.45vw, 1.36rem);
   line-height: 1;
   letter-spacing: -0.03em;
+  white-space: nowrap;
 }
 
 .admin-dashboard-grid {
@@ -4633,6 +4642,7 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-dashboard-panel--upcoming {
+  width: 100%;
   padding: 1.3rem 1.4rem 1.18rem;
   border-color: rgba(212, 176, 92, 0.22);
   box-shadow:
@@ -4645,10 +4655,10 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-dashboard-panel--system {
-  width: min(100%, 34rem);
-  margin-top: 0.95rem;
+  width: min(100%, 28rem);
+  margin-top: 0.82rem;
   margin-left: auto;
-  padding: 0.92rem 1rem;
+  padding: 0.84rem 0.94rem;
   border-color: rgba(255, 255, 255, 0.06);
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.014)),
@@ -4663,9 +4673,9 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-dashboard-panel--system .admin-subsection-intro {
-  font-size: 0.82rem;
-  line-height: 1.55;
-  color: rgba(244, 241, 235, 0.54);
+  font-size: 0.78rem;
+  line-height: 1.5;
+  color: rgba(244, 241, 235, 0.5);
 }
 
 .admin-operations-shell {
@@ -6619,6 +6629,18 @@ body.experience-adjust-active .about-gallery-card img {
     padding-inline: 1.12rem;
   }
 
+  .admin-dashboard-metric {
+    min-height: 50px;
+  }
+
+  .admin-dashboard-metric span {
+    font-size: 0.6rem;
+  }
+
+  .admin-dashboard-metric strong {
+    font-size: 0.98rem;
+  }
+
   .admin-ops-filters {
     grid-template-columns: 1fr;
   }
@@ -6733,11 +6755,12 @@ body.experience-adjust-active .about-gallery-card img {
   }
 
   .admin-dashboard-metric {
-    padding: 0.7rem 0.78rem 0.66rem;
+    min-height: 48px;
+    padding: 0.64rem 0.72rem;
   }
 
   .admin-dashboard-metric strong {
-    font-size: 1.06rem;
+    font-size: 0.96rem;
   }
 }
 
