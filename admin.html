@@ -646,20 +646,59 @@
                   </section>
 
                   <section class="admin-view" data-admin-view="comandas" hidden>
-                    <article class="admin-dashboard-panel">
+                    <article class="admin-dashboard-panel admin-comandas-shell">
                       <div class="admin-subsection-head">
                         <div>
-                          <p class="eyebrow">Operação</p>
-                          <h3>Comandas do dia</h3>
+                          <p class="eyebrow">Fechamento</p>
+                          <h3>Comandas</h3>
                         </div>
                         <p class="admin-subsection-intro">
-                          Estrutura visual em tabela para acompanhar cliente, barbeiro, serviço e horário.
+                          Visualize atendimentos abertos, pagamentos e o histórico finalizado sem sair do painel.
                         </p>
                       </div>
 
-                      <p class="admin-empty-copy">
-                        Esta aba usa a mesma base operacional da Agenda para evitar duplicação de lógica nesta primeira etapa.
-                      </p>
+                      <div class="admin-comandas-summary">
+                        <article class="admin-comandas-metric">
+                          <span>Abertas</span>
+                          <strong data-admin-comandas-open-count>0</strong>
+                        </article>
+                        <article class="admin-comandas-metric">
+                          <span>Finalizadas</span>
+                          <strong data-admin-comandas-completed-count>0</strong>
+                        </article>
+                        <article class="admin-comandas-metric admin-comandas-metric--money">
+                          <span>Total finalizado</span>
+                          <strong data-admin-comandas-completed-total>R$ 0,00</strong>
+                        </article>
+                      </div>
+
+                      <section class="admin-comandas-group">
+                        <div class="admin-subsection-head admin-comandas-group-head">
+                          <div>
+                            <p class="eyebrow">Abertas</p>
+                            <h3>Comandas abertas</h3>
+                          </div>
+                          <p class="admin-subsection-intro">
+                            Atendimentos pendentes prontos para contato, finalização e fechamento.
+                          </p>
+                        </div>
+                        <div class="admin-comandas-grid" data-admin-comandas-open-list></div>
+                      </section>
+
+                      <section class="admin-comandas-group admin-comandas-group--completed">
+                        <div class="admin-subsection-head admin-comandas-group-head">
+                          <div>
+                            <p class="eyebrow">Finalizadas</p>
+                            <h3>Comandas finalizadas</h3>
+                          </div>
+                          <p class="admin-subsection-intro">
+                            Histórico compacto dos atendimentos concluídos com valor e forma de pagamento.
+                          </p>
+                        </div>
+                        <div class="admin-comandas-grid" data-admin-comandas-completed-list></div>
+                      </section>
+
+                      <p class="admin-comandas-cancelled" data-admin-comandas-cancelled-note></p>
                     </article>
                   </section>
 

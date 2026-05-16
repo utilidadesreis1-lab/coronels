@@ -82,6 +82,12 @@ const adminBarberAgendaGrid = document.querySelector("[data-admin-barber-agenda-
 const adminAgendaBarberGrid = document.querySelector("[data-admin-agenda-barber-grid]");
 const adminAgendaDayNote = document.querySelector("[data-admin-agenda-day-note]");
 const adminAgendaTableShell = document.querySelector("[data-admin-agenda-table-shell]");
+const adminComandasOpenCount = document.querySelector("[data-admin-comandas-open-count]");
+const adminComandasCompletedCount = document.querySelector("[data-admin-comandas-completed-count]");
+const adminComandasCompletedTotal = document.querySelector("[data-admin-comandas-completed-total]");
+const adminComandasOpenList = document.querySelector("[data-admin-comandas-open-list]");
+const adminComandasCompletedList = document.querySelector("[data-admin-comandas-completed-list]");
+const adminComandasCancelledNote = document.querySelector("[data-admin-comandas-cancelled-note]");
 
 const adminAuthStorageKey = "coronelsBarbeariaAdminLoggedIn";
 const adminCredentials = {
@@ -1521,6 +1527,13 @@ const getAdminAppointmentDisplayAmount = (appointment) => {
   return Number.isFinite(normalizedPrice) ? normalizedPrice : null;
 };
 
+const getAdminPaymentBadgeMarkup = (payment) => {
+  const paymentLabel = normalizeAdminPaymentLabel(payment);
+  const paymentClass = normalizeAdminPaymentClass(paymentLabel);
+
+  return `<span class="admin-payment-badge payment-${paymentClass}">${escapeHtml(paymentLabel)}</span>`;
+};
+
 const getAdminCompactSubscriptionPlanName = (plan) => {
   const normalizedPlan = normalizeAdminSubscriptionPlan(plan);
 
@@ -1943,6 +1956,131 @@ const renderAdminDashboardOverview = () => {
   });
 };
 
+const renderAdminComandas = () => {
+  if (
+    !adminComandasOpenList ||
+    !adminComandasCompletedList ||
+    !adminComandasOpenCount ||
+    !adminComandasCompletedCount ||
+    !adminComandasCompletedTotal ||
+    !adminComandasCancelledNote
+  ) {
+    return;
+  }
+
+  const sortedAppointments = [...appointmentsState].sort(
+    (firstAppointment, secondAppointment) =>
+      getAppointmentTimestamp(secondAppointment) - getAppointmentTimestamp(firstAppointment)
+  );
+  const openAppointments = sortedAppointments.filter(
+    (appointment) => normalizeStatusClass(appointment.status || "pendente") === "pendente"
+  );
+  const completedAppointments = sortedAppointments.filter(
+    (appointment) => normalizeStatusClass(appointment.status || "pendente") === "concluido"
+  );
+  const cancelledAppointments = sortedAppointments.filter(
+    (appointment) => normalizeStatusClass(appointment.status || "pendente") === "cancelado"
+  );
+  const completedTotalAmount = completedAppointments.reduce((totalAmount, appointment) => {
+    const appointmentAmount = getAdminAppointmentDisplayAmount(appointment);
+    return totalAmount + (typeof appointmentAmount === "number" ? appointmentAmount : 0);
+  }, 0);
+
+  adminComandasOpenCount.textContent = String(openAppointments.length);
+  adminComandasCompletedCount.textContent = String(completedAppointments.length);
+  adminComandasCompletedTotal.textContent = formatAdminCurrencyValue(completedTotalAmount);
+  adminComandasCancelledNote.textContent = cancelledAppointments.length
+    ? `${cancelledAppointments.length} cancelado${cancelledAppointments.length > 1 ? "s" : ""} fora da lista principal.`
+    : "Nenhum cancelado fora da lista principal.";
+
+  const renderComandaCard = (appointment, { finalized = false } = {}) => {
+    const normalizedStatus = normalizeStatusClass(appointment.status || "pendente");
+    const normalizedType = normalizeAdminAppointmentType(appointment.tipoAtendimento);
+    const displayClientName =
+      normalizedType === "assinatura"
+        ? `<span class="admin-client-name is-signature"><span class="admin-client-star" aria-hidden="true">★</span><span class="admin-client-name-label">${escapeHtml(
+            appointment.nome || "-"
+          )}</span></span>`
+        : `<span class="admin-client-name"><span class="admin-client-name-label">${escapeHtml(
+            appointment.nome || "-"
+          )}</span></span>`;
+
+    const actionMarkup = finalized
+      ? `
+          <button class="button button-ghost admin-action action-whatsapp" type="button" data-admin-action="whatsapp" data-admin-id="${escapeHtml(
+            appointment.id || ""
+          )}">
+            WhatsApp
+          </button>
+          <span class="button button-ghost admin-action admin-action-static action-finalized">Finalizado</span>
+        `
+      : `
+          <button class="button button-ghost admin-action action-whatsapp" type="button" data-admin-action="whatsapp" data-admin-id="${escapeHtml(
+            appointment.id || ""
+          )}">
+            WhatsApp
+          </button>
+          <button class="button button-gold admin-action action-complete" type="button" data-admin-action="complete" data-admin-id="${escapeHtml(
+            appointment.id || ""
+          )}">
+            Concluir
+          </button>
+          <button class="button button-ghost admin-action action-cancel" type="button" data-admin-action="cancel" data-admin-id="${escapeHtml(
+            appointment.id || ""
+          )}">
+            Cancelar
+          </button>
+        `;
+
+    return `
+      <article class="admin-comanda-card status-${normalizedStatus}">
+        <div class="admin-comanda-top">
+          <div class="admin-comanda-title">
+            <strong>${displayClientName}</strong>
+            <div class="admin-comanda-meta-line">
+              <span>${escapeHtml(getAdminAppointmentDisplayServiceName(appointment))}</span>
+              <span class="admin-comanda-dot" aria-hidden="true">•</span>
+              <span class="admin-table-value">${escapeHtml(getAdminAppointmentDisplayValue(appointment))}</span>
+            </div>
+          </div>
+          <div class="admin-comanda-badges">
+            <span class="admin-type-badge type-${normalizedType}">${escapeHtml(
+              normalizeAdminAppointmentTypeLabel(appointment.tipoAtendimento)
+            )}</span>
+            ${getAdminPaymentBadgeMarkup(appointment.formaPagamento)}
+            <span class="admin-status status-${normalizedStatus}">${escapeHtml(
+              appointment.status || "pendente"
+            )}</span>
+          </div>
+        </div>
+        <div class="admin-comanda-details ${finalized ? "is-finalized" : ""}">
+          ${
+            finalized
+              ? ""
+              : `<div><span>Telefone</span><strong>${escapeHtml(appointment.telefone || "-")}</strong></div>`
+          }
+          <div><span>Barbeiro</span><strong>${escapeHtml(appointment.barbeiro || "-")}</strong></div>
+          <div><span>Data</span><strong>${escapeHtml(formatDate(appointment.data || "-"))}</strong></div>
+          <div><span>Horário</span><strong>${escapeHtml(appointment.horario || "-")}</strong></div>
+        </div>
+        <div class="admin-table-actions admin-comanda-actions">
+          ${actionMarkup}
+        </div>
+      </article>
+    `;
+  };
+
+  adminComandasOpenList.innerHTML = openAppointments.length
+    ? openAppointments.map((appointment) => renderComandaCard(appointment)).join("")
+    : '<p class="admin-empty-copy">Nenhuma comanda aberta no momento.</p>';
+
+  adminComandasCompletedList.innerHTML = completedAppointments.length
+    ? completedAppointments
+        .map((appointment) => renderComandaCard(appointment, { finalized: true }))
+        .join("")
+    : '<p class="admin-empty-copy">Nenhuma comanda finalizada ainda.</p>';
+};
+
 const getFilteredAppointments = (appointments) => {
   const selectedStatus = adminStatusFilter?.value || "all";
   const selectedStartDate = adminDateStartFilter?.value || "";
@@ -2009,6 +2147,7 @@ const renderAppointments = () => {
   renderAdminSummary(appointmentsState);
   renderAdminDashboardOverview();
   renderAdminAgendaBarberOverview();
+  renderAdminComandas();
   const filteredAppointments = getFilteredAppointments(appointmentsState);
   const emptyMessage = hasActiveAppointmentFilters()
     ? "Nenhum agendamento encontrado para os filtros selecionados."
@@ -2918,6 +3057,14 @@ if (adminTableBody) {
       paymentSelect.disabled = false;
     }
   });
+}
+
+if (adminComandasOpenList) {
+  adminComandasOpenList.addEventListener("click", handleAdminActionClick);
+}
+
+if (adminComandasCompletedList) {
+  adminComandasCompletedList.addEventListener("click", handleAdminActionClick);
 }
 
 if (adminBarbersList) {

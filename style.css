@@ -5441,6 +5441,46 @@ body.experience-adjust-active .about-gallery-card img {
   border-color: rgba(128, 149, 184, 0.32);
 }
 
+.admin-payment-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 28px;
+  min-width: 90px;
+  padding: 0.3rem 0.62rem;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 0.66rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.admin-payment-badge.payment-pendente {
+  background: linear-gradient(180deg, rgba(199, 165, 99, 0.28), rgba(134, 103, 49, 0.2));
+  color: #efd7a8;
+  border-color: rgba(204, 169, 99, 0.36);
+}
+
+.admin-payment-badge.payment-pix {
+  background: linear-gradient(180deg, rgba(98, 171, 122, 0.28), rgba(48, 100, 67, 0.2));
+  color: #c0e6cb;
+  border-color: rgba(111, 181, 133, 0.34);
+}
+
+.admin-payment-badge.payment-dinheiro {
+  background: linear-gradient(180deg, rgba(170, 106, 72, 0.28), rgba(95, 52, 34, 0.2));
+  color: #efc4ae;
+  border-color: rgba(170, 106, 72, 0.34);
+}
+
+.admin-payment-badge.payment-cartao {
+  background: linear-gradient(180deg, rgba(126, 149, 186, 0.26), rgba(58, 76, 110, 0.2));
+  color: #dae6fb;
+  border-color: rgba(128, 149, 184, 0.32);
+}
+
 .admin-table tbody tr:last-child td {
   border-bottom: 0;
 }
@@ -5510,6 +5550,178 @@ body.experience-adjust-active .about-gallery-card img {
   color: var(--muted);
   text-align: center;
   line-height: 1.75;
+}
+
+.admin-comandas-shell {
+  display: flex;
+  flex-direction: column;
+  gap: 1.1rem;
+}
+
+.admin-comandas-summary {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.72rem;
+}
+
+.admin-comandas-metric {
+  padding: 0.92rem 1rem;
+  border-radius: 18px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02)),
+    rgba(255, 255, 255, 0.02);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 12px 24px rgba(0, 0, 0, 0.08);
+}
+
+.admin-comandas-metric span {
+  display: block;
+  margin-bottom: 0.28rem;
+  color: rgba(244, 241, 235, 0.66);
+  font-size: 0.7rem;
+  font-weight: 800;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+}
+
+.admin-comandas-metric strong {
+  display: block;
+  font-size: 1.28rem;
+  line-height: 1;
+}
+
+.admin-comandas-metric--money strong {
+  color: #dff0e5;
+}
+
+.admin-comandas-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.78rem;
+}
+
+.admin-comandas-group-head {
+  margin-bottom: 0;
+}
+
+.admin-comandas-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.9rem;
+}
+
+.admin-comanda-card {
+  display: flex;
+  flex-direction: column;
+  gap: 0.88rem;
+  padding: 1rem 1.04rem;
+  border-radius: 20px;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.045), rgba(255, 255, 255, 0.02)),
+    rgba(255, 255, 255, 0.02);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 16px 30px rgba(0, 0, 0, 0.1);
+}
+
+.admin-comanda-card.status-pendente {
+  border-color: rgba(212, 176, 92, 0.18);
+  background:
+    radial-gradient(circle at top right, rgba(212, 176, 92, 0.09), transparent 36%),
+    linear-gradient(180deg, rgba(255, 247, 229, 0.05), rgba(255, 255, 255, 0.02)),
+    rgba(255, 255, 255, 0.022);
+}
+
+.admin-comanda-card.status-concluido {
+  border-color: rgba(112, 201, 153, 0.18);
+  background:
+    radial-gradient(circle at top right, rgba(112, 201, 153, 0.08), transparent 36%),
+    linear-gradient(180deg, rgba(112, 201, 153, 0.05), rgba(255, 255, 255, 0.02)),
+    rgba(255, 255, 255, 0.022);
+}
+
+.admin-comanda-top {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.9rem;
+}
+
+.admin-comanda-title {
+  min-width: 0;
+}
+
+.admin-comanda-title > strong {
+  display: block;
+  font-size: 1rem;
+  line-height: 1.2;
+}
+
+.admin-comanda-meta-line {
+  display: inline-flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.34rem;
+  margin-top: 0.3rem;
+  color: rgba(244, 241, 235, 0.72);
+  font-size: 0.86rem;
+}
+
+.admin-comanda-dot {
+  color: rgba(244, 241, 235, 0.42);
+}
+
+.admin-comanda-badges {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 0.4rem;
+}
+
+.admin-comanda-details {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0.72rem;
+}
+
+.admin-comanda-details.is-finalized {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.admin-comanda-details div {
+  min-width: 0;
+}
+
+.admin-comanda-details span {
+  display: block;
+  margin-bottom: 0.18rem;
+  color: rgba(244, 241, 235, 0.56);
+  font-size: 0.68rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.admin-comanda-details strong {
+  display: block;
+  color: rgba(244, 241, 235, 0.9);
+  font-size: 0.86rem;
+  line-height: 1.32;
+}
+
+.admin-comanda-actions {
+  align-self: flex-start;
+  min-width: 0;
+}
+
+.admin-comandas-cancelled {
+  margin: 0;
+  color: rgba(244, 241, 235, 0.56);
+  font-size: 0.8rem;
+  line-height: 1.5;
 }
 
 .admin-preview-grid,
@@ -6599,7 +6811,8 @@ body.experience-adjust-active .about-gallery-card img {
   }
 
   .admin-agenda-barber-grid,
-  .admin-barber-agenda-grid {
+  .admin-barber-agenda-grid,
+  .admin-comandas-grid {
     grid-template-columns: 1fr;
   }
 
@@ -6633,6 +6846,7 @@ body.experience-adjust-active .about-gallery-card img {
   }
 
   .admin-dashboard-metrics,
+  .admin-comandas-summary,
   .admin-preview-grid,
   .admin-config-grid {
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -6662,6 +6876,17 @@ body.experience-adjust-active .about-gallery-card img {
 
   .admin-dashboard-panel--upcoming {
     padding-inline: 1.12rem;
+  }
+
+  .admin-comanda-top,
+  .admin-comanda-details,
+  .admin-comanda-details.is-finalized {
+    grid-template-columns: 1fr;
+    flex-direction: column;
+  }
+
+  .admin-comanda-badges {
+    justify-content: flex-start;
   }
 
   .admin-dashboard-metric {
@@ -6787,6 +7012,10 @@ body.experience-adjust-active .about-gallery-card img {
 @media (max-width: 620px) {
   .admin-dashboard-metrics {
     grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .admin-comandas-summary {
+    grid-template-columns: 1fr;
   }
 
   .admin-dashboard-metric {
