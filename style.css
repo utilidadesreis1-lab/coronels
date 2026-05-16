@@ -4655,12 +4655,13 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-upcoming-queue {
-  margin: 0.26rem 0 0;
+  margin: 0;
   color: rgba(244, 241, 235, 0.58);
   font-size: 0.76rem;
   font-weight: 700;
   line-height: 1.35;
   letter-spacing: 0.03em;
+  text-align: right;
 }
 
 .admin-dashboard-panel--system {
