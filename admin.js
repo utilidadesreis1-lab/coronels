@@ -1533,6 +1533,30 @@ const getAdminPaymentBadgeMarkup = (payment) => {
   return `<span class="admin-payment-badge payment-${paymentClass}">${escapeHtml(paymentLabel)}</span>`;
 };
 
+const getAdminComandaStatusLabel = (status) => {
+  switch (normalizeStatusClass(status || "pendente")) {
+    case "concluido":
+      return "Finalizada";
+    case "cancelado":
+      return "Cancelada";
+    default:
+      return "Aberta";
+  }
+};
+
+const getAdminComandaPaymentLabel = (payment) => {
+  const normalizedPayment = normalizeAdminPaymentLabel(payment);
+  return normalizedPayment === "Pendente" ? "Pgto pendente" : normalizedPayment;
+};
+
+const getAdminComandaPaymentBadgeMarkup = (payment) => {
+  const paymentLabel = normalizeAdminPaymentLabel(payment);
+  const paymentClass = normalizeAdminPaymentClass(paymentLabel);
+  const visualLabel = getAdminComandaPaymentLabel(payment);
+
+  return `<span class="admin-payment-badge payment-${paymentClass}">${escapeHtml(visualLabel)}</span>`;
+};
+
 const getAdminCompactSubscriptionPlanName = (plan) => {
   const normalizedPlan = normalizeAdminSubscriptionPlan(plan);
 
@@ -1997,6 +2021,7 @@ const renderAdminComandas = () => {
   const renderComandaCard = (appointment, { finalized = false } = {}) => {
     const normalizedStatus = normalizeStatusClass(appointment.status || "pendente");
     const normalizedType = normalizeAdminAppointmentType(appointment.tipoAtendimento);
+    const visualStatusLabel = getAdminComandaStatusLabel(appointment.status);
     const displayClientName =
       normalizedType === "assinatura"
         ? `<span class="admin-client-name is-signature"><span class="admin-client-star" aria-hidden="true">★</span><span class="admin-client-name-label">${escapeHtml(
@@ -2048,10 +2073,8 @@ const renderAdminComandas = () => {
             <span class="admin-type-badge type-${normalizedType}">${escapeHtml(
               normalizeAdminAppointmentTypeLabel(appointment.tipoAtendimento)
             )}</span>
-            ${getAdminPaymentBadgeMarkup(appointment.formaPagamento)}
-            <span class="admin-status status-${normalizedStatus}">${escapeHtml(
-              appointment.status || "pendente"
-            )}</span>
+            ${getAdminComandaPaymentBadgeMarkup(appointment.formaPagamento)}
+            <span class="admin-status status-${normalizedStatus}">${escapeHtml(visualStatusLabel)}</span>
           </div>
         </div>
         <div class="admin-comanda-details ${finalized ? "is-finalized" : ""}">
