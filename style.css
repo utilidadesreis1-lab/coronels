@@ -4041,7 +4041,7 @@ body.experience-adjust-active .about-gallery-card img {
 .admin-agenda-professionals,
 .admin-agenda-table-section {
   display: grid;
-  gap: 1.55rem;
+  gap: 2rem;
 }
 
 .admin-agenda-shell .admin-subsection-head {
