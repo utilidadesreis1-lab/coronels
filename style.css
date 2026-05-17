@@ -5561,13 +5561,24 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-table tbody tr.status-pendente .admin-table-actions,
 .admin-table tbody tr.status-confirmado .admin-table-actions {
-  gap: 0.24rem;
-  min-width: 154px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 0.26rem;
+  min-width: 0;
+}
+
+.admin-table tbody tr.status-pendente .admin-table-actions .admin-action,
+.admin-table tbody tr.status-confirmado .admin-table-actions .admin-action {
+  width: auto;
+  flex: 0 0 auto;
 }
 
 .admin-table tbody tr.status-pendente .admin-table-actions .action-whatsapp,
 .admin-table tbody tr.status-confirmado .admin-table-actions .action-whatsapp {
-  margin-bottom: -0.04rem;
+  grid-column: auto;
+  margin-bottom: 0;
 }
 
 .admin-table-actions .admin-action-static {
