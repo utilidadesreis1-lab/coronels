@@ -1462,6 +1462,12 @@ const formatAdminAgendaStatusLabel = (status) => {
   }
 };
 
+const getAdminWhatsappIconMarkup = () => `
+  <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+    <path d="M19.05 4.91A9.82 9.82 0 0 0 12.03 2C6.61 2 2.19 6.41 2.19 11.84c0 1.74.46 3.44 1.34 4.94L2 22l5.39-1.41a9.83 9.83 0 0 0 4.64 1.18h.01c5.42 0 9.84-4.41 9.84-9.84a9.78 9.78 0 0 0-2.83-7.02Zm-7.02 15.2h-.01a8.17 8.17 0 0 1-4.16-1.14l-.3-.18-3.2.84.85-3.12-.2-.32a8.14 8.14 0 0 1-1.26-4.35c0-4.5 3.67-8.17 8.19-8.17 2.18 0 4.22.85 5.76 2.4a8.1 8.1 0 0 1 2.39 5.77c0 4.51-3.67 8.18-8.06 8.27Zm4.48-6.11c-.25-.13-1.47-.72-1.7-.8-.23-.08-.4-.13-.57.12-.17.25-.66.8-.81.96-.15.17-.3.19-.55.06-.25-.13-1.07-.39-2.03-1.24-.75-.67-1.25-1.49-1.4-1.74-.15-.25-.01-.38.11-.5.11-.11.25-.3.38-.45.13-.15.17-.25.25-.42.08-.17.04-.31-.02-.44-.06-.13-.57-1.37-.78-1.88-.2-.48-.41-.42-.57-.43h-.49c-.17 0-.44.06-.67.31-.23.25-.88.86-.88 2.11s.9 2.45 1.03 2.62c.13.17 1.76 2.69 4.27 3.77.6.26 1.08.42 1.44.53.61.19 1.16.16 1.6.1.49-.07 1.47-.6 1.68-1.19.21-.59.21-1.09.15-1.19-.06-.1-.23-.17-.48-.29Z" />
+  </svg>
+`;
+
 const getAdminServicePrice = (serviceName) =>
   adminServiceMeta[String(serviceName || "").trim()]?.price || "—";
 
@@ -2266,8 +2272,10 @@ const renderAppointments = () => {
                 type="button"
                 data-admin-action="whatsapp"
                 data-admin-id="${escapeHtml(appointment.id)}"
+                aria-label="Enviar WhatsApp"
+                title="WhatsApp"
                 >
-                  WhatsApp
+                  <span class="admin-action-icon admin-action-icon-whatsapp">${getAdminWhatsappIconMarkup()}</span>
                 </button>
                 ${
                   normalizedStatus === "pendente" || normalizedStatus === "confirmado"

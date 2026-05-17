@@ -5524,6 +5524,24 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-table-actions .action-whatsapp {
   grid-column: 1 / -1;
+  max-width: 42px;
+  min-width: 42px;
+  justify-self: center;
+  padding-inline: 0;
+}
+
+.admin-table-actions .action-whatsapp .admin-action-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 16px;
+  height: 16px;
+}
+
+.admin-table-actions .action-whatsapp .admin-action-icon svg {
+  width: 16px;
+  height: 16px;
+  fill: currentColor;
 }
 
 .admin-table-actions .admin-action-static {
