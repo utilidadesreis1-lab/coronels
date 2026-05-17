@@ -1447,6 +1447,21 @@ const formatAdminStatusLabel = (status) => {
   }
 };
 
+const formatAdminAgendaStatusLabel = (status) => {
+  const statusClass = normalizeStatusClass(status || "pendente");
+
+  switch (statusClass) {
+    case "concluido":
+      return "Finalizado";
+    case "cancelado":
+      return "Cancelado";
+    case "confirmado":
+      return "Confirmado";
+    default:
+      return "Pendente";
+  }
+};
+
 const getAdminServicePrice = (serviceName) =>
   adminServiceMeta[String(serviceName || "").trim()]?.price || "—";
 
@@ -2241,7 +2256,7 @@ const renderAppointments = () => {
           <td>${escapeHtml(formatDate(String(appointment.data || "-")))}</td>
           <td>
             <span class="admin-status status-${normalizedStatus}">${escapeHtml(
-              appointment.status || "pendente"
+              formatAdminAgendaStatusLabel(appointment.status)
             )}</span>
           </td>
           <td>
@@ -2255,11 +2270,8 @@ const renderAppointments = () => {
                   WhatsApp
                 </button>
                 ${
-                  normalizedStatus === "concluido"
-                    ? `<span class="admin-action admin-action-static action-finalized">Finalizado</span>`
-                    : normalizedStatus === "cancelado"
-                      ? `<span class="admin-action admin-action-static action-cancelled">Cancelado</span>`
-                    : `<button
+                  normalizedStatus === "pendente" || normalizedStatus === "confirmado"
+                    ? `<button
                   class="admin-action action-complete"
                 type="button"
                 data-admin-action="complete"
@@ -2267,6 +2279,7 @@ const renderAppointments = () => {
                 >
                   Concluir
                 </button>`
+                    : ""
                 }
                 ${
                   normalizedStatus === "pendente" || normalizedStatus === "confirmado"
