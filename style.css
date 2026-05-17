@@ -5559,6 +5559,17 @@ body.experience-adjust-active .about-gallery-card img {
   box-shadow: 0 10px 18px rgba(37, 211, 102, 0.16);
 }
 
+.admin-table tbody tr.status-pendente .admin-table-actions,
+.admin-table tbody tr.status-confirmado .admin-table-actions {
+  gap: 0.24rem;
+  min-width: 154px;
+}
+
+.admin-table tbody tr.status-pendente .admin-table-actions .action-whatsapp,
+.admin-table tbody tr.status-confirmado .admin-table-actions .action-whatsapp {
+  margin-bottom: -0.04rem;
+}
+
 .admin-table-actions .admin-action-static {
   cursor: default;
   pointer-events: none;
