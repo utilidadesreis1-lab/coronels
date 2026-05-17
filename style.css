@@ -63,12 +63,12 @@
   --header-button-height: 36px;
   --header-button-font-size: 16px;
   --header-button-radius: 999px;
-  --agenda-adjust-gap: 0px;
-  --agenda-adjust-filters-margin-bottom: 0px;
-  --agenda-adjust-results-margin-top: 0px;
-  --agenda-adjust-filters-padding: 22px;
+  --agenda-adjust-gap: 15px;
+  --agenda-adjust-filters-margin-bottom: 12px;
+  --agenda-adjust-results-margin-top: 9px;
+  --agenda-adjust-filters-padding: 16px;
   --agenda-adjust-results-padding: 16px;
-  --agenda-adjust-results-offset-y: 0px;
+  --agenda-adjust-results-offset-y: -7px;
   --hero-brand-width: 760px;
   --hero-brand-height: 330px;
   --hero-brand-scale: 0.53;
