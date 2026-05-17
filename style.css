@@ -4022,16 +4022,12 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-ops-filters {
   grid-template-columns:
-    minmax(140px, 0.72fr)
-    minmax(140px, 0.72fr)
-    minmax(170px, 0.86fr)
-    minmax(240px, 1.25fr)
-    minmax(145px, 0.68fr)
-    minmax(195px, 0.92fr);
-}
-
-.admin-ops-filters > .field:nth-child(4) {
-  grid-column: span 2;
+    minmax(118px, 0.72fr)
+    minmax(118px, 0.72fr)
+    minmax(142px, 0.86fr)
+    minmax(210px, 1.14fr)
+    minmax(124px, 0.66fr)
+    minmax(166px, 0.82fr);
 }
 
 .admin-ops-filters > .field {
@@ -4227,7 +4223,7 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-filter-actions {
   display: flex;
-  flex-wrap: wrap;
+  flex-wrap: nowrap;
   justify-content: flex-end;
   grid-column: 1 / -1;
   justify-self: end;
@@ -6885,14 +6881,6 @@ body.experience-adjust-active .about-gallery-card img {
 
   .admin-dashboard-metrics {
     grid-template-columns: repeat(4, minmax(0, 1fr));
-  }
-
-  .admin-ops-filters {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
-  }
-
-  .admin-ops-filters > .field:nth-child(4) {
-    grid-column: 1 / -1;
   }
 
   .admin-dashboard-panel--system {
