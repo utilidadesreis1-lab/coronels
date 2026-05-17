@@ -84,6 +84,7 @@ const adminAgendaDayNote = document.querySelector("[data-admin-agenda-day-note]"
 const adminAgendaTableShell = document.querySelector("[data-admin-agenda-table-shell]");
 const adminComandasOpenCount = document.querySelector("[data-admin-comandas-open-count]");
 const adminComandasCompletedCount = document.querySelector("[data-admin-comandas-completed-count]");
+const adminComandasCancelledCount = document.querySelector("[data-admin-comandas-cancelled-count]");
 const adminComandasCompletedTotal = document.querySelector("[data-admin-comandas-completed-total]");
 const adminComandasOpenList = document.querySelector("[data-admin-comandas-open-list]");
 const adminComandasCompletedList = document.querySelector("[data-admin-comandas-completed-list]");
@@ -1193,11 +1194,9 @@ const updateAdminVisibility = () => {
 const setActiveAdminTab = (tabId) => {
   const requestedTabId = tabId || "dashboard";
   const nextTabId =
-    requestedTabId === "comandas"
-      ? "agenda"
-      : requestedTabId && [...adminViews].some((view) => view.getAttribute("data-admin-view") === requestedTabId)
-        ? requestedTabId
-        : "dashboard";
+    requestedTabId && [...adminViews].some((view) => view.getAttribute("data-admin-view") === requestedTabId)
+      ? requestedTabId
+      : "dashboard";
 
   activeAdminTab = requestedTabId;
 
@@ -1962,6 +1961,7 @@ const renderAdminComandas = () => {
     !adminComandasCompletedList ||
     !adminComandasOpenCount ||
     !adminComandasCompletedCount ||
+    !adminComandasCancelledCount ||
     !adminComandasCompletedTotal ||
     !adminComandasCancelledNote
   ) {
@@ -1988,6 +1988,7 @@ const renderAdminComandas = () => {
 
   adminComandasOpenCount.textContent = String(openAppointments.length);
   adminComandasCompletedCount.textContent = String(completedAppointments.length);
+  adminComandasCancelledCount.textContent = String(cancelledAppointments.length);
   adminComandasCompletedTotal.textContent = formatAdminCurrencyValue(completedTotalAmount);
   adminComandasCancelledNote.textContent = cancelledAppointments.length
     ? `${cancelledAppointments.length} cancelado${cancelledAppointments.length > 1 ? "s" : ""} fora da lista principal.`
