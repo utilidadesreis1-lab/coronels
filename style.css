@@ -4875,13 +4875,12 @@ body.experience-adjust-active .about-gallery-card img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  min-height: 0.84rem;
-  padding: 0.03rem 0.24rem;
-  border-radius: 999px;
-  border: 1px solid rgba(212, 176, 92, 0.24);
-  background: rgba(212, 176, 92, 0.12);
-  color: #f5e8c9;
-  font-size: 0.45rem;
+  min-height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: rgba(244, 241, 235, 0.9);
+  font-size: 0.56rem;
   font-weight: 800;
   letter-spacing: 0.08em;
   text-transform: uppercase;
@@ -4889,9 +4888,9 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-upcoming-row.status-concluido .admin-upcoming-badge {
-  border-color: rgba(112, 201, 153, 0.24) !important;
-  background: rgba(112, 201, 153, 0.14) !important;
-  color: #dff6e9 !important;
+  border-color: transparent !important;
+  background: transparent !important;
+  color: rgba(244, 241, 235, 0.9) !important;
 }
 
 .admin-upcoming-cell--client strong,
@@ -4938,7 +4937,8 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-upcoming-cell--status {
   display: flex;
-  justify-content: flex-end;
+  align-items: center;
+  justify-content: center;
 }
 
 .admin-upcoming-cell--date span {
@@ -4952,10 +4952,11 @@ body.experience-adjust-active .about-gallery-card img {
 .admin-upcoming-status-stack {
   display: inline-flex;
   align-items: center;
-  justify-content: flex-end;
+  justify-content: center;
   gap: 0.46rem;
   min-width: 0;
   flex-wrap: wrap;
+  width: 100%;
 }
 
 .admin-upcoming-note {
