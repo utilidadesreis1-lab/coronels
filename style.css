@@ -5656,21 +5656,62 @@ body.experience-adjust-active .about-gallery-card img {
   border-bottom: 0;
 }
 
-.admin-table tbody tr.status-pendente td,
-.admin-table tbody tr.status-confirmado td {
-  background: rgba(212, 176, 92, 0.02);
+.admin-view[data-admin-view="agenda"] .admin-table tbody tr.status-pendente td,
+.admin-view[data-admin-view="agenda"] .admin-table tbody tr.status-confirmado td {
+  background:
+    linear-gradient(180deg, rgba(212, 176, 92, 0.07), rgba(255, 255, 255, 0.016)),
+    rgba(255, 255, 255, 0.024);
+  box-shadow:
+    inset 0 1px 0 rgba(236, 214, 165, 0.08),
+    inset 0 -1px 0 rgba(165, 126, 54, 0.08);
 }
 
-.admin-table tbody tr.status-concluido td {
-  background: rgba(111, 181, 133, 0.024);
+.admin-view[data-admin-view="agenda"] .admin-table tbody tr.status-pendente td:first-child,
+.admin-view[data-admin-view="agenda"] .admin-table tbody tr.status-confirmado td:first-child {
+  border-left: 1px solid rgba(212, 176, 92, 0.22);
 }
 
-.admin-table tbody tr.status-cancelado td {
-  background: rgba(214, 103, 103, 0.022);
+.admin-view[data-admin-view="agenda"] .admin-table tbody tr.status-pendente td:last-child,
+.admin-view[data-admin-view="agenda"] .admin-table tbody tr.status-confirmado td:last-child {
+  border-right: 1px solid rgba(212, 176, 92, 0.22);
 }
 
-.admin-table tbody tr:hover td {
-  background: rgba(255, 255, 255, 0.02);
+.admin-view[data-admin-view="agenda"] .admin-table tbody tr.status-concluido td {
+  background:
+    linear-gradient(180deg, rgba(111, 181, 133, 0.09), rgba(255, 255, 255, 0.016)),
+    rgba(255, 255, 255, 0.024);
+  box-shadow:
+    inset 0 1px 0 rgba(187, 230, 200, 0.08),
+    inset 0 -1px 0 rgba(73, 129, 92, 0.08);
+}
+
+.admin-view[data-admin-view="agenda"] .admin-table tbody tr.status-concluido td:first-child {
+  border-left: 1px solid rgba(111, 181, 133, 0.24);
+}
+
+.admin-view[data-admin-view="agenda"] .admin-table tbody tr.status-concluido td:last-child {
+  border-right: 1px solid rgba(111, 181, 133, 0.24);
+}
+
+.admin-view[data-admin-view="agenda"] .admin-table tbody tr.status-cancelado td {
+  background:
+    linear-gradient(180deg, rgba(214, 103, 103, 0.085), rgba(255, 255, 255, 0.016)),
+    rgba(255, 255, 255, 0.024);
+  box-shadow:
+    inset 0 1px 0 rgba(239, 177, 177, 0.08),
+    inset 0 -1px 0 rgba(140, 67, 67, 0.08);
+}
+
+.admin-view[data-admin-view="agenda"] .admin-table tbody tr.status-cancelado td:first-child {
+  border-left: 1px solid rgba(214, 103, 103, 0.22);
+}
+
+.admin-view[data-admin-view="agenda"] .admin-table tbody tr.status-cancelado td:last-child {
+  border-right: 1px solid rgba(214, 103, 103, 0.22);
+}
+
+.admin-view[data-admin-view="agenda"] .admin-table tbody tr:hover td {
+  background: rgba(255, 255, 255, 0.028);
 }
 
 .admin-table-actions {
