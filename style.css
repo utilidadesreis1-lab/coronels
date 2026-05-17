@@ -5555,7 +5555,7 @@ body.experience-adjust-active .about-gallery-card img {
 .admin-comandas-shell {
   display: flex;
   flex-direction: column;
-  gap: 0.95rem;
+  gap: 0.82rem;
 }
 
 .admin-comandas-summary {
@@ -5599,7 +5599,7 @@ body.experience-adjust-active .about-gallery-card img {
 .admin-comandas-group {
   display: flex;
   flex-direction: column;
-  gap: 0.62rem;
+  gap: 0.52rem;
 }
 
 .admin-comandas-group-head {
@@ -5615,8 +5615,8 @@ body.experience-adjust-active .about-gallery-card img {
 .admin-comanda-card {
   display: flex;
   flex-direction: column;
-  gap: 0.68rem;
-  padding: 0.82rem 0.9rem;
+  gap: 0.54rem;
+  padding: 0.74rem 0.82rem;
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background:
@@ -5647,7 +5647,7 @@ body.experience-adjust-active .about-gallery-card img {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 0.72rem;
+  gap: 0.58rem;
 }
 
 .admin-comanda-title {
@@ -5657,8 +5657,8 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-comanda-title > strong {
   display: block;
-  font-size: 0.96rem;
-  line-height: 1.18;
+  font-size: 0.94rem;
+  line-height: 1.14;
 }
 
 .admin-comanda-meta-line {
@@ -5666,16 +5666,16 @@ body.experience-adjust-active .about-gallery-card img {
   flex-wrap: wrap;
   align-items: center;
   justify-content: space-between;
-  gap: 0.34rem;
-  margin-top: 0.22rem;
+  gap: 0.26rem;
+  margin-top: 0.16rem;
   color: rgba(244, 241, 235, 0.72);
-  font-size: 0.82rem;
+  font-size: 0.8rem;
   width: 100%;
 }
 
 .admin-comanda-meta-line .admin-table-value {
   margin-left: auto;
-  font-size: 0.98rem;
+  font-size: 0.94rem;
   font-weight: 800;
   color: #f2dfb5;
   letter-spacing: -0.01em;
@@ -5685,14 +5685,14 @@ body.experience-adjust-active .about-gallery-card img {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 0.32rem;
+  gap: 0.28rem;
   max-width: 44%;
 }
 
 .admin-comanda-details {
   display: grid;
   grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 0.5rem 0.72rem;
+  gap: 0.38rem 0.62rem;
 }
 
 .admin-comanda-details.is-finalized {
@@ -5705,9 +5705,9 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-comanda-details span {
   display: block;
-  margin-bottom: 0.12rem;
+  margin-bottom: 0.08rem;
   color: rgba(244, 241, 235, 0.56);
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   font-weight: 800;
   letter-spacing: 0.07em;
   text-transform: uppercase;
@@ -5716,22 +5716,22 @@ body.experience-adjust-active .about-gallery-card img {
 .admin-comanda-details strong {
   display: block;
   color: rgba(244, 241, 235, 0.9);
-  font-size: 0.8rem;
-  line-height: 1.25;
+  font-size: 0.78rem;
+  line-height: 1.2;
 }
 
 .admin-comanda-actions {
   align-self: flex-start;
   min-width: 0;
   grid-template-columns: repeat(3, minmax(0, auto));
-  gap: 0.26rem;
+  gap: 0.22rem;
 }
 
 .admin-comanda-actions .admin-action {
-  min-height: 27px;
-  padding: 0.28rem 0.48rem;
-  font-size: 0.62rem;
-  border-radius: 10px;
+  min-height: 26px;
+  padding: 0.24rem 0.44rem;
+  font-size: 0.6rem;
+  border-radius: 9px;
 }
 
 .admin-comanda-actions .action-whatsapp {
