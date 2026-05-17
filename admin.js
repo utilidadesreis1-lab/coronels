@@ -2065,7 +2065,6 @@ const renderAdminComandas = () => {
             <strong>${displayClientName}</strong>
             <div class="admin-comanda-meta-line">
               <span>${escapeHtml(getAdminAppointmentDisplayServiceName(appointment))}</span>
-              <span class="admin-comanda-dot" aria-hidden="true">•</span>
               <span class="admin-table-value">${escapeHtml(getAdminAppointmentDisplayValue(appointment))}</span>
             </div>
           </div>

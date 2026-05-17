@@ -5665,15 +5665,12 @@ body.experience-adjust-active .about-gallery-card img {
   display: flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.26rem;
+  justify-content: space-between;
+  gap: 0.34rem;
   margin-top: 0.22rem;
   color: rgba(244, 241, 235, 0.72);
   font-size: 0.82rem;
   width: 100%;
-}
-
-.admin-comanda-dot {
-  color: rgba(244, 241, 235, 0.42);
 }
 
 .admin-comanda-meta-line .admin-table-value {
