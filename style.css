@@ -69,14 +69,14 @@
   --agenda-adjust-filters-padding: 16px;
   --agenda-adjust-results-padding: 16px;
   --agenda-adjust-results-offset-y: -7px;
-  --dash-next-status-x: 0px;
-  --dash-next-status-width: 180px;
-  --dash-next-status-gap: 10px;
+  --dash-next-status-x: -96px;
+  --dash-next-status-width: 121px;
+  --dash-next-status-gap: 0px;
   --dash-next-status-justify: center;
-  --dash-next-proximo-x: 0px;
-  --dash-next-pendente-x: 0px;
+  --dash-next-proximo-x: -10px;
+  --dash-next-pendente-x: -1px;
   --dash-next-proximo-size: 10px;
-  --dash-next-pendente-scale: 1;
+  --dash-next-pendente-scale: 0.97;
   --hero-brand-width: 760px;
   --hero-brand-height: 330px;
   --hero-brand-scale: 0.53;
@@ -4953,7 +4953,6 @@ body.experience-adjust-active .about-gallery-card img {
 .admin-dashboard-panel--upcoming .admin-upcoming-cell--status {
   width: min(100%, var(--dash-next-status-width));
   justify-self: center;
-  justify-content: var(--dash-next-status-justify);
 }
 
 .admin-upcoming-cell--date span {
