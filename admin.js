@@ -202,6 +202,7 @@ const defaultDashboardAdjustments = {
   proximoSize: 10,
   pendenteScale: 100,
 };
+const dashboardAdjustPositionStorageKey = "coronelsDashboardAdjustmentsPosition";
 
 const normalizeAgendaAdjustmentValue = (value, min, max, fallback) => {
   const numericValue = Number(value);
@@ -561,6 +562,64 @@ const saveDashboardAdjustments = (adjustments) => {
   window.localStorage.setItem(dashboardAdjustStorageKey, JSON.stringify(adjustments));
 };
 
+const clampDashboardPanelPosition = (panel, left, top) => {
+  const panelRect = panel.getBoundingClientRect();
+  const visibleMargin = 72;
+  const minLeft = Math.min(8, window.innerWidth - panelRect.width);
+  const maxLeft = Math.max(8, window.innerWidth - visibleMargin);
+  const minTop = 8;
+  const maxTop = Math.max(8, window.innerHeight - visibleMargin);
+
+  return {
+    left: Math.min(maxLeft, Math.max(minLeft, Math.round(left))),
+    top: Math.min(maxTop, Math.max(minTop, Math.round(top))),
+  };
+};
+
+const saveDashboardPanelPosition = (position) => {
+  if (!dashboardAdjustQueryEnabled) {
+    return;
+  }
+
+  window.localStorage.setItem(dashboardAdjustPositionStorageKey, JSON.stringify(position));
+};
+
+const readDashboardPanelPosition = () => {
+  if (!dashboardAdjustQueryEnabled) {
+    return null;
+  }
+
+  try {
+    const storedValue = window.localStorage.getItem(dashboardAdjustPositionStorageKey);
+    if (!storedValue) {
+      return null;
+    }
+
+    const parsedValue = JSON.parse(storedValue);
+    if (!Number.isFinite(parsedValue?.left) || !Number.isFinite(parsedValue?.top)) {
+      return null;
+    }
+
+    return {
+      left: parsedValue.left,
+      top: parsedValue.top,
+    };
+  } catch (error) {
+    return null;
+  }
+};
+
+const applyDashboardPanelPosition = (panel, position) => {
+  if (!panel || !position) {
+    return;
+  }
+
+  const nextPosition = clampDashboardPanelPosition(panel, position.left, position.top);
+  panel.style.left = `${nextPosition.left}px`;
+  panel.style.top = `${nextPosition.top}px`;
+  panel.style.right = "auto";
+};
+
 const getDashboardAdjustmentCss = (adjustments) => `/* Ajuste final Dashboard - Próximos atendimentos */
 :root {
   --dash-next-status-x: ${adjustments.statusX}px;
@@ -603,7 +662,7 @@ const createDashboardAdjustPanel = () => {
   const panel = document.createElement("aside");
   panel.className = "agenda-adjust-panel dashboard-adjust-panel";
   panel.innerHTML = `
-    <div class="agenda-adjust-panel-header">
+    <div class="agenda-adjust-panel-header" data-dashboard-adjust-drag-handle>
       <div class="agenda-adjust-panel-title">
         <p class="eyebrow">Ajuste dashboard</p>
         <strong>Próximos atendimentos</strong>
@@ -672,6 +731,12 @@ const createDashboardAdjustPanel = () => {
         </span>
         <input type="range" min="80" max="140" step="1" value="${adjustments.pendenteScale}" data-dashboard-adjust-input="pendenteScale">
       </label>
+      <div class="agenda-adjust-panel-actions agenda-adjust-panel-actions--quick">
+        <button class="button button-ghost" type="button" data-dashboard-adjust-place="left">Esquerda</button>
+        <button class="button button-ghost" type="button" data-dashboard-adjust-place="right">Direita</button>
+        <button class="button button-ghost" type="button" data-dashboard-adjust-place="bottom">Inferior</button>
+        <button class="button button-ghost" type="button" data-dashboard-adjust-reset-position>Resetar posição</button>
+      </div>
       <div class="agenda-adjust-panel-actions">
         <button class="button button-ghost" type="button" data-dashboard-adjust-reset>Resetar ajustes</button>
         <button class="button button-gold" type="button" data-dashboard-adjust-copy>Copiar CSS final</button>
@@ -682,11 +747,27 @@ const createDashboardAdjustPanel = () => {
 
   document.body.append(panel);
 
+  const savedPosition = readDashboardPanelPosition();
+  if (savedPosition) {
+    applyDashboardPanelPosition(panel, savedPosition);
+  }
+
   const status = panel.querySelector("[data-dashboard-adjust-status]");
   const toggleButton = panel.querySelector("[data-dashboard-adjust-toggle]");
+  const dragHandle = panel.querySelector("[data-dashboard-adjust-drag-handle]");
   const valueNodes = panel.querySelectorAll("[data-dashboard-adjust-value]");
   const inputNodes = panel.querySelectorAll("[data-dashboard-adjust-input]");
   const selectNodes = panel.querySelectorAll("[data-dashboard-adjust-select]");
+  const quickPlaceButtons = panel.querySelectorAll("[data-dashboard-adjust-place]");
+
+  const setPanelPosition = (left, top, persist = true) => {
+    const nextPosition = clampDashboardPanelPosition(panel, left, top);
+    applyDashboardPanelPosition(panel, nextPosition);
+
+    if (persist) {
+      saveDashboardPanelPosition(nextPosition);
+    }
+  };
 
   const syncValueLabels = () => {
     valueNodes.forEach((node) => {
@@ -753,6 +834,52 @@ const createDashboardAdjustPanel = () => {
     toggleButton.textContent = isCollapsed ? "Mostrar" : "Ocultar";
   });
 
+  dragHandle?.addEventListener("mousedown", (event) => {
+    if (event.button !== 0 || event.target.closest("button")) {
+      return;
+    }
+
+    event.preventDefault();
+    const panelRect = panel.getBoundingClientRect();
+    const offsetX = event.clientX - panelRect.left;
+    const offsetY = event.clientY - panelRect.top;
+
+    const handleMouseMove = (moveEvent) => {
+      setPanelPosition(moveEvent.clientX - offsetX, moveEvent.clientY - offsetY, false);
+    };
+
+    const handleMouseUp = () => {
+      const finalRect = panel.getBoundingClientRect();
+      saveDashboardPanelPosition({
+        left: finalRect.left,
+        top: finalRect.top,
+      });
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+  });
+
+  quickPlaceButtons.forEach((button) => {
+    button.addEventListener("click", () => {
+      const placement = button.getAttribute("data-dashboard-adjust-place");
+      const panelRect = panel.getBoundingClientRect();
+      const spacing = 18;
+
+      if (placement === "left") {
+        setPanelPosition(spacing, panelRect.top);
+      } else if (placement === "bottom") {
+        setPanelPosition(panelRect.left, window.innerHeight - panelRect.height - spacing);
+      } else {
+        setPanelPosition(window.innerWidth - panelRect.width - spacing, panelRect.top);
+      }
+
+      status.textContent = "Posição rápida aplicada.";
+    });
+  });
+
   panel.querySelector("[data-dashboard-adjust-reset]")?.addEventListener("click", () => {
     Object.assign(adjustments, defaultDashboardAdjustments);
 
@@ -776,6 +903,14 @@ const createDashboardAdjustPanel = () => {
 
     syncAdjustments();
     status.textContent = "Ajustes da Dashboard resetados para o padrão.";
+  });
+
+  panel.querySelector("[data-dashboard-adjust-reset-position]")?.addEventListener("click", () => {
+    window.localStorage.removeItem(dashboardAdjustPositionStorageKey);
+    panel.style.left = "";
+    panel.style.top = "";
+    panel.style.right = "";
+    status.textContent = "Posição do painel resetada.";
   });
 
   panel.querySelector("[data-dashboard-adjust-copy]")?.addEventListener("click", async () => {

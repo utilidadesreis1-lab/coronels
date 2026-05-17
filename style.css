@@ -5266,6 +5266,11 @@ body.experience-adjust-active .about-gallery-card img {
   gap: 0.8rem;
 }
 
+.dashboard-adjust-panel .agenda-adjust-panel-header {
+  cursor: move;
+  user-select: none;
+}
+
 .agenda-adjust-panel-title {
   display: grid;
   gap: 0.18rem;
@@ -5336,10 +5341,23 @@ body.experience-adjust-active .about-gallery-card img {
   accent-color: #d1ae6a;
 }
 
+.agenda-adjust-panel-control select {
+  min-height: 38px;
+  padding: 0.58rem 0.72rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background: rgba(255, 255, 255, 0.04);
+  color: #f4f1eb;
+}
+
 .agenda-adjust-panel-actions {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
   gap: 0.55rem;
+}
+
+.agenda-adjust-panel-actions--quick {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
 }
 
 .agenda-adjust-panel-actions .button {
