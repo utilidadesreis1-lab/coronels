@@ -63,6 +63,12 @@
   --header-button-height: 36px;
   --header-button-font-size: 16px;
   --header-button-radius: 999px;
+  --agenda-adjust-gap: 0px;
+  --agenda-adjust-filters-margin-bottom: 0px;
+  --agenda-adjust-results-margin-top: 0px;
+  --agenda-adjust-filters-padding: 22px;
+  --agenda-adjust-results-padding: 16px;
+  --agenda-adjust-results-offset-y: 0px;
   --hero-brand-width: 760px;
   --hero-brand-height: 330px;
   --hero-brand-scale: 0.53;
@@ -4038,10 +4044,20 @@ body.experience-adjust-active .about-gallery-card img {
   gap: 1.3rem;
 }
 
+.admin-view[data-admin-view="agenda"] .agenda-filters-card {
+  padding: var(--agenda-adjust-filters-padding);
+  margin-bottom: var(--agenda-adjust-filters-margin-bottom);
+}
+
 .admin-agenda-professionals,
 .admin-agenda-table-section {
   display: grid;
   gap: 3rem;
+}
+
+.admin-view[data-admin-view="agenda"] .agenda-results-block {
+  margin-top: calc(var(--agenda-adjust-gap) + var(--agenda-adjust-results-margin-top));
+  transform: translateY(var(--agenda-adjust-results-offset-y));
 }
 
 .admin-agenda-shell .admin-subsection-head {
@@ -5177,8 +5193,135 @@ body.experience-adjust-active .about-gallery-card img {
     0 20px 48px rgba(0, 0, 0, 0.14);
 }
 
+.admin-view[data-admin-view="agenda"] .agenda-results-card {
+  padding: var(--agenda-adjust-results-padding) var(--agenda-adjust-results-padding) 0;
+}
+
 .admin-table-shell--appointments .admin-agenda-table-head {
   margin-bottom: 0.85rem;
+}
+
+.agenda-adjust-panel {
+  position: fixed;
+  top: 88px;
+  right: 18px;
+  z-index: 1200;
+  width: min(328px, calc(100vw - 24px));
+  display: grid;
+  gap: 0.85rem;
+  padding: 0.95rem 1rem;
+  border-radius: 22px;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  background:
+    linear-gradient(180deg, rgba(22, 25, 31, 0.96), rgba(14, 16, 20, 0.96)),
+    rgba(10, 12, 15, 0.96);
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 18px 44px rgba(0, 0, 0, 0.34);
+  color: #f4f1eb;
+  backdrop-filter: blur(10px);
+}
+
+.agenda-adjust-panel.is-collapsed .agenda-adjust-panel-body {
+  display: none;
+}
+
+.agenda-adjust-panel-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.agenda-adjust-panel-title {
+  display: grid;
+  gap: 0.18rem;
+}
+
+.agenda-adjust-panel-title .eyebrow {
+  margin: 0;
+}
+
+.agenda-adjust-panel-title strong {
+  font-size: 1rem;
+  font-weight: 800;
+  letter-spacing: 0.01em;
+}
+
+.agenda-adjust-panel-title span {
+  color: rgba(244, 241, 235, 0.66);
+  font-size: 0.78rem;
+  line-height: 1.45;
+}
+
+.agenda-adjust-panel-toggle {
+  min-width: 40px;
+  min-height: 34px;
+  padding: 0.35rem 0.55rem;
+  border-radius: 12px;
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  background: rgba(255, 255, 255, 0.04);
+  color: #f4f1eb;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.agenda-adjust-panel-body {
+  display: grid;
+  gap: 0.7rem;
+}
+
+.agenda-adjust-panel-control {
+  display: grid;
+  gap: 0.35rem;
+}
+
+.agenda-adjust-panel-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.8rem;
+}
+
+.agenda-adjust-panel-label {
+  font-size: 0.77rem;
+  color: rgba(244, 241, 235, 0.78);
+}
+
+.agenda-adjust-panel-value {
+  min-width: 58px;
+  text-align: right;
+  color: #e8d1a0;
+  font-size: 0.74rem;
+  font-weight: 800;
+  letter-spacing: 0.04em;
+}
+
+.agenda-adjust-panel-control input[type="range"] {
+  width: 100%;
+  accent-color: #d1ae6a;
+}
+
+.agenda-adjust-panel-actions {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.55rem;
+}
+
+.agenda-adjust-panel-actions .button {
+  min-height: 38px;
+  min-width: 0;
+  padding: 0.5rem 0.7rem;
+  font-size: 0.72rem;
+}
+
+.agenda-adjust-panel-status {
+  min-height: 1rem;
+  margin: 0;
+  color: rgba(244, 241, 235, 0.68);
+  font-size: 0.72rem;
+  line-height: 1.45;
 }
 
 .admin-table {

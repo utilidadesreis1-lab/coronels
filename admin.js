@@ -90,6 +90,11 @@ const adminComandasCompletedTotal = document.querySelector("[data-admin-comandas
 const adminComandasOpenList = document.querySelector("[data-admin-comandas-open-list]");
 const adminComandasCompletedList = document.querySelector("[data-admin-comandas-completed-list]");
 const adminComandasCancelledNote = document.querySelector("[data-admin-comandas-cancelled-note]");
+const agendaAdjustQueryEnabled =
+  new URLSearchParams(window.location.search).get("ajusteAgenda") === "1";
+const adminAgendaFiltersCard = document.querySelector(".agenda-filters-card");
+const adminAgendaResultsBlock = document.querySelector(".agenda-results-block");
+const adminAgendaResultsCard = document.querySelector(".agenda-results-card");
 
 const adminAuthStorageKey = "coronelsBarbeariaAdminLoggedIn";
 const adminCredentials = {
@@ -173,6 +178,280 @@ const adminSubscriptionPlanMeta = {
     price: "R$ 160,00",
     amount: 160.0,
   },
+};
+
+const agendaAdjustStorageKey = "coronelsAgendaAdjustments";
+const defaultAgendaAdjustments = {
+  gap: 0,
+  filtersMarginBottom: 0,
+  resultsMarginTop: 0,
+  filtersPadding: 22,
+  resultsPadding: 16,
+  resultsOffsetY: 0,
+};
+
+const normalizeAgendaAdjustmentValue = (value, min, max, fallback) => {
+  const numericValue = Number(value);
+
+  if (!Number.isFinite(numericValue)) {
+    return fallback;
+  }
+
+  return Math.min(max, Math.max(min, Math.round(numericValue)));
+};
+
+const readAgendaAdjustments = () => {
+  if (!agendaAdjustQueryEnabled) {
+    return { ...defaultAgendaAdjustments };
+  }
+
+  try {
+    const storedValue = window.localStorage.getItem(agendaAdjustStorageKey);
+    const parsedValue = storedValue ? JSON.parse(storedValue) : {};
+
+    return {
+      gap: normalizeAgendaAdjustmentValue(parsedValue.gap, 0, 120, defaultAgendaAdjustments.gap),
+      filtersMarginBottom: normalizeAgendaAdjustmentValue(
+        parsedValue.filtersMarginBottom,
+        0,
+        100,
+        defaultAgendaAdjustments.filtersMarginBottom
+      ),
+      resultsMarginTop: normalizeAgendaAdjustmentValue(
+        parsedValue.resultsMarginTop,
+        0,
+        100,
+        defaultAgendaAdjustments.resultsMarginTop
+      ),
+      filtersPadding: normalizeAgendaAdjustmentValue(
+        parsedValue.filtersPadding,
+        16,
+        60,
+        defaultAgendaAdjustments.filtersPadding
+      ),
+      resultsPadding: normalizeAgendaAdjustmentValue(
+        parsedValue.resultsPadding,
+        16,
+        60,
+        defaultAgendaAdjustments.resultsPadding
+      ),
+      resultsOffsetY: normalizeAgendaAdjustmentValue(
+        parsedValue.resultsOffsetY,
+        -60,
+        120,
+        defaultAgendaAdjustments.resultsOffsetY
+      ),
+    };
+  } catch (error) {
+    return { ...defaultAgendaAdjustments };
+  }
+};
+
+const applyAgendaAdjustments = (adjustments) => {
+  const rootStyle = document.documentElement.style;
+
+  rootStyle.setProperty("--agenda-adjust-gap", `${adjustments.gap}px`);
+  rootStyle.setProperty(
+    "--agenda-adjust-filters-margin-bottom",
+    `${adjustments.filtersMarginBottom}px`
+  );
+  rootStyle.setProperty("--agenda-adjust-results-margin-top", `${adjustments.resultsMarginTop}px`);
+  rootStyle.setProperty("--agenda-adjust-filters-padding", `${adjustments.filtersPadding}px`);
+  rootStyle.setProperty("--agenda-adjust-results-padding", `${adjustments.resultsPadding}px`);
+  rootStyle.setProperty("--agenda-adjust-results-offset-y", `${adjustments.resultsOffsetY}px`);
+};
+
+const saveAgendaAdjustments = (adjustments) => {
+  if (!agendaAdjustQueryEnabled) {
+    return;
+  }
+
+  window.localStorage.setItem(agendaAdjustStorageKey, JSON.stringify(adjustments));
+};
+
+const getAgendaAdjustmentCss = (adjustments) => `/* Ajuste final da aba Agenda */
+:root {
+  --agenda-adjust-gap: ${adjustments.gap}px;
+  --agenda-adjust-filters-margin-bottom: ${adjustments.filtersMarginBottom}px;
+  --agenda-adjust-results-margin-top: ${adjustments.resultsMarginTop}px;
+  --agenda-adjust-filters-padding: ${adjustments.filtersPadding}px;
+  --agenda-adjust-results-padding: ${adjustments.resultsPadding}px;
+  --agenda-adjust-results-offset-y: ${adjustments.resultsOffsetY}px;
+}
+
+.admin-view[data-admin-view="agenda"] .agenda-filters-card {
+  padding: var(--agenda-adjust-filters-padding);
+  margin-bottom: var(--agenda-adjust-filters-margin-bottom);
+}
+
+.admin-view[data-admin-view="agenda"] .agenda-results-block {
+  margin-top: calc(var(--agenda-adjust-gap) + var(--agenda-adjust-results-margin-top));
+  transform: translateY(var(--agenda-adjust-results-offset-y));
+}
+
+.admin-view[data-admin-view="agenda"] .agenda-results-card {
+  padding: var(--agenda-adjust-results-padding) var(--agenda-adjust-results-padding) 0;
+}`;
+
+const copyTextToClipboard = async (text) => {
+  if (navigator.clipboard?.writeText) {
+    await navigator.clipboard.writeText(text);
+    return;
+  }
+
+  const textarea = document.createElement("textarea");
+  textarea.value = text;
+  textarea.setAttribute("readonly", "");
+  textarea.style.position = "fixed";
+  textarea.style.opacity = "0";
+  textarea.style.pointerEvents = "none";
+  document.body.append(textarea);
+  textarea.select();
+  document.execCommand("copy");
+  textarea.remove();
+};
+
+const createAgendaAdjustPanel = () => {
+  if (
+    !agendaAdjustQueryEnabled ||
+    !adminAgendaFiltersCard ||
+    !adminAgendaResultsBlock ||
+    !adminAgendaResultsCard
+  ) {
+    return;
+  }
+
+  const adjustments = readAgendaAdjustments();
+  applyAgendaAdjustments(adjustments);
+
+  const panel = document.createElement("aside");
+  panel.className = "agenda-adjust-panel";
+  panel.innerHTML = `
+    <div class="agenda-adjust-panel-header">
+      <div class="agenda-adjust-panel-title">
+        <p class="eyebrow">Ajuste agenda</p>
+        <strong>Mini painel visual</strong>
+        <span>Disponível só com <code>?ajusteAgenda=1</code>.</span>
+      </div>
+      <button class="agenda-adjust-panel-toggle" type="button" data-agenda-adjust-toggle>Ocultar</button>
+    </div>
+    <div class="agenda-adjust-panel-body">
+      <label class="agenda-adjust-panel-control">
+        <span class="agenda-adjust-panel-row">
+          <span class="agenda-adjust-panel-label">Espaço entre filtros e tabela</span>
+          <span class="agenda-adjust-panel-value" data-agenda-adjust-value="gap"></span>
+        </span>
+        <input type="range" min="0" max="120" step="1" value="${adjustments.gap}" data-agenda-adjust-input="gap">
+      </label>
+      <label class="agenda-adjust-panel-control">
+        <span class="agenda-adjust-panel-row">
+          <span class="agenda-adjust-panel-label">Margem inferior dos filtros</span>
+          <span class="agenda-adjust-panel-value" data-agenda-adjust-value="filtersMarginBottom"></span>
+        </span>
+        <input type="range" min="0" max="100" step="1" value="${adjustments.filtersMarginBottom}" data-agenda-adjust-input="filtersMarginBottom">
+      </label>
+      <label class="agenda-adjust-panel-control">
+        <span class="agenda-adjust-panel-row">
+          <span class="agenda-adjust-panel-label">Margem superior da tabela</span>
+          <span class="agenda-adjust-panel-value" data-agenda-adjust-value="resultsMarginTop"></span>
+        </span>
+        <input type="range" min="0" max="100" step="1" value="${adjustments.resultsMarginTop}" data-agenda-adjust-input="resultsMarginTop">
+      </label>
+      <label class="agenda-adjust-panel-control">
+        <span class="agenda-adjust-panel-row">
+          <span class="agenda-adjust-panel-label">Padding do card de filtros</span>
+          <span class="agenda-adjust-panel-value" data-agenda-adjust-value="filtersPadding"></span>
+        </span>
+        <input type="range" min="16" max="60" step="1" value="${adjustments.filtersPadding}" data-agenda-adjust-input="filtersPadding">
+      </label>
+      <label class="agenda-adjust-panel-control">
+        <span class="agenda-adjust-panel-row">
+          <span class="agenda-adjust-panel-label">Padding do card da tabela</span>
+          <span class="agenda-adjust-panel-value" data-agenda-adjust-value="resultsPadding"></span>
+        </span>
+        <input type="range" min="16" max="60" step="1" value="${adjustments.resultsPadding}" data-agenda-adjust-input="resultsPadding">
+      </label>
+      <label class="agenda-adjust-panel-control">
+        <span class="agenda-adjust-panel-row">
+          <span class="agenda-adjust-panel-label">Offset vertical da tabela</span>
+          <span class="agenda-adjust-panel-value" data-agenda-adjust-value="resultsOffsetY"></span>
+        </span>
+        <input type="range" min="-60" max="120" step="1" value="${adjustments.resultsOffsetY}" data-agenda-adjust-input="resultsOffsetY">
+      </label>
+      <div class="agenda-adjust-panel-actions">
+        <button class="button button-ghost" type="button" data-agenda-adjust-reset>Resetar ajustes</button>
+        <button class="button button-gold" type="button" data-agenda-adjust-copy>Copiar CSS final</button>
+      </div>
+      <p class="agenda-adjust-panel-status" data-agenda-adjust-status>Abra a aba Agenda para ajustar os quadros no olho.</p>
+    </div>
+  `;
+
+  document.body.append(panel);
+
+  const status = panel.querySelector("[data-agenda-adjust-status]");
+  const toggleButton = panel.querySelector("[data-agenda-adjust-toggle]");
+  const valueNodes = panel.querySelectorAll("[data-agenda-adjust-value]");
+  const inputNodes = panel.querySelectorAll("[data-agenda-adjust-input]");
+  const syncValueLabels = () => {
+    valueNodes.forEach((node) => {
+      const key = node.getAttribute("data-agenda-adjust-value");
+      if (!key) {
+        return;
+      }
+
+      node.textContent = `${adjustments[key]}px`;
+    });
+  };
+
+  const syncAdjustments = () => {
+    applyAgendaAdjustments(adjustments);
+    saveAgendaAdjustments(adjustments);
+    syncValueLabels();
+  };
+
+  syncValueLabels();
+
+  inputNodes.forEach((input) => {
+    input.addEventListener("input", () => {
+      const key = input.getAttribute("data-agenda-adjust-input");
+
+      if (!key) {
+        return;
+      }
+
+      adjustments[key] = Number(input.value);
+      syncAdjustments();
+      status.textContent = "Ajuste aplicado em tempo real.";
+    });
+  });
+
+  toggleButton?.addEventListener("click", () => {
+    const isCollapsed = panel.classList.toggle("is-collapsed");
+    toggleButton.textContent = isCollapsed ? "Mostrar" : "Ocultar";
+  });
+
+  panel.querySelector("[data-agenda-adjust-reset]")?.addEventListener("click", () => {
+    Object.assign(adjustments, defaultAgendaAdjustments);
+    inputNodes.forEach((input) => {
+      const key = input.getAttribute("data-agenda-adjust-input");
+      if (!key) {
+        return;
+      }
+
+      input.value = String(adjustments[key]);
+    });
+    syncAdjustments();
+    status.textContent = "Ajustes resetados para o padrão.";
+  });
+
+  panel.querySelector("[data-agenda-adjust-copy]")?.addEventListener("click", async () => {
+    try {
+      await copyTextToClipboard(getAgendaAdjustmentCss(adjustments));
+      status.textContent = "CSS final copiado para a área de transferência.";
+    } catch (error) {
+      status.textContent = "Não foi possível copiar o CSS agora.";
+    }
+  });
 };
 
 const sanitizePhoneDigits = (value) => String(value || "").replace(/\D/g, "");
@@ -3207,6 +3486,7 @@ if (adminBarbersList) {
 updateAdminVisibility();
 renderBarbers();
 setActiveAdminTab(activeAdminTab);
+createAgendaAdjustPanel();
 
 adminTabTriggers.forEach((trigger) => {
   trigger.addEventListener("click", () => {
