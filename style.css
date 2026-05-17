@@ -69,6 +69,14 @@
   --agenda-adjust-filters-padding: 16px;
   --agenda-adjust-results-padding: 16px;
   --agenda-adjust-results-offset-y: -7px;
+  --dash-next-status-x: 0px;
+  --dash-next-status-width: 180px;
+  --dash-next-status-gap: 10px;
+  --dash-next-status-justify: center;
+  --dash-next-proximo-x: 0px;
+  --dash-next-pendente-x: 0px;
+  --dash-next-proximo-size: 10px;
+  --dash-next-pendente-scale: 1;
   --hero-brand-width: 760px;
   --hero-brand-height: 330px;
   --hero-brand-scale: 0.53;
@@ -4942,6 +4950,12 @@ body.experience-adjust-active .about-gallery-card img {
   text-align: center;
 }
 
+.admin-dashboard-panel--upcoming .admin-upcoming-cell--status {
+  width: min(100%, var(--dash-next-status-width));
+  justify-self: center;
+  justify-content: var(--dash-next-status-justify);
+}
+
 .admin-upcoming-cell--date span {
   display: block;
   color: rgba(244, 241, 235, 0.78);
@@ -4959,6 +4973,22 @@ body.experience-adjust-active .about-gallery-card img {
   flex-wrap: nowrap;
   width: auto;
   margin-inline: auto;
+}
+
+.admin-dashboard-panel--upcoming .admin-upcoming-status-stack {
+  gap: var(--dash-next-status-gap);
+  justify-content: var(--dash-next-status-justify);
+  transform: translateX(var(--dash-next-status-x));
+}
+
+.admin-dashboard-panel--upcoming .admin-upcoming-badge {
+  transform: translateX(var(--dash-next-proximo-x));
+  font-size: var(--dash-next-proximo-size);
+}
+
+.admin-dashboard-panel--upcoming .admin-upcoming-status-stack .admin-status {
+  transform: translateX(var(--dash-next-pendente-x)) scale(var(--dash-next-pendente-scale));
+  transform-origin: center;
 }
 
 .admin-upcoming-note {

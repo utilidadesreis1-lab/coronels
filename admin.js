@@ -92,6 +92,8 @@ const adminComandasCompletedList = document.querySelector("[data-admin-comandas-
 const adminComandasCancelledNote = document.querySelector("[data-admin-comandas-cancelled-note]");
 const agendaAdjustQueryEnabled =
   new URLSearchParams(window.location.search).get("ajusteAgenda") === "1";
+const dashboardAdjustQueryEnabled =
+  new URLSearchParams(window.location.search).get("ajusteDashboard") === "1";
 const adminAgendaFiltersCard = document.querySelector(".agenda-filters-card");
 const adminAgendaResultsBlock = document.querySelector(".agenda-results-block");
 const adminAgendaResultsCard = document.querySelector(".agenda-results-card");
@@ -188,6 +190,17 @@ const defaultAgendaAdjustments = {
   filtersPadding: 22,
   resultsPadding: 16,
   resultsOffsetY: 0,
+};
+const dashboardAdjustStorageKey = "coronelsDashboardAdjustments";
+const defaultDashboardAdjustments = {
+  statusX: 0,
+  statusWidth: 180,
+  statusGap: 10,
+  statusAlign: "center",
+  pendenteX: 0,
+  proximoX: 0,
+  proximoSize: 10,
+  pendenteScale: 100,
 };
 
 const normalizeAgendaAdjustmentValue = (value, min, max, fallback) => {
@@ -450,6 +463,327 @@ const createAgendaAdjustPanel = () => {
       status.textContent = "CSS final copiado para a área de transferência.";
     } catch (error) {
       status.textContent = "Não foi possível copiar o CSS agora.";
+    }
+  });
+};
+
+const readDashboardAdjustments = () => {
+  if (!dashboardAdjustQueryEnabled) {
+    return { ...defaultDashboardAdjustments };
+  }
+
+  try {
+    const storedValue = window.localStorage.getItem(dashboardAdjustStorageKey);
+    const parsedValue = storedValue ? JSON.parse(storedValue) : {};
+    const alignments = new Set(["left", "center", "right"]);
+
+    return {
+      statusX: normalizeAgendaAdjustmentValue(
+        parsedValue.statusX,
+        -120,
+        120,
+        defaultDashboardAdjustments.statusX
+      ),
+      statusWidth: normalizeAgendaAdjustmentValue(
+        parsedValue.statusWidth,
+        120,
+        320,
+        defaultDashboardAdjustments.statusWidth
+      ),
+      statusGap: normalizeAgendaAdjustmentValue(
+        parsedValue.statusGap,
+        0,
+        40,
+        defaultDashboardAdjustments.statusGap
+      ),
+      statusAlign: alignments.has(parsedValue.statusAlign)
+        ? parsedValue.statusAlign
+        : defaultDashboardAdjustments.statusAlign,
+      pendenteX: normalizeAgendaAdjustmentValue(
+        parsedValue.pendenteX,
+        -80,
+        80,
+        defaultDashboardAdjustments.pendenteX
+      ),
+      proximoX: normalizeAgendaAdjustmentValue(
+        parsedValue.proximoX,
+        -80,
+        80,
+        defaultDashboardAdjustments.proximoX
+      ),
+      proximoSize: normalizeAgendaAdjustmentValue(
+        parsedValue.proximoSize,
+        8,
+        14,
+        defaultDashboardAdjustments.proximoSize
+      ),
+      pendenteScale: normalizeAgendaAdjustmentValue(
+        parsedValue.pendenteScale,
+        80,
+        140,
+        defaultDashboardAdjustments.pendenteScale
+      ),
+    };
+  } catch (error) {
+    return { ...defaultDashboardAdjustments };
+  }
+};
+
+const applyDashboardAdjustments = (adjustments) => {
+  const rootStyle = document.documentElement.style;
+  const justifyMap = {
+    left: "flex-start",
+    center: "center",
+    right: "flex-end",
+  };
+
+  rootStyle.setProperty("--dash-next-status-x", `${adjustments.statusX}px`);
+  rootStyle.setProperty("--dash-next-status-width", `${adjustments.statusWidth}px`);
+  rootStyle.setProperty("--dash-next-status-gap", `${adjustments.statusGap}px`);
+  rootStyle.setProperty(
+    "--dash-next-status-justify",
+    justifyMap[adjustments.statusAlign] || "center"
+  );
+  rootStyle.setProperty("--dash-next-pendente-x", `${adjustments.pendenteX}px`);
+  rootStyle.setProperty("--dash-next-proximo-x", `${adjustments.proximoX}px`);
+  rootStyle.setProperty("--dash-next-proximo-size", `${adjustments.proximoSize}px`);
+  rootStyle.setProperty(
+    "--dash-next-pendente-scale",
+    `${(adjustments.pendenteScale / 100).toFixed(2)}`
+  );
+};
+
+const saveDashboardAdjustments = (adjustments) => {
+  if (!dashboardAdjustQueryEnabled) {
+    return;
+  }
+
+  window.localStorage.setItem(dashboardAdjustStorageKey, JSON.stringify(adjustments));
+};
+
+const getDashboardAdjustmentCss = (adjustments) => `/* Ajuste final Dashboard - Próximos atendimentos */
+:root {
+  --dash-next-status-x: ${adjustments.statusX}px;
+  --dash-next-status-width: ${adjustments.statusWidth}px;
+  --dash-next-status-gap: ${adjustments.statusGap}px;
+  --dash-next-status-justify: ${adjustments.statusAlign};
+  --dash-next-proximo-x: ${adjustments.proximoX}px;
+  --dash-next-pendente-x: ${adjustments.pendenteX}px;
+  --dash-next-proximo-size: ${adjustments.proximoSize}px;
+  --dash-next-pendente-scale: ${(adjustments.pendenteScale / 100).toFixed(2)};
+}
+
+.admin-dashboard-panel--upcoming .admin-upcoming-cell--status {
+  width: min(100%, var(--dash-next-status-width));
+  justify-self: center;
+}
+
+.admin-dashboard-panel--upcoming .admin-upcoming-status-stack {
+  gap: var(--dash-next-status-gap);
+  transform: translateX(var(--dash-next-status-x));
+}
+
+.admin-dashboard-panel--upcoming .admin-upcoming-badge {
+  transform: translateX(var(--dash-next-proximo-x));
+  font-size: var(--dash-next-proximo-size);
+}
+
+.admin-dashboard-panel--upcoming .admin-upcoming-status-stack .admin-status {
+  transform: translateX(var(--dash-next-pendente-x)) scale(var(--dash-next-pendente-scale));
+}`;
+
+const createDashboardAdjustPanel = () => {
+  if (!dashboardAdjustQueryEnabled) {
+    return;
+  }
+
+  const adjustments = readDashboardAdjustments();
+  applyDashboardAdjustments(adjustments);
+
+  const panel = document.createElement("aside");
+  panel.className = "agenda-adjust-panel dashboard-adjust-panel";
+  panel.innerHTML = `
+    <div class="agenda-adjust-panel-header">
+      <div class="agenda-adjust-panel-title">
+        <p class="eyebrow">Ajuste dashboard</p>
+        <strong>Próximos atendimentos</strong>
+        <span>Disponível só com <code>?ajusteDashboard=1</code>.</span>
+      </div>
+      <button class="agenda-adjust-panel-toggle" type="button" data-dashboard-adjust-toggle>Ocultar</button>
+    </div>
+    <div class="agenda-adjust-panel-body">
+      <label class="agenda-adjust-panel-control">
+        <span class="agenda-adjust-panel-row">
+          <span class="agenda-adjust-panel-label">Mover grupo Status no eixo X</span>
+          <span class="agenda-adjust-panel-value" data-dashboard-adjust-value="statusX"></span>
+        </span>
+        <input type="range" min="-120" max="120" step="1" value="${adjustments.statusX}" data-dashboard-adjust-input="statusX">
+      </label>
+      <label class="agenda-adjust-panel-control">
+        <span class="agenda-adjust-panel-row">
+          <span class="agenda-adjust-panel-label">Largura da coluna Status</span>
+          <span class="agenda-adjust-panel-value" data-dashboard-adjust-value="statusWidth"></span>
+        </span>
+        <input type="range" min="120" max="320" step="1" value="${adjustments.statusWidth}" data-dashboard-adjust-input="statusWidth">
+      </label>
+      <label class="agenda-adjust-panel-control">
+        <span class="agenda-adjust-panel-row">
+          <span class="agenda-adjust-panel-label">Alinhamento horizontal</span>
+          <span class="agenda-adjust-panel-value" data-dashboard-adjust-value="statusAlign"></span>
+        </span>
+        <select data-dashboard-adjust-select="statusAlign">
+          <option value="left"${adjustments.statusAlign === "left" ? " selected" : ""}>Esquerda</option>
+          <option value="center"${adjustments.statusAlign === "center" ? " selected" : ""}>Centro</option>
+          <option value="right"${adjustments.statusAlign === "right" ? " selected" : ""}>Direita</option>
+        </select>
+      </label>
+      <label class="agenda-adjust-panel-control">
+        <span class="agenda-adjust-panel-row">
+          <span class="agenda-adjust-panel-label">Espaço entre PRÓXIMO e PENDENTE</span>
+          <span class="agenda-adjust-panel-value" data-dashboard-adjust-value="statusGap"></span>
+        </span>
+        <input type="range" min="0" max="40" step="1" value="${adjustments.statusGap}" data-dashboard-adjust-input="statusGap">
+      </label>
+      <label class="agenda-adjust-panel-control">
+        <span class="agenda-adjust-panel-row">
+          <span class="agenda-adjust-panel-label">Mover badge PENDENTE no eixo X</span>
+          <span class="agenda-adjust-panel-value" data-dashboard-adjust-value="pendenteX"></span>
+        </span>
+        <input type="range" min="-80" max="80" step="1" value="${adjustments.pendenteX}" data-dashboard-adjust-input="pendenteX">
+      </label>
+      <label class="agenda-adjust-panel-control">
+        <span class="agenda-adjust-panel-row">
+          <span class="agenda-adjust-panel-label">Mover texto PRÓXIMO no eixo X</span>
+          <span class="agenda-adjust-panel-value" data-dashboard-adjust-value="proximoX"></span>
+        </span>
+        <input type="range" min="-80" max="80" step="1" value="${adjustments.proximoX}" data-dashboard-adjust-input="proximoX">
+      </label>
+      <label class="agenda-adjust-panel-control">
+        <span class="agenda-adjust-panel-row">
+          <span class="agenda-adjust-panel-label">Tamanho do texto PRÓXIMO</span>
+          <span class="agenda-adjust-panel-value" data-dashboard-adjust-value="proximoSize"></span>
+        </span>
+        <input type="range" min="8" max="14" step="1" value="${adjustments.proximoSize}" data-dashboard-adjust-input="proximoSize">
+      </label>
+      <label class="agenda-adjust-panel-control">
+        <span class="agenda-adjust-panel-row">
+          <span class="agenda-adjust-panel-label">Escala do badge PENDENTE</span>
+          <span class="agenda-adjust-panel-value" data-dashboard-adjust-value="pendenteScale"></span>
+        </span>
+        <input type="range" min="80" max="140" step="1" value="${adjustments.pendenteScale}" data-dashboard-adjust-input="pendenteScale">
+      </label>
+      <div class="agenda-adjust-panel-actions">
+        <button class="button button-ghost" type="button" data-dashboard-adjust-reset>Resetar ajustes</button>
+        <button class="button button-gold" type="button" data-dashboard-adjust-copy>Copiar CSS final</button>
+      </div>
+      <p class="agenda-adjust-panel-status" data-dashboard-adjust-status>Abra a Dashboard para ajustar PRÓXIMO + PENDENTE no olho.</p>
+    </div>
+  `;
+
+  document.body.append(panel);
+
+  const status = panel.querySelector("[data-dashboard-adjust-status]");
+  const toggleButton = panel.querySelector("[data-dashboard-adjust-toggle]");
+  const valueNodes = panel.querySelectorAll("[data-dashboard-adjust-value]");
+  const inputNodes = panel.querySelectorAll("[data-dashboard-adjust-input]");
+  const selectNodes = panel.querySelectorAll("[data-dashboard-adjust-select]");
+
+  const syncValueLabels = () => {
+    valueNodes.forEach((node) => {
+      const key = node.getAttribute("data-dashboard-adjust-value");
+      if (!key) {
+        return;
+      }
+
+      if (key === "statusAlign") {
+        node.textContent =
+          adjustments[key] === "left"
+            ? "Esquerda"
+            : adjustments[key] === "right"
+              ? "Direita"
+              : "Centro";
+        return;
+      }
+
+      if (key === "pendenteScale") {
+        node.textContent = `${adjustments[key]}%`;
+        return;
+      }
+
+      node.textContent = `${adjustments[key]}px`;
+    });
+  };
+
+  const syncAdjustments = () => {
+    applyDashboardAdjustments(adjustments);
+    saveDashboardAdjustments(adjustments);
+    syncValueLabels();
+  };
+
+  syncValueLabels();
+
+  inputNodes.forEach((input) => {
+    input.addEventListener("input", () => {
+      const key = input.getAttribute("data-dashboard-adjust-input");
+      if (!key) {
+        return;
+      }
+
+      adjustments[key] = Number(input.value);
+      syncAdjustments();
+      status.textContent = "Ajuste aplicado em tempo real.";
+    });
+  });
+
+  selectNodes.forEach((select) => {
+    select.addEventListener("change", () => {
+      const key = select.getAttribute("data-dashboard-adjust-select");
+      if (!key) {
+        return;
+      }
+
+      adjustments[key] = select.value;
+      syncAdjustments();
+      status.textContent = "Alinhamento atualizado em tempo real.";
+    });
+  });
+
+  toggleButton?.addEventListener("click", () => {
+    const isCollapsed = panel.classList.toggle("is-collapsed");
+    toggleButton.textContent = isCollapsed ? "Mostrar" : "Ocultar";
+  });
+
+  panel.querySelector("[data-dashboard-adjust-reset]")?.addEventListener("click", () => {
+    Object.assign(adjustments, defaultDashboardAdjustments);
+
+    inputNodes.forEach((input) => {
+      const key = input.getAttribute("data-dashboard-adjust-input");
+      if (!key) {
+        return;
+      }
+
+      input.value = String(adjustments[key]);
+    });
+
+    selectNodes.forEach((select) => {
+      const key = select.getAttribute("data-dashboard-adjust-select");
+      if (!key) {
+        return;
+      }
+
+      select.value = adjustments[key];
+    });
+
+    syncAdjustments();
+    status.textContent = "Ajustes da Dashboard resetados para o padrão.";
+  });
+
+  panel.querySelector("[data-dashboard-adjust-copy]")?.addEventListener("click", async () => {
+    try {
+      await copyTextToClipboard(getDashboardAdjustmentCss(adjustments));
+      status.textContent = "CSS final da Dashboard copiado para a área de transferência.";
+    } catch (error) {
+      status.textContent = "Não foi possível copiar o CSS da Dashboard agora.";
     }
   });
 };
@@ -3487,6 +3821,7 @@ updateAdminVisibility();
 renderBarbers();
 setActiveAdminTab(activeAdminTab);
 createAgendaAdjustPanel();
+createDashboardAdjustPanel();
 
 adminTabTriggers.forEach((trigger) => {
   trigger.addEventListener("click", () => {
