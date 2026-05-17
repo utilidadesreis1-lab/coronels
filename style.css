@@ -4044,9 +4044,13 @@ body.experience-adjust-active .about-gallery-card img {
   gap: 0.95rem;
 }
 
+.admin-agenda-shell .admin-subsection-head {
+  margin-bottom: 1.45rem;
+}
+
 .admin-agenda-professionals-head,
 .admin-agenda-table-head {
-  margin-bottom: 0.05rem;
+  margin-bottom: 0.35rem;
 }
 
 .admin-agenda-barber-grid {
@@ -4699,7 +4703,7 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-operations-head {
-  margin-bottom: 0.2rem;
+  margin-bottom: 0.45rem;
 }
 
 .admin-upcoming-list,
