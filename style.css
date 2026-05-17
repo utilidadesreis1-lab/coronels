@@ -4939,6 +4939,7 @@ body.experience-adjust-active .about-gallery-card img {
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
 }
 
 .admin-upcoming-cell--date span {
@@ -4953,10 +4954,11 @@ body.experience-adjust-active .about-gallery-card img {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 0.46rem;
-  min-width: 0;
-  flex-wrap: wrap;
-  width: 100%;
+  gap: 0.62rem;
+  min-width: auto;
+  flex-wrap: nowrap;
+  width: auto;
+  margin-inline: auto;
 }
 
 .admin-upcoming-note {
