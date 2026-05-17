@@ -4041,7 +4041,7 @@ body.experience-adjust-active .about-gallery-card img {
 .admin-agenda-professionals,
 .admin-agenda-table-section {
   display: grid;
-  gap: 0.95rem;
+  gap: 1.15rem;
 }
 
 .admin-agenda-shell .admin-subsection-head {
@@ -5171,9 +5171,14 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-table-shell--appointments {
+  padding: 1rem 1rem 0;
   box-shadow:
     inset 0 1px 0 rgba(255, 255, 255, 0.04),
     0 20px 48px rgba(0, 0, 0, 0.14);
+}
+
+.admin-table-shell--appointments .admin-agenda-table-head {
+  margin-bottom: 0.85rem;
 }
 
 .admin-table {
