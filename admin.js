@@ -57,6 +57,7 @@ const adminDateStartFilter = document.querySelector("[data-admin-date-start-filt
 const adminDateEndFilter = document.querySelector("[data-admin-date-end-filter]");
 const adminBarberFilter = document.querySelector("[data-admin-barber-filter]");
 const adminSearchFilter = document.querySelector("[data-admin-search-filter]");
+const adminSortFilter = document.querySelector("[data-admin-sort-filter]");
 const adminFilterTodayButton = document.querySelector("[data-admin-filter-today]");
 const adminClearFiltersButton = document.querySelector("[data-admin-clear-filters]");
 const adminList = document.querySelector("[data-admin-list]");
@@ -1430,6 +1431,48 @@ const getAppointmentTimestamp = (appointment) => {
   return new Date(`${date}T${time}:00`).getTime();
 };
 
+const getAppointmentCreationTimestamp = (appointment) => {
+  const creationSources = [
+    appointment?.criadoEm,
+    appointment?.createdAt,
+    appointment?.dataCriacao,
+    appointment?.timestamp,
+  ];
+
+  for (const source of creationSources) {
+    if (!source) {
+      continue;
+    }
+
+    if (typeof source === "object" && typeof source.toDate === "function") {
+      const timestamp = source.toDate().getTime();
+      if (!Number.isNaN(timestamp)) {
+        return timestamp;
+      }
+    }
+
+    if (source instanceof Date) {
+      const timestamp = source.getTime();
+      if (!Number.isNaN(timestamp)) {
+        return timestamp;
+      }
+    }
+
+    if (typeof source === "number" && Number.isFinite(source)) {
+      return source;
+    }
+
+    if (typeof source === "string") {
+      const parsedTimestamp = new Date(source).getTime();
+      if (!Number.isNaN(parsedTimestamp)) {
+        return parsedTimestamp;
+      }
+    }
+  }
+
+  return getAppointmentTimestamp(appointment);
+};
+
 const formatAdminStatusLabel = (status) => {
   const statusClass = normalizeStatusClass(status || "pendente");
 
@@ -2130,6 +2173,7 @@ const getFilteredAppointments = (appointments) => {
   const selectedStartDate = adminDateStartFilter?.value || "";
   const selectedEndDate = adminDateEndFilter?.value || "";
   const selectedBarber = adminBarberFilter?.value || "all";
+  const selectedSort = adminSortFilter?.value || "recent";
   const searchTerm = String(adminSearchFilter?.value || "")
     .trim()
     .toLocaleLowerCase("pt-BR");
@@ -2160,10 +2204,25 @@ const getFilteredAppointments = (appointments) => {
         matchesSearch
       );
     })
-    .sort(
-      (firstAppointment, secondAppointment) =>
-        getAppointmentTimestamp(firstAppointment) - getAppointmentTimestamp(secondAppointment)
-    );
+    .sort((firstAppointment, secondAppointment) => {
+      switch (selectedSort) {
+        case "oldest":
+          return (
+            getAppointmentCreationTimestamp(firstAppointment) -
+            getAppointmentCreationTimestamp(secondAppointment)
+          );
+        case "nearest":
+          return getAppointmentTimestamp(firstAppointment) - getAppointmentTimestamp(secondAppointment);
+        case "farthest":
+          return getAppointmentTimestamp(secondAppointment) - getAppointmentTimestamp(firstAppointment);
+        case "recent":
+        default:
+          return (
+            getAppointmentCreationTimestamp(secondAppointment) -
+            getAppointmentCreationTimestamp(firstAppointment)
+          );
+      }
+    });
 };
 
 const updateAdminEmptyState = (message = defaultAdminEmptyMessage) => {
@@ -2953,6 +3012,10 @@ if (adminSearchFilter) {
   adminSearchFilter.addEventListener("input", renderAppointments);
 }
 
+if (adminSortFilter) {
+  adminSortFilter.addEventListener("change", renderAppointments);
+}
+
 if (adminFiltersForm) {
   adminFiltersForm.addEventListener("submit", (event) => {
     event.preventDefault();
@@ -2996,6 +3059,10 @@ if (adminClearFiltersButton) {
 
     if (adminSearchFilter) {
       adminSearchFilter.value = "";
+    }
+
+    if (adminSortFilter) {
+      adminSortFilter.value = "recent";
     }
 
     renderAppointments();
