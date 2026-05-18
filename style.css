@@ -4892,7 +4892,7 @@ body.experience-adjust-active .about-gallery-card img {
   width: 4px;
   border-radius: 999px;
   background: linear-gradient(180deg, rgba(196, 171, 241, 0.96), rgba(132, 96, 198, 0.92));
-  box-shadow: 0 0 10px rgba(124, 96, 176, 0.14);
+  box-shadow: 0 0 6px rgba(124, 96, 176, 0.1);
   pointer-events: none;
 }
 
@@ -5477,8 +5477,7 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-client-name.is-signature {
-  color: #f0e3c1;
-  font-weight: 700;
+  color: inherit;
 }
 
 .admin-client-name-label {
@@ -6031,7 +6030,7 @@ body.experience-adjust-active .about-gallery-card img {
   width: 4px;
   border-radius: 999px;
   background: linear-gradient(180deg, rgba(196, 171, 241, 0.96), rgba(132, 96, 198, 0.92));
-  box-shadow: 0 0 10px rgba(124, 96, 176, 0.14);
+  box-shadow: 0 0 6px rgba(124, 96, 176, 0.1);
   pointer-events: none;
 }
 
