@@ -2847,16 +2847,16 @@ const renderAdminComandas = () => {
       ? `
           <button class="button button-ghost admin-action action-whatsapp" type="button" data-admin-action="whatsapp" data-admin-id="${escapeHtml(
             appointment.id || ""
-          )}">
-            WhatsApp
+          )}" aria-label="Enviar WhatsApp" title="WhatsApp">
+            <span class="admin-action-icon admin-action-icon-whatsapp">${getAdminWhatsappIconMarkup()}</span>
           </button>
           <span class="button button-ghost admin-action admin-action-static action-finalized">Finalizado</span>
         `
       : `
           <button class="button button-ghost admin-action action-whatsapp" type="button" data-admin-action="whatsapp" data-admin-id="${escapeHtml(
             appointment.id || ""
-          )}">
-            WhatsApp
+          )}" aria-label="Enviar WhatsApp" title="WhatsApp">
+            <span class="admin-action-icon admin-action-icon-whatsapp">${getAdminWhatsappIconMarkup()}</span>
           </button>
           <button class="button button-gold admin-action action-complete" type="button" data-admin-action="complete" data-admin-id="${escapeHtml(
             appointment.id || ""
