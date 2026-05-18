@@ -2649,7 +2649,7 @@ const renderAdminDashboardTable = (
                )} • ${escapeHtml(paymentLabel)}`;
 
               return `
-                <article class="admin-upcoming-row ${isHighlightedNext ? "is-next" : ""} status-${statusClass} ${showDate ? "admin-upcoming-row--with-date" : ""}">
+                <article class="admin-upcoming-row ${appointmentType === "assinatura" ? "is-signature" : ""} ${isHighlightedNext ? "is-next" : ""} status-${statusClass} ${showDate ? "admin-upcoming-row--with-date" : ""}">
                   <div class="admin-upcoming-cell admin-upcoming-cell--time">
                     <div class="admin-upcoming-time-top">
                       <strong>${escapeHtml(appointment.horario || "-")}</strong>
@@ -2871,7 +2871,7 @@ const renderAdminComandas = () => {
         `;
 
     return `
-      <article class="admin-comanda-card status-${normalizedStatus}">
+      <article class="admin-comanda-card ${normalizedType === "assinatura" ? "is-signature" : ""} status-${normalizedStatus}">
         <div class="admin-comanda-top">
           <div class="admin-comanda-title">
             <strong>${displayClientName}</strong>
@@ -3038,7 +3038,7 @@ const renderAppointments = () => {
             )}</span></span>`;
 
       return `
-        <tr class="status-${normalizedStatus}">
+        <tr class="${normalizedType === "assinatura" ? "is-signature " : ""}status-${normalizedStatus}">
           <td class="admin-table-index">${index + 1}</td>
           <td>${escapeHtml(appointment.horario || "-")}</td>
           <td>${displayClientName}</td>

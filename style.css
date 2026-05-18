@@ -4856,6 +4856,40 @@ body.experience-adjust-active .about-gallery-card img {
     0 12px 28px rgba(37, 92, 63, 0.16) !important;
 }
 
+.admin-upcoming-row.is-signature {
+  position: relative;
+  box-shadow:
+    inset 3px 0 0 rgba(174, 146, 221, 0.62),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 14px 30px rgba(68, 44, 104, 0.14);
+}
+
+.admin-upcoming-row.is-signature::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(174, 146, 221, 0.18);
+  box-shadow: inset 0 0 0 1px rgba(250, 231, 188, 0.04);
+  pointer-events: none;
+}
+
+.admin-upcoming-row.is-signature.status-concluido {
+  box-shadow:
+    inset 3px 0 0 rgba(174, 146, 221, 0.58),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 14px 30px rgba(52, 92, 71, 0.14),
+    0 0 0 1px rgba(174, 146, 221, 0.08);
+}
+
+.admin-upcoming-row.is-signature.status-cancelado {
+  box-shadow:
+    inset 3px 0 0 rgba(174, 146, 221, 0.54),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 14px 30px rgba(106, 48, 66, 0.12),
+    0 0 0 1px rgba(174, 146, 221, 0.08);
+}
+
 .admin-upcoming-cell {
   min-width: 0;
 }
@@ -5760,6 +5794,32 @@ body.experience-adjust-active .about-gallery-card img {
   border-right: 1px solid rgba(214, 103, 103, 0.22);
 }
 
+.admin-view[data-admin-view="agenda"] .admin-table tbody tr.is-signature td {
+  position: relative;
+}
+
+.admin-view[data-admin-view="agenda"] .admin-table tbody tr.is-signature td::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-top: 1px solid rgba(174, 146, 221, 0.1);
+  border-bottom: 1px solid rgba(174, 146, 221, 0.1);
+  pointer-events: none;
+}
+
+.admin-view[data-admin-view="agenda"] .admin-table tbody tr.is-signature td:first-child {
+  border-left-width: 2px;
+  border-left-color: rgba(174, 146, 221, 0.7) !important;
+  box-shadow:
+    inset 3px 0 0 rgba(174, 146, 221, 0.38),
+    inset 0 1px 0 rgba(255, 255, 255, 0.04),
+    0 10px 26px rgba(68, 44, 104, 0.08);
+}
+
+.admin-view[data-admin-view="agenda"] .admin-table tbody tr.is-signature td:last-child {
+  border-right-color: rgba(174, 146, 221, 0.18) !important;
+}
+
 .admin-view[data-admin-view="agenda"] .admin-table tbody tr:hover td {
   background: rgba(255, 255, 255, 0.028);
 }
@@ -5958,6 +6018,49 @@ body.experience-adjust-active .about-gallery-card img {
     radial-gradient(circle at top right, rgba(112, 201, 153, 0.08), transparent 36%),
     linear-gradient(180deg, rgba(112, 201, 153, 0.05), rgba(255, 255, 255, 0.02)),
     rgba(255, 255, 255, 0.022);
+}
+
+.admin-comanda-card.is-signature {
+  position: relative;
+  border-color: rgba(174, 146, 221, 0.22);
+  box-shadow:
+    inset 3px 0 0 rgba(174, 146, 221, 0.62),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 18px 34px rgba(56, 34, 92, 0.14);
+}
+
+.admin-comanda-card.is-signature::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid rgba(174, 146, 221, 0.12);
+  box-shadow: inset 0 0 0 1px rgba(250, 231, 188, 0.04);
+  pointer-events: none;
+}
+
+.admin-comanda-card.is-signature.status-pendente {
+  box-shadow:
+    inset 3px 0 0 rgba(174, 146, 221, 0.62),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 18px 34px rgba(98, 73, 28, 0.13),
+    0 0 0 1px rgba(174, 146, 221, 0.08);
+}
+
+.admin-comanda-card.is-signature.status-concluido {
+  box-shadow:
+    inset 3px 0 0 rgba(174, 146, 221, 0.58),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 18px 34px rgba(42, 92, 68, 0.13),
+    0 0 0 1px rgba(174, 146, 221, 0.08);
+}
+
+.admin-comanda-card.is-signature.status-cancelado {
+  box-shadow:
+    inset 3px 0 0 rgba(174, 146, 221, 0.54),
+    inset 0 1px 0 rgba(255, 255, 255, 0.03),
+    0 18px 34px rgba(104, 48, 65, 0.12),
+    0 0 0 1px rgba(174, 146, 221, 0.08);
 }
 
 .admin-comanda-top {
