@@ -6009,9 +6009,9 @@ body.experience-adjust-active .about-gallery-card img {
 .admin-comanda-card {
   display: flex;
   flex-direction: column;
-  gap: 0.58rem;
+  gap: 0.5rem;
   height: 100%;
-  padding: 0.86rem 0.94rem;
+  padding: 0.8rem 0.9rem;
   border-radius: 18px;
   border: 1px solid rgba(255, 255, 255, 0.08);
   background:
@@ -6039,11 +6039,15 @@ body.experience-adjust-active .about-gallery-card img {
 }
 
 .admin-comandas-group--completed .admin-comanda-card {
-  gap: 0.5rem;
-  padding: 0.78rem 0.88rem;
+  gap: 0.42rem;
+  padding: 0.72rem 0.82rem;
   background:
     linear-gradient(180deg, rgba(255, 255, 255, 0.034), rgba(255, 255, 255, 0.016)),
     rgba(255, 255, 255, 0.018);
+}
+
+.admin-comanda-card.is-finalized-card {
+  gap: 0.42rem;
 }
 
 .admin-comanda-card.is-signature {
@@ -6067,7 +6071,7 @@ body.experience-adjust-active .about-gallery-card img {
   display: grid;
   grid-template-columns: minmax(0, 1fr) auto;
   align-items: start;
-  gap: 0.42rem 0.82rem;
+  gap: 0.34rem 0.78rem;
 }
 
 .admin-comanda-title {
@@ -6075,51 +6079,68 @@ body.experience-adjust-active .about-gallery-card img {
   flex: 1 1 auto;
 }
 
+.admin-comanda-number {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-bottom: 0.18rem;
+  padding: 0.16rem 0.46rem;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  color: rgba(244, 241, 235, 0.62);
+  font-size: 0.58rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
 .admin-comanda-title > strong {
   display: block;
-  font-size: 0.98rem;
-  line-height: 1.12;
+  font-size: 0.96rem;
+  line-height: 1.1;
 }
 
 .admin-comanda-service {
   display: block;
-  margin-top: 0.16rem;
+  margin-top: 0.12rem;
   color: rgba(244, 241, 235, 0.76);
-  font-size: 0.81rem;
-  line-height: 1.24;
+  font-size: 0.79rem;
+  line-height: 1.2;
 }
 
 .admin-comanda-summary {
   display: flex;
   flex-direction: column;
   align-items: flex-end;
-  gap: 0.28rem;
+  gap: 0.24rem;
   min-width: min(220px, 44%);
 }
 
 .admin-comanda-value {
   display: block;
   text-align: right;
-  font-size: 1.04rem;
+  font-size: 1.16rem;
   font-weight: 800;
-  color: #f2dfb5;
-  letter-spacing: -0.01em;
+  color: #f5e7bf;
+  letter-spacing: -0.02em;
   line-height: 1;
+  text-shadow: 0 4px 14px rgba(242, 223, 181, 0.08);
 }
 
 .admin-comanda-badges {
   display: flex;
   flex-wrap: wrap;
   justify-content: flex-end;
-  gap: 0.26rem;
+  gap: 0.24rem;
   max-width: 220px;
 }
 
 .admin-comanda-details {
   display: grid;
   grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 0.36rem 0.62rem;
-  padding-top: 0.08rem;
+  gap: 0.32rem 0.56rem;
+  padding-top: 0.02rem;
 }
 
 .admin-comanda-details.is-finalized {
@@ -6128,7 +6149,7 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-comanda-details div {
   min-width: 0;
-  padding: 0.4rem 0.5rem;
+  padding: 0.36rem 0.46rem;
   border-radius: 12px;
   background: rgba(255, 255, 255, 0.026);
   border: 1px solid rgba(255, 255, 255, 0.05);
@@ -6136,7 +6157,7 @@ body.experience-adjust-active .about-gallery-card img {
 
 .admin-comanda-details span {
   display: block;
-  margin-bottom: 0.1rem;
+  margin-bottom: 0.08rem;
   color: rgba(244, 241, 235, 0.56);
   font-size: 0.6rem;
   font-weight: 800;
@@ -6147,23 +6168,23 @@ body.experience-adjust-active .about-gallery-card img {
 .admin-comanda-details strong {
   display: block;
   color: rgba(244, 241, 235, 0.9);
-  font-size: 0.78rem;
-  line-height: 1.2;
+  font-size: 0.76rem;
+  line-height: 1.16;
 }
 
 .admin-comanda-actions {
   align-self: stretch;
   margin-top: auto;
-  padding-top: 0.28rem;
+  padding-top: 0.2rem;
   min-width: 0;
   grid-template-columns: 36px repeat(2, auto);
   justify-content: start;
   align-items: center;
-  gap: 0.42rem;
+  gap: 0.34rem;
 }
 
 .admin-comandas-group--completed .admin-comanda-actions {
-  padding-top: 0.18rem;
+  padding-top: 0.12rem;
 }
 
 .admin-comanda-actions.is-finalized {

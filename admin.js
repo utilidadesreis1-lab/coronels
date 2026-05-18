@@ -2830,10 +2830,14 @@ const renderAdminComandas = () => {
     ? `${cancelledAppointments.length} cancelado${cancelledAppointments.length > 1 ? "s" : ""} fora da lista principal.`
     : "Nenhum cancelado fora da lista principal.";
 
-  const renderComandaCard = (appointment, { finalized = false } = {}) => {
+  const renderComandaCard = (
+    appointment,
+    { finalized = false, displayNumber = 0 } = {}
+  ) => {
     const normalizedStatus = normalizeStatusClass(appointment.status || "pendente");
     const normalizedType = normalizeAdminAppointmentType(appointment.tipoAtendimento);
     const visualStatusLabel = getAdminComandaStatusLabel(appointment.status);
+    const comandaNumber = `Comanda #${String(Math.max(1, displayNumber || 1)).padStart(3, "0")}`;
     const displayClientName =
       normalizedType === "assinatura"
         ? `<span class="admin-client-name is-signature"><span class="admin-client-star" aria-hidden="true">★</span><span class="admin-client-name-label">${escapeHtml(
@@ -2871,9 +2875,10 @@ const renderAdminComandas = () => {
         `;
 
     return `
-      <article class="admin-comanda-card ${normalizedType === "assinatura" ? "is-signature" : ""} status-${normalizedStatus}">
+      <article class="admin-comanda-card ${normalizedType === "assinatura" ? "is-signature" : ""} ${finalized ? "is-finalized-card" : ""} status-${normalizedStatus}">
         <div class="admin-comanda-top">
           <div class="admin-comanda-title">
+            <span class="admin-comanda-number">${escapeHtml(comandaNumber)}</span>
             <strong>${displayClientName}</strong>
             <span class="admin-comanda-service">${escapeHtml(
               getAdminAppointmentDisplayServiceName(appointment)
@@ -2910,12 +2915,21 @@ const renderAdminComandas = () => {
   };
 
   adminComandasOpenList.innerHTML = openAppointments.length
-    ? openAppointments.map((appointment) => renderComandaCard(appointment)).join("")
+    ? openAppointments
+        .map((appointment, index) =>
+          renderComandaCard(appointment, { displayNumber: index + 1 })
+        )
+        .join("")
     : '<p class="admin-empty-copy">Nenhuma comanda aberta no momento.</p>';
 
   adminComandasCompletedList.innerHTML = completedAppointments.length
     ? completedAppointments
-        .map((appointment) => renderComandaCard(appointment, { finalized: true }))
+        .map((appointment, index) =>
+          renderComandaCard(appointment, {
+            finalized: true,
+            displayNumber: index + 1,
+          })
+        )
         .join("")
     : '<p class="admin-empty-copy">Nenhuma comanda finalizada ainda.</p>';
 };
