@@ -6006,6 +6006,16 @@ body.experience-adjust-active .about-gallery-card img {
   align-items: stretch;
 }
 
+.admin-comandas-grid[data-admin-comandas-open-list]:has(> .admin-comanda-card:only-child) {
+  grid-template-columns: minmax(0, 1fr);
+}
+
+.admin-comandas-grid[data-admin-comandas-open-list]:has(> .admin-comanda-card:only-child)
+  > .admin-comanda-card:only-child {
+  width: 100%;
+  max-width: none;
+}
+
 .admin-comanda-card {
   display: flex;
   flex-direction: column;
