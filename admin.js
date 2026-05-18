@@ -2791,7 +2791,39 @@ const renderAdminDashboardOverview = () => {
   });
 };
 
-const renderAdminComandas = () => {
+const compareAppointmentsByAdminSort = (
+  firstAppointment,
+  secondAppointment,
+  selectedSort = adminSortFilter?.value || "recent"
+) => {
+  switch (selectedSort) {
+    case "oldest":
+      return (
+        getAppointmentCreationTimestamp(firstAppointment) -
+        getAppointmentCreationTimestamp(secondAppointment)
+      );
+    case "nearest":
+      return getAppointmentTimestamp(firstAppointment) - getAppointmentTimestamp(secondAppointment);
+    case "farthest":
+      return getAppointmentTimestamp(secondAppointment) - getAppointmentTimestamp(firstAppointment);
+    case "recent":
+    default:
+      return (
+        getAppointmentCreationTimestamp(secondAppointment) -
+        getAppointmentCreationTimestamp(firstAppointment)
+      );
+  }
+};
+
+const sortAppointmentsByAdminSort = (
+  appointments,
+  selectedSort = adminSortFilter?.value || "recent"
+) =>
+  [...appointments].sort((firstAppointment, secondAppointment) =>
+    compareAppointmentsByAdminSort(firstAppointment, secondAppointment, selectedSort)
+  );
+
+const renderAdminComandas = (agendaReferenceAppointments = []) => {
   if (
     !adminComandasOpenList ||
     !adminComandasCompletedList ||
@@ -2804,10 +2836,7 @@ const renderAdminComandas = () => {
     return;
   }
 
-  const sortedAppointments = [...appointmentsState].sort(
-    (firstAppointment, secondAppointment) =>
-      getAppointmentTimestamp(secondAppointment) - getAppointmentTimestamp(firstAppointment)
-  );
+  const sortedAppointments = sortAppointmentsByAdminSort(appointmentsState);
   const openAppointments = sortedAppointments.filter(
     (appointment) => normalizeStatusClass(appointment.status || "pendente") === "pendente"
   );
@@ -2829,6 +2858,36 @@ const renderAdminComandas = () => {
   adminComandasCancelledNote.textContent = cancelledAppointments.length
     ? `${cancelledAppointments.length} cancelado${cancelledAppointments.length > 1 ? "s" : ""} fora da lista principal.`
     : "Nenhum cancelado fora da lista principal.";
+
+  const getComandaReferenceKey = (appointment, fallbackIndex = 0) =>
+    String(
+      appointment.id ||
+        [
+          appointment.nome || "",
+          appointment.telefone || "",
+          appointment.data || "",
+          appointment.horario || "",
+          appointment.barbeiro || "",
+          fallbackIndex,
+        ].join("|")
+    );
+
+  const referenceAppointments = Array.isArray(agendaReferenceAppointments)
+    ? agendaReferenceAppointments
+    : [];
+  const referenceKeys = new Set(
+    referenceAppointments.map((appointment, index) => getComandaReferenceKey(appointment, index))
+  );
+  const remainingAppointments = sortedAppointments.filter(
+    (appointment, index) => !referenceKeys.has(getComandaReferenceKey(appointment, index))
+  );
+  const unifiedComandaReference = [...referenceAppointments, ...remainingAppointments];
+  const comandaNumberMap = new Map(
+    unifiedComandaReference.map((appointment, index) => [
+      getComandaReferenceKey(appointment, index),
+      index + 1,
+    ])
+  );
 
   const renderComandaCard = (
     appointment,
@@ -2917,7 +2976,10 @@ const renderAdminComandas = () => {
   adminComandasOpenList.innerHTML = openAppointments.length
     ? openAppointments
         .map((appointment, index) =>
-          renderComandaCard(appointment, { displayNumber: index + 1 })
+          renderComandaCard(appointment, {
+            displayNumber:
+              comandaNumberMap.get(getComandaReferenceKey(appointment, index)) || index + 1,
+          })
         )
         .join("")
     : '<p class="admin-empty-copy">Nenhuma comanda aberta no momento.</p>';
@@ -2927,7 +2989,8 @@ const renderAdminComandas = () => {
         .map((appointment, index) =>
           renderComandaCard(appointment, {
             finalized: true,
-            displayNumber: index + 1,
+            displayNumber:
+              comandaNumberMap.get(getComandaReferenceKey(appointment, index)) || index + 1,
           })
         )
         .join("")
@@ -2970,25 +3033,9 @@ const getFilteredAppointments = (appointments) => {
         matchesSearch
       );
     })
-    .sort((firstAppointment, secondAppointment) => {
-      switch (selectedSort) {
-        case "oldest":
-          return (
-            getAppointmentCreationTimestamp(firstAppointment) -
-            getAppointmentCreationTimestamp(secondAppointment)
-          );
-        case "nearest":
-          return getAppointmentTimestamp(firstAppointment) - getAppointmentTimestamp(secondAppointment);
-        case "farthest":
-          return getAppointmentTimestamp(secondAppointment) - getAppointmentTimestamp(firstAppointment);
-        case "recent":
-        default:
-          return (
-            getAppointmentCreationTimestamp(secondAppointment) -
-            getAppointmentCreationTimestamp(firstAppointment)
-          );
-      }
-    });
+    .sort((firstAppointment, secondAppointment) =>
+      compareAppointmentsByAdminSort(firstAppointment, secondAppointment, selectedSort)
+    );
 };
 
 const updateAdminEmptyState = (message = defaultAdminEmptyMessage) => {
@@ -3013,11 +3060,12 @@ const renderAppointments = () => {
     return;
   }
 
+  const filteredAppointments = getFilteredAppointments(appointmentsState);
+
   renderAdminSummary(appointmentsState);
   renderAdminDashboardOverview();
   renderAdminAgendaBarberOverview();
-  renderAdminComandas();
-  const filteredAppointments = getFilteredAppointments(appointmentsState);
+  renderAdminComandas(filteredAppointments);
   const emptyMessage = hasActiveAppointmentFilters()
     ? "Nenhum agendamento encontrado para os filtros selecionados."
     : defaultAdminEmptyMessage;
