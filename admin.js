@@ -2875,17 +2875,21 @@ const renderAdminComandas = () => {
         <div class="admin-comanda-top">
           <div class="admin-comanda-title">
             <strong>${displayClientName}</strong>
-            <div class="admin-comanda-meta-line">
-              <span>${escapeHtml(getAdminAppointmentDisplayServiceName(appointment))}</span>
-              <span class="admin-table-value">${escapeHtml(getAdminAppointmentDisplayValue(appointment))}</span>
-            </div>
-          </div>
-          <div class="admin-comanda-badges">
-            <span class="admin-type-badge type-${normalizedType}">${escapeHtml(
-              normalizeAdminAppointmentTypeLabel(appointment.tipoAtendimento)
+            <span class="admin-comanda-service">${escapeHtml(
+              getAdminAppointmentDisplayServiceName(appointment)
             )}</span>
-            ${getAdminComandaPaymentBadgeMarkup(appointment.formaPagamento)}
-            <span class="admin-status status-${normalizedStatus}">${escapeHtml(visualStatusLabel)}</span>
+          </div>
+          <div class="admin-comanda-summary">
+            <span class="admin-table-value admin-comanda-value">${escapeHtml(
+              getAdminAppointmentDisplayValue(appointment)
+            )}</span>
+            <div class="admin-comanda-badges">
+              <span class="admin-type-badge type-${normalizedType}">${escapeHtml(
+                normalizeAdminAppointmentTypeLabel(appointment.tipoAtendimento)
+              )}</span>
+              ${getAdminComandaPaymentBadgeMarkup(appointment.formaPagamento)}
+              <span class="admin-status status-${normalizedStatus}">${escapeHtml(visualStatusLabel)}</span>
+            </div>
           </div>
         </div>
         <div class="admin-comanda-details ${finalized ? "is-finalized" : ""}">
@@ -2898,7 +2902,7 @@ const renderAdminComandas = () => {
           <div><span>Data</span><strong>${escapeHtml(formatDate(appointment.data || "-"))}</strong></div>
           <div><span>Horário</span><strong>${escapeHtml(appointment.horario || "-")}</strong></div>
         </div>
-        <div class="admin-table-actions admin-comanda-actions">
+        <div class="admin-table-actions admin-comanda-actions ${finalized ? "is-finalized" : ""}">
           ${actionMarkup}
         </div>
       </article>
